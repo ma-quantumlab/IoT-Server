@@ -9,14 +9,14 @@ def get_value(mqtt_subsection, today):
     lastline = DataSource.get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
-    if (mqtt_subsection == "alice_pressure_ovc"):
+    if "pressure_ovc" in mqtt_subsection:
         return (timestamp, float(lastline[index(lastline, "CH1")+3])) # CH 1
-    elif (mqtt_subsection == "alice_pressure_still"):
+    elif "pressure_still" in mqtt_subsection:
         return (timestamp, float(lastline[index(lastline, "CH2")+3])) # CH 2
-    elif (mqtt_subsection == "alice_pressure_diff_ch4"):
+    elif "pressure_diff_ch4" in mqtt_subsection:
         return (timestamp, float(lastline[index(lastline, "CH4")+3])) # CH 4
-    elif (mqtt_subsection == "alice_pressure_diff_ch3"):
+    elif "pressure_diff_ch3" in mqtt_subsection:
         return (timestamp, float(lastline[index(lastline, "CH3")+3])) # CH 3
-    elif (mqtt_subsection == "alice_pressure_tank"):
+    elif "pressure_tank" in mqtt_subsection:
         return (timestamp, float(lastline[index(lastline, "CH5")+3])) # CH 5
     raise Exception(f"'{mqtt_subsection}' is not a valid request")
