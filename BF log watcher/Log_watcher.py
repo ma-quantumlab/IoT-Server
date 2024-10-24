@@ -4,16 +4,22 @@ from datetime import datetime, timedelta
 import paho.mqtt.client as mqtt
 from functools import partial
 from pathlib import Path
+import importlib
+import argparse
 import time
 import json
 import pytz
 import os
 
-with open('config.json', 'r') as file:
-    cofig = json.load(file)
+parser = argparse.ArgumentParser(description="to enter in json config file")
 
-name = cofig["name"]
-log_root = cofig["log_root"]
+parser.add_argument('--config', type=str, help='Name of json config file')
+
+with open(parser.parse_args().config, 'r') as file:
+    config = json.load(file)
+
+name = config["name"]
+log_root = config["log_root"]
 
 write_interval = timedelta(seconds=2)
 timezone = pytz.timezone("America/New_York")
@@ -41,9 +47,10 @@ class DataSource:
     
     last_update_time = datetime.strptime('01-01-01,00:00:00',"%d-%m-%y,%H:%M:%S")
 
-    def __init__(self, mqtt_subsections, get_value):
-        self.mqtt_subsections = mqtt_subsections
-        self.get_value = partial(get_value, self)
+    def __init__(self, datasource):
+        self.mqtt_subsections = datasource["values"]
+        module = importlib.import_module(datasource["function"])
+        self.get_value = module.get_value()
 
     @staticmethod
     def get_last_line(filepath):
@@ -66,17 +73,11 @@ while True:
     if not os.path.exists(log_root):
         time.sleep(3)
         continue
-         
-    dataSources = [ 
-        DataSource(["alice_temp_50k", "alice_temp_4k", "alice_temp_still", "alice_temp_mxc"], get_values_from_tempChnFile),
-        DataSource(["alice_pressure_ovc", "alice_pressure_still", "alice_pressure_diff_ch4", "alice_pressure_diff_ch3", "alice_pressure_tank"], get_values_from_file_maxiguage),
-        DataSource(["alice_compressor_water_in","alice_compressor_water_out", "alice_compressor_oil_temp", "alice_compressor_err"], get_values_from_file_status),
-        DataSource(["alice_flowmeter"], get_values_from_file_flowmeter) ]
-    
+
     client.connect(mqtt_broker_host, mqtt_broker_port)
     
     while datetime.now().strftime("%y-%m-%d") == today:
-        for enum, dataSource in enumerate(dataSources):
+        for enum, dataSource in enumerate(map(DataSource, config["datasources"])):
             payload = {}
             for mqtt_subsection in dataSource.mqtt_subsections:
                 
