@@ -4,13 +4,13 @@ def get_value(mqtt_subsection, today):
     from Log_watcher import DataSource, log_root
 
     channel = ""
-    if mqtt_subsection == "alice_temp_50k": 
+    if "temp_50k" in mqtt_subsection: 
         channel = "CH1"
-    elif mqtt_subsection == "alice_temp_4k":
+    elif "temp_4k" in mqtt_subsection:
         channel = "CH2"
-    elif mqtt_subsection == "alice_temp_still":
+    elif "temp_still" in mqtt_subsection:
         channel = "CH5"
-    elif mqtt_subsection == "alice_temp_mxc":
+    elif "temp_mxc" in mqtt_subsection:
         channel = "CH6"
        
     print(mqtt_subsection)
