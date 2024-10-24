@@ -50,7 +50,7 @@ class DataSource:
     def __init__(self, datasource):
         self.mqtt_subsections = datasource["values"]
         module = importlib.import_module(datasource["function"])
-        self.get_value = module.get_value()
+        self.get_value = partial(module.get_value)
 
     @staticmethod
     def get_last_line(filepath):
