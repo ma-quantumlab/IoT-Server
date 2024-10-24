@@ -13,7 +13,8 @@ def get_value(mqtt_subsection, today):
     elif mqtt_subsection == "alice_temp_mxc":
         channel = "CH6"
        
-    path = log_root + today + "\\" + channel + "T " + today + ".log"
+    print(mqtt_subsection)
+    path = log_root + today + "\\" + channel + " T " + today + ".log"
 
     if not os.path.exists(path) and channel == "CH6": # CH6 may not be present due to Bluefors Config
         return None
