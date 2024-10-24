@@ -1,4 +1,4 @@
-from Log_watcher import log_root, get_last_line, index
+from Log_watcher import DataSource, log_root, get_last_line, index
 
 def get_value(mqtt_subsection, today):
     
@@ -7,7 +7,7 @@ def get_value(mqtt_subsection, today):
     #if not os.path.exists(path):
         #return None
 
-    lastline = get_last_line(path).rsplit(",")
+    lastline = DataSource.get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
     if (mqtt_subsection == "alice_compressor_err"): 

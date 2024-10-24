@@ -1,5 +1,5 @@
 import os
-from Log_watcher import log_root, get_last_line
+from Log_watcher import DataSource, log_root, get_last_line
 
 def get_value(mqtt_subsection, today):
     channel = ""
@@ -17,7 +17,7 @@ def get_value(mqtt_subsection, today):
     if not os.path.exists(path) and channel == "CH6": # CH6 may not be present due to Bluefors Config
         return None
 
-    lastline = get_last_line(path).rsplit(",")
+    lastline = DataSource.get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
     return (timestamp, float(lastline[2]))
