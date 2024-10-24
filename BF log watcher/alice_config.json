@@ -12,7 +12,7 @@
             ]
         },
         {
-            "function":"maxiguage",
+            "function":"maxigauge",
             "values":[
                 "alice_pressure_ovc",
                 "alice_pressure_still",
