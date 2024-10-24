@@ -1,4 +1,7 @@
-def get_values_from_tempChnFile(self, mqtt_subsection, today):
+import os
+from ..Log_watcher import log_root, get_last_line
+
+def get_value(mqtt_subsection, today):
     channel = ""
     if mqtt_subsection == "alice_temp_50k": 
         channel = "CH1"
@@ -14,7 +17,7 @@ def get_values_from_tempChnFile(self, mqtt_subsection, today):
     if not os.path.exists(path) and channel == "CH6": # CH6 may not be present due to Bluefors Config
         return None
 
-    lastline = self.get_last_line(path).rsplit(",")
+    lastline = get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
     return (timestamp, float(lastline[2]))

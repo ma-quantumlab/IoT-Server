@@ -1,11 +1,13 @@
-def get_values_from_file_maxiguage(self, mqtt_subsection, today):
+from ..Log_watcher import log_root,get_last_line, index
+
+def get_value(mqtt_subsection, today):
 
     path = log_root + today + "\\" + "maxigauge " + today + ".log"
 
     #if os.not os.path.exists(path):
         #return None
 
-    lastline = self.get_last_line(path).rsplit(",")
+    lastline = get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
     if (mqtt_subsection == "alice_pressure_ovc"):
@@ -18,4 +20,4 @@ def get_values_from_file_maxiguage(self, mqtt_subsection, today):
         return (timestamp, float(lastline[index(lastline, "CH3")+3])) # CH 3
     elif (mqtt_subsection == "alice_pressure_tank"):
         return (timestamp, float(lastline[index(lastline, "CH5")+3])) # CH 5
-    raise Exception(f"'{self.mqtt_subsection}' is not a valid request")
+    raise Exception(f"'{mqtt_subsection}' is not a valid request")

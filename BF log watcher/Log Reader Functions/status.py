@@ -1,11 +1,13 @@
-def get_values_from_file_status(self, mqtt_subsection, today):
+from ..Log_watcher import log_root, get_last_line, index
+
+def get_value(mqtt_subsection, today):
     
     path = log_root + today + "\\" + "Status_" + today + ".log"
 
     #if not os.path.exists(path):
         #return None
 
-    lastline = self.get_last_line(path).rsplit(",")
+    lastline = get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
     
     if (mqtt_subsection == "alice_compressor_err"): 
@@ -16,4 +18,4 @@ def get_values_from_file_status(self, mqtt_subsection, today):
         return (timestamp, float(lastline[index(lastline, "cpatempwo")+1])) # cpatempwo
     elif (mqtt_subsection == "alice_compressor_oil_temp"):
         return (timestamp, float(lastline[index(lastline, "cpatempo")+1])) # cpatempo
-    raise Exception(f"'{self.mqtt_subsection}' is not a valid request")
+    raise Exception(f"'{mqtt_subsection}' is not a valid request")

@@ -1,8 +1,10 @@
-def get_values_from_file_flowmeter(self, mqtt_subsection, today):
+from ..Log_watcher import log_root, get_last_line
+
+def get_value(mqtt_subsection, today):
 
     path = log_root + today + "\\" + "Flowmeter " + today + ".log"
 
-    lastline = self.get_last_line(path)
+    lastline = get_last_line(path)
     timestamp = lastline.rsplit(",")[0] + "," + lastline.rsplit(",")[1]
 
     return (timestamp, float(lastline.rsplit(",")[2]))
