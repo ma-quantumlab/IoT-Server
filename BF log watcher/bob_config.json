@@ -3,7 +3,7 @@
     "log_root":"C:\\Users\\Ma Quantum Lab\\Bluefors logs\\",
     "datasources":[
         {
-            "function":"Log_Reader_Functions.temp",
+            "function":"temp",
             "values":[
                 "bob_temp_50k",
                 "bob_temp_4k", 
@@ -12,7 +12,7 @@
             ]
         },
         {
-            "function":"Log_Reader_Functions.maxiguage",
+            "function":"maxiguage",
             "values":[
                 "bob_pressure_ovc",
                 "bob_pressure_still",
@@ -22,7 +22,7 @@
             ]        
         },
         {
-            "function":"Log_Reader_Functions.status",
+            "function":"status",
             "values":[
                 "bob_compressor_water_in",
                 "bob_compressor_water_out", 
@@ -31,7 +31,7 @@
             ]
             },
         {
-            "function":"Log_Reader_Functions.flowmeter",
+            "function":"flowmeter",
             "req_values":["bob_flowmeter"]
         }
     ]

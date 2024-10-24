@@ -1,4 +1,4 @@
-from ..Log_watcher import log_root, get_last_line
+from Log_watcher import log_root, get_last_line
 
 def get_value(mqtt_subsection, today):
 
