@@ -1,7 +1,8 @@
 import os
-from Log_watcher import DataSource, log_root, get_last_line
 
 def get_value(mqtt_subsection, today):
+    from Log_watcher import DataSource, log_root
+    
     channel = ""
     if mqtt_subsection == "alice_temp_50k": 
         channel = "CH1"

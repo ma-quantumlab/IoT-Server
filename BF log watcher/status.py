@@ -1,6 +1,6 @@
-from Log_watcher import DataSource, log_root, get_last_line, index
-
 def get_value(mqtt_subsection, today):
+
+    from Log_watcher import DataSource, log_root, index
     
     path = log_root + today + "\\" + "Status_" + today + ".log"
 
