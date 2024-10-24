@@ -80,6 +80,9 @@ while True:
     while datetime.now().strftime("%y-%m-%d") == today:
         for enum, dataSource in enumerate(map(DataSource, config["datasources"])):
             payload = {}
+
+            timestamp = datetime.strptime('01-01-01,00:00:00',"%d-%m-%y,%H:%M:%S")
+
             for mqtt_subsection in dataSource.mqtt_subsections:
                 
                 last_value = dataSource.get_value(mqtt_subsection, today, mqtt_subsection in dataSource.json["req_values"])
