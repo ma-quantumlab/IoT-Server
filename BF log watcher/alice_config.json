@@ -23,7 +23,7 @@
         },
         {
             "function":"status",
-            "values":[
+            "":[
                 "alice_compressor_water_in",
                 "alice_compressor_water_out", 
                 "alice_compressor_oil_temp", 
@@ -32,7 +32,7 @@
             },
         {
             "function":"flowmeter",
-            "req_values":["alice_flowmeter"]
+            "values":["alice_flowmeter"]
         }
     ]
 }
