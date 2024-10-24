@@ -48,7 +48,8 @@ class DataSource:
     last_update_time = datetime.strptime('01-01-01,00:00:00',"%d-%m-%y,%H:%M:%S")
 
     def __init__(self, datasource):
-        self.mqtt_subsections = datasource["values"]
+        self.json = datasource
+        self.mqtt_subsections = datasource["req_values"] + datasource["opt_values"]
         module = importlib.import_module(datasource["function"])
         self.get_value = partial(module.get_value)
 
@@ -81,7 +82,7 @@ while True:
             payload = {}
             for mqtt_subsection in dataSource.mqtt_subsections:
                 
-                last_value = dataSource.get_value(mqtt_subsection, today)
+                last_value = dataSource.get_value(mqtt_subsection, today, mqtt_subsection in dataSource.json["req_values"])
 
                 if last_value is None:
                     print(f"Value not found: {mqtt_subsection}")

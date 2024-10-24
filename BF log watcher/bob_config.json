@@ -4,7 +4,8 @@
     "datasources":[
         {
             "function":"temp",
-            "values":[
+            "req_values":[],
+            "opt_values":[
                 "bob_temp_50k",
                 "bob_temp_4k", 
                 "bob_temp_still",
@@ -13,26 +14,29 @@
         },
         {
             "function":"maxigauge",
-            "values":[
+            "req_values":[
                 "bob_pressure_ovc",
                 "bob_pressure_still",
                 "bob_pressure_diff_ch4", 
                 "bob_pressure_diff_ch3",
                 "bob_pressure_tank"
-            ]        
+            ],
+            "opt_values":[]     
         },
         {
             "function":"status",
-            "values":[
+            "req_values":[
                 "bob_compressor_water_in",
                 "bob_compressor_water_out", 
                 "bob_compressor_oil_temp", 
                 "bob_compressor_err"
-            ]
+            ],
+            "opt_values":[]
             },
         {
             "function":"flowmeter",
-            "values":["bob_flowmeter"]
+            "req_values":["bob_flowmeter"],
+            "opt_values":[]
         }
     ]
 }

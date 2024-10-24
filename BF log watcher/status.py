@@ -1,4 +1,4 @@
-def get_value(mqtt_subsection, today):
+def get_value(mqtt_subsection, today, required):
 
     from Log_watcher import DataSource, log_root, index
     
