@@ -59,7 +59,7 @@ class Threshold:
     def __init__(self, alertJson):
         self.alertJson = alertJson
 
-    def __del__(self): # Deletes dashboard thresholds, alert from api, etc.
+    def delete(self): # Deletes dashboard thresholds, alert from api, etc.
         self.removeDashboardThreshold()
         httpDeleteRequest()
 
@@ -203,7 +203,7 @@ class Threshold:
     @staticmethod
     def createAlert(threshold, state, bound_type, alert_type):
         print(f"Creating alert ... Enter in values below:")
-            
+
         databases = {database["name"]:database["uid"] for database in httpGetRequest(grafana_url+datasource_url, datasource_header)}
         database = Threshold.getCheck("Influx DB databases", databases.keys)
 
@@ -346,7 +346,7 @@ def getArguments():
     parser.add_argument("--create_lower_critical", action="store_true", help="create critical lower bound alert")
     parser.add_argument("--create_upper_warning", action="store_true", help="create warning upper bound alert")
     parser.add_argument("--create_lower_warning", action="store_true", help="create warning lower bound alert")
-    parser.add_argument("--delete", action="store_true", type=str, help="delete alert")
+    parser.add_argument("--delete", action="store_true", help="delete alert")
     parser.add_argument("--json", default=None, type=str, help="debug only")
 
     return parser.parse_args()
@@ -360,9 +360,7 @@ if __name__ == "__main__":
         for alert in alerts:
             Threshold.thresholds.append(Threshold(alert))
 
-        if arguments.create_upper_critical is not None ^ arguments.create_upper_warning is not None ^ \
-           arguments.create_lower_critical is not None ^ arguments.create_lower_warning ^ \
-           arguments.delete is not None and arguments.threshold and arguments.state:
+        if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning, arguments.delete]) == 1 and arguments.threshold is not None and arguments.state is not None:
             if arguments.create_upper_critical:                
                 Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Critical"))
             elif arguments.create_lower_critical:
@@ -377,7 +375,9 @@ if __name__ == "__main__":
                 if confirmation == "Y":
                     for index, threshold in enumerate(Threshold.thresholds):
                         if threshold.getName() == arguments.delete:
-                            del Threshold.thresholds[index]
+                            Threshold.thresholds[index].delete
+                            Threshold.thresholds.pop(index)
+                            quit()
                     quit()
                 else:
                     quit()
