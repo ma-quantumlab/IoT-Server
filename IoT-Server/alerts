@@ -73,7 +73,7 @@ class Threshold:
 
     def delete(self): # Deletes dashboard thresholds, alert from api, etc.
         self.removeDashboardThreshold()
-        httpDeleteRequest()
+        httpDeleteRequest(alert_rules_url+self.getAlertId())
 
     def __str__(self): # Prints status of threshold to command line 
         return f"Name: {BLUE}{self.getName():<{50}}{RESET} | Value: {GREEN}{self.getThreshold():<{15}}{RESET} | Silenced: {GREEN}{self.getStateString():<{20}}{RESET}"
@@ -171,7 +171,6 @@ class Threshold:
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
     def changeDashboardThreshold(self, value, editAlertJson=True): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
-
         if editAlertJson is True:
             self.setThresholdValue(self, value)
 
@@ -239,7 +238,7 @@ class Threshold:
             alert_template["data"][a_refId_index]["model"]["measurement"] = measurement
 
             feild_type_index = getJsonArrayIndex("type", alert_template["data"][a_refId_index]["model"]["select"][0], "field")[0]
-            alert_template["data"][a_refId_index]["model"]["select"][0][feild_type_index]["params"] = field
+            alert_template["data"][a_refId_index]["model"]["select"][0][feild_type_index]["params"][0] = field
 
             alert_template["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"].append(threshold)
             alert_template["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["type"] = bound_type
@@ -258,13 +257,11 @@ class Threshold:
             else:
                 raise Exception(f"State {state} must be 'ON' or 'OFF'")
 
-            print(alert_template)
-
-            raise Exception("End of program!!! :)))))))")
-
+            #httpPostRequest(grafana_url+alert_rules_url, alert_template, datasource_header)
             alert = Threshold(alert_template)
             alert.createDashboardThreshold()
-            Threshold.thresholds.append(alert)            
+            #Threshold.thresholds.append(alert)         
+            raise Exception("FINISHED :)")   
             return alert
         
     @staticmethod
@@ -325,8 +322,8 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
         raise Exception(f"Error in request POST: {json.dumps(request.json())}")
     return json.dumps(request.json())
 
-def httpDeleteRequest(url, jsonMessage, header=provisioning_header):
-    request = requests.delete(url, data=json.dumps(jsonMessage), headers=header)
+def httpDeleteRequest(url, header=datasource_header):
+    request = requests.delete(url, headers=header)
     if request.status_code != 200:
         raise Exception(f"Error in request DELETE: {json.dumps(request.json())}")
     return json.dumps(request.json())
