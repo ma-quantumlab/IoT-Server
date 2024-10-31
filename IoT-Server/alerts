@@ -79,11 +79,11 @@ class Threshold:
         self.alertJson = alertJson
 
     def delete(self): # Deletes dashboard thresholds, alert from api, etc.
-        self.removeDashboardThreshold()
         httpDeleteRequest(grafana_url+alert_rules_url+self.getAlertId())
+        self.removeDashboardThreshold()
 
     def __str__(self): # Prints status of threshold to command line 
-        return f"Name: {BLUE}{"'"+self.getName()+"'":<{50}}{RESET}' | Value: {GREEN}{self.getThreshold():<{15}}{RESET} | Silenced: {GREEN}{self.getStateString():<{20}}{RESET}"
+        return f"Name: {BLUE}{"'"+self.getName()+"'":<{50}}{RESET} | Value: {GREEN}{self.getThreshold():<{15}}{RESET} | Silenced: {GREEN}{self.getStateString():<{20}}{RESET}"
 
     def getName(self): # Returns title of alert
         return self.alertJson["title"] 
@@ -147,7 +147,7 @@ class Threshold:
                     dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("green")[0]]["color"] = "dark-orange"
                     dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"green", "value":value})
                 else:
-                    if getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], "dark-orange"):
+                    if getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], "dark-orange", True):
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("dark-orange")[0]]["color"] = "dark-red"
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"dark-orange", "value":value})
                     else:
@@ -390,9 +390,9 @@ if __name__ == "__main__":
         elif arguments.create_lower_critical:
             Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Critical"))
         elif arguments.create_upper_warning:
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
-        elif arguments.create_lower_warning:
             Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
+        elif arguments.create_lower_warning:
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
         else:
             quit()
         
