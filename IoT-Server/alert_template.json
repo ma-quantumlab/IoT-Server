@@ -42,9 +42,7 @@
         "select": [
           [
             {
-              "params": [
-                ""
-              ],
+              "params": [""],
               "type": "field"
             },
             {
@@ -75,9 +73,7 @@
               "type": "and"
             },
             "query": {
-              "params": [
-                "B"
-              ]
+              "params": ["B"]
             },
             "reducer": {
               "params": [],
@@ -111,7 +107,7 @@
           {
             "evaluator": {
               "params": [],
-              "type": "gt"
+              "type": ""
             },
             "operator": {
               "type": "and"
