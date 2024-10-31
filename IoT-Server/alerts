@@ -72,8 +72,8 @@ class Threshold:
         self.alertJson = alertJson
 
     def delete(self): # Deletes dashboard thresholds, alert from api, etc.
-        self.removeDashboardThreshold()
-        httpDeleteRequest(alert_rules_url+self.getAlertId())
+        #self.removeDashboardThreshold()
+        httpDeleteRequest(grafana_url+alert_rules_url+self.getAlertId())
 
     def __str__(self): # Prints status of threshold to command line 
         return f"Name: {BLUE}{self.getName():<{50}}{RESET} | Value: {GREEN}{self.getThreshold():<{15}}{RESET} | Silenced: {GREEN}{self.getStateString():<{20}}{RESET}"
@@ -119,7 +119,8 @@ class Threshold:
             and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getFeild()
     
     def setThresholdValue(self, value):
-        self.alertJson["data"][2]["model"]["conditions"][0]["evaluator"]["params"][0] = value
+        c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
+        self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"][0] = value
         httpPutRequest(alert_rules_url+self.getAlertId(), self.alertJson)
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
@@ -257,11 +258,10 @@ class Threshold:
             else:
                 raise Exception(f"State {state} must be 'ON' or 'OFF'")
 
-            #httpPostRequest(grafana_url+alert_rules_url, alert_template, datasource_header)
+            httpPostRequest(grafana_url+alert_rules_url, alert_template, datasource_header)
             alert = Threshold(alert_template)
             alert.createDashboardThreshold()
-            #Threshold.thresholds.append(alert)         
-            raise Exception("FINISHED :)")   
+            Threshold.thresholds.append(alert)         
             return alert
         
     @staticmethod
@@ -324,7 +324,7 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
 
 def httpDeleteRequest(url, header=datasource_header):
     request = requests.delete(url, headers=header)
-    if request.status_code != 200:
+    if request.status_code != 204:
         raise Exception(f"Error in request DELETE: {json.dumps(request.json())}")
     return json.dumps(request.json())
 
@@ -357,7 +357,7 @@ def getArguments():
     parser.add_argument("--create_lower_critical", action="store_true", help="create critical lower bound alert")
     parser.add_argument("--create_upper_warning", action="store_true", help="create warning upper bound alert")
     parser.add_argument("--create_lower_warning", action="store_true", help="create warning lower bound alert")
-    parser.add_argument("--delete", action="store_true", help="delete alert")
+    parser.add_argument("--delete", default=None, type=str, help="delete alert")
     parser.add_argument("--config", default=None, type=str, help="alert configurations")
     parser.add_argument("--json", default=None, type=str, help="debug only")
 
@@ -372,7 +372,7 @@ if __name__ == "__main__":
         for alert in alerts:
             Threshold.thresholds.append(Threshold(alert))
 
-        if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning, arguments.delete]) == 1 and arguments.threshold is not None and arguments.state is not None:
+        if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
             if arguments.create_upper_critical:                
                 Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Critical"))
             elif arguments.create_lower_critical:
@@ -381,20 +381,17 @@ if __name__ == "__main__":
                 Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
             elif arguments.create_lower_warning:
                 Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
-
-            elif arguments.delete and len(Threshold.getThresholdFromName(arguments.delete)) == 1:
-                confirmation = strictInput(f"Are you sure you want to delete: '{arguments.delete}' (Y/n)", ["Y", "n"])
-                if confirmation == "Y":
-                    for index, threshold in enumerate(Threshold.thresholds):
-                        if threshold.getName() == arguments.delete:
-                            Threshold.thresholds[index].delete
-                            Threshold.thresholds.pop(index)
-                            quit()
-                    quit()
-                else:
-                    quit()
             else:
                 quit()
+            
+        if arguments.delete and Threshold.getThresholdFromName(arguments.delete) is not None:
+            confirmation = strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"])
+            if confirmation == "Y":
+                for index, threshold in enumerate(Threshold.thresholds):
+                    if threshold.getName() == arguments.delete:
+                        Threshold.thresholds[index].delete()
+                        Threshold.thresholds.pop(index)
+                        break
                 
         if arguments.name is not None:
             if arguments.threshold is not None and arguments.state is not None:
