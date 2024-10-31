@@ -69,6 +69,9 @@ class ThresholdConfiguration:
             else:
                 Threshold.createAlert()
 
+    def getName(self):
+        return self.config_json["name"]
+
 class Threshold:
     thresholds  = []
 
@@ -76,7 +79,7 @@ class Threshold:
         self.alertJson = alertJson
 
     def delete(self): # Deletes dashboard thresholds, alert from api, etc.
-        #self.removeDashboardThreshold()
+        self.removeDashboardThreshold()
         httpDeleteRequest(grafana_url+alert_rules_url+self.getAlertId())
 
     def __str__(self): # Prints status of threshold to command line 
@@ -160,7 +163,7 @@ class Threshold:
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
             if "Upper" in self.getName():
-                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].pop(color_indices("orange" if "Warning" in self.getName else "red")[0])                    
+                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].pop(color_indices("orange" if "Warning" in self.getName() else "red")[0])                    
             else:
                 if "Warning" in self.getName():
                     dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].pop(color_indices("green")[0])
@@ -306,23 +309,31 @@ class Threshold:
 def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
     if request.status_code != 200:
-        raise Exception(f"Error in request GET: {json.dumps(request.json())}")
+        print(f"Error in request GET: {json.dumps(request.json())}")
+        time.sleep(2)
+        return httpGetRequest(url, header, param)
     return request.json()
 
 def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200:
-        raise Exception(f"Error in request PUT: {json.dumps(request.json())}")
+        print(f"Error in request PUT: {json.dumps(request.json())}")
+        time.sleep(2)
+        httpPutRequest(url, jsonMessage, provisioning_header)
 
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
-        raise Exception(f"Error in request POST: {json.dumps(request.json())}")
+        print(f"Error in request POST: {json.dumps(request.json())}")
+        time.sleep(2)
+        httpPostRequest(url, jsonMessage, provisioning_header)
 
 def httpDeleteRequest(url, header=datasource_header):
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
-        raise Exception(f"Error in request DELETE: {json.dumps(request.json())}")
+        print(f"Error in request DELETE: {json.dumps(request.json())}")
+        time.sleep(2)
+        httpDeleteRequest(url, datasource_header)
 
 def strictInput(question, correctValues):
     while True:
@@ -366,72 +377,60 @@ def getArguments():
     return parser.parse_args()
 
 if __name__ == "__main__":
-    try:
-        alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
+    alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
 
-        for alert in alerts:
-            Threshold.thresholds.append(Threshold(alert))
+    for alert in alerts:
+        Threshold.thresholds.append(Threshold(alert))
 
-        arguments = getArguments()
+    arguments = getArguments()
 
-        if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
-            if arguments.create_upper_critical:                
-                Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Critical"))
-            elif arguments.create_lower_critical:
-                Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Critical"))
-            elif arguments.create_upper_warning:
-                Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
-            elif arguments.create_lower_warning:
-                Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
-            else:
-                quit()
-            
-        if arguments.delete and Threshold.getThresholdFromName(arguments.delete) is not None:
-            confirmation = strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"])
-            if confirmation == "Y":
-                for index, threshold in enumerate(Threshold.thresholds):
-                    if threshold.getName() == arguments.delete:
-                        Threshold.thresholds[index].delete()
-                        Threshold.thresholds.pop(index)
-                        break
-                
-        if arguments.name is not None:
-            if arguments.threshold is not None and arguments.state is not None:
-                raise Exception("Edit one property per request")
-
-            if arguments.threshold is not None:
-                threshold = Threshold.getThresholdFromName(arguments.name)
-                if threshold is None:
-                    raise Exception(f"Threshold {arguments.name} does not exist")
-                if threshold.getStateString() == "False":
-                    threshold.changeDashboardThreshold(arguments.threshold)
-                else:
-                    threshold.setThresholdValue(arguments.threshold)
-
-            if arguments.state is not None:
-                thresholds = Threshold.getThresholdFromName(arguments.name, True)
-                for threshold in thresholds:
-                    threshold.changeDashboardThresholdState(arguments.state)
-
-            if "alert" in arguments.json:
-                print(json.dumps(httpGetRequest(grafana_url+alert_rules_url+Threshold.getThresholdFromName(arguments.name).getAlertId(), provisioning_header)))
-                quit()
-
-            if "dashboard" in arguments.json:
-                print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name).getDashboardId(), provisioning_header)))
-                quit()
-
-        for enum, threshold in enumerate(httpGetRequest(grafana_url+alert_rules_url, provisioning_header)):
-            Threshold.thresholds[enum] = Threshold(threshold)
-            print(Threshold(threshold))
-
-    except Exception as exception:
-        if "Error in request" in str(exception):
-            print(f"ERROR in request: {str(exception)}")
-            print("Rerunning Program ... ")
-
-            python = sys.executable
-            os.execv(python, [python] + sys.argv)
+    if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
+        if arguments.create_upper_critical:                
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Critical"))
+        elif arguments.create_lower_critical:
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Critical"))
+        elif arguments.create_upper_warning:
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
+        elif arguments.create_lower_warning:
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
         else:
-            raise exception
+            quit()
         
+    if arguments.delete and Threshold.getThresholdFromName(arguments.delete) is not None:
+        confirmation = strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"])
+        if confirmation == "Y":
+            for index, threshold in enumerate(Threshold.thresholds):
+                if threshold.getName() == arguments.delete:
+                    Threshold.thresholds[index].delete()
+                    Threshold.thresholds.pop(index)
+                    break
+            
+    if arguments.name is not None:
+        if arguments.threshold is not None and arguments.state is not None:
+            raise Exception("Edit one property per request")
+
+        if arguments.threshold is not None:
+            threshold = Threshold.getThresholdFromName(arguments.name)
+            if threshold is None:
+                raise Exception(f"Threshold {arguments.name} does not exist")
+            if threshold.getStateString() == "False":
+                threshold.changeDashboardThreshold(arguments.threshold)
+            else:
+                threshold.setThresholdValue(arguments.threshold)
+
+        if arguments.state is not None:
+            thresholds = Threshold.getThresholdFromName(arguments.name, True)
+            for threshold in thresholds:
+                threshold.changeDashboardThresholdState(arguments.state)
+
+        if "alert" in arguments.json:
+            print(json.dumps(httpGetRequest(grafana_url+alert_rules_url+Threshold.getThresholdFromName(arguments.name).getAlertId(), provisioning_header)))
+            quit()
+
+        if "dashboard" in arguments.json:
+            print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name).getDashboardId(), provisioning_header)))
+            quit()
+
+    for enum, threshold in enumerate(httpGetRequest(grafana_url+alert_rules_url, provisioning_header)):
+        Threshold.thresholds[enum] = Threshold(threshold)
+        print(Threshold(threshold))
