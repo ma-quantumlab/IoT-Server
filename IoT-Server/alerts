@@ -66,8 +66,12 @@ class ThresholdConfiguration:
 
     def setAlerts(self):
         for alert in self.config_json["alerts"]:
-            if Threshold.getThresholdFromName(alert["title"], False):
-                Threshold.getThresholdFromName(alert["title"]).changeDashboardThreshold(alert["value"])
+            if (threshold := Threshold.getThresholdFromName(alert["title"], False)) is not None:
+                if threshold.getThreshold() != alert["threshold"]:
+                    threshold.changeDashboardThreshold(alert["value"])
+                if threshold.getStateString() != alert["state"]:
+                    threshold.changeDashboardThresholdState(alert["state"])
+                    
             else:
                 boundType = "lt" if "Lower" in alert["title"] else "gt"
                 alertType = "Critical" if "Critical" in alert["title"] else "Warning"
@@ -96,7 +100,7 @@ class Threshold:
         self.alertJson = alertJson
 
     def __str__(self): # Prints status of threshold to command line 
-        return f"{GREEN}Name:{RESET} {BLUE}{"'"+self.getName()+"'":<{75}}{RESET} | {GREEN}Value:{RESET} {BLUE}{self.getThreshold():<{15}}{RESET} | {GREEN}Silenced:{RESET} {BLUE}{self.getStateString():<{20}}{RESET}"
+        return f"{GREEN}Name:{RESET} {BLUE}{"'"+self.getName()+"'":<{75}}{RESET} | {GREEN}Value:{RESET} {BLUE}{self.getThreshold():<{15}}{RESET} | {GREEN}State:{RESET} {BLUE}{self.getStateString():<{20}}{RESET}"
 
     def getName(self): # Returns title of alert
         return self.alertJson["title"] 
@@ -104,8 +108,8 @@ class Threshold:
     def getThreshold(self): # Returns numerical value of alert
         return self.alertJson["data"][2]["model"]["conditions"][0]["evaluator"]["params"][0]
 
-    def getStateString(self): # Return 'True' or 'False' state of alert
-        return "True" if self.alertJson["isPaused"] else "False"
+    def getStateString(self): # Return state of alert
+        return "OFF" if bool(self.alertJson["isPaused"]) else "ON"
 
     def getAnnotatedDashboardUid(self): # returns uid of dashboard associated with alert
         return self.alertJson["annotations"]["__dashboardUid__"]
@@ -225,7 +229,7 @@ class Threshold:
             self.alertJson["isPaused"] = bool(True)
             self.removeDashboardThreshold()
 
-        httpPutRequest(alert_rules_url+self.getAlertId(), self.alertJson)
+        httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
 
     @staticmethod
     def createAlert(threshold, state, bound_type, alert_type, inputJson=None):
@@ -428,8 +432,8 @@ if __name__ == "__main__":
     arguments = getArguments()
 
     if arguments.config:
-        if ThresholdConfiguration.getConfigFromName(arguments.config):
-            ThresholdConfiguration.getConfigFromName(arguments.config).setAlerts()
+        if (config := ThresholdConfiguration.getConfigFromName(arguments.config)) is not None:
+            config.setAlerts()
 
     if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
         if arguments.create_upper_critical:                
@@ -445,8 +449,8 @@ if __name__ == "__main__":
         
     if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete) is not None):
         if arguments.delete == "*":
-            if strictInput(f"Are you sure you want to delete EVERY alert! It is irreversible!!! (Yes/n) ", ["Yes", "n"]): # NOT DELETING EVERYTJON ????? 
-                for threshold in Threshold.thresholds:
+            if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]): # NOT DELETING EVERYTJON ????? 
+                for threshold in Threshold.thresholds[::-1]:
                      Threshold.delete(threshold)
             quit()
         if strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"]) == "Y":
@@ -455,18 +459,12 @@ if __name__ == "__main__":
                     Threshold.delete(threshold)
                     break
             
-    if arguments.name is not None:
+    if arguments.name is not None: # Prone to error
         if arguments.threshold is not None and arguments.state is not None:
             raise Exception("Edit one property per request")
 
         if arguments.threshold is not None:
-            threshold = Threshold.getThresholdFromName(arguments.name, False)
-            if threshold is None:
-                raise Exception(f"Threshold {arguments.name} does not exist")
-            if threshold.getStateString() == "False":
-                threshold.changeDashboardThreshold(arguments.threshold)
-            else:
-                threshold.setThresholdValue(arguments.threshold)
+            Threshold.getThresholdFromName(arguments.name, False).changeDashboardThreshold(arguments.threshold)
 
         if arguments.state is not None:
             thresholds = Threshold.getThresholdFromName(arguments.name, True)
