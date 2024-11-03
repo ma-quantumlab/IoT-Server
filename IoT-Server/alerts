@@ -25,6 +25,7 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
+# Request headers and parameters 
 provisioning_header = {
     "Content-Type":"application/json",
     "Authorization":f"Bearer {grafana_token}"
@@ -46,16 +47,19 @@ influxdb_get_fields_parameter = lambda database_name, measurement_name : {
     "q": f"SHOW FIELD KEYS FROM {measurement_name}" 
 }
 
+# Influx DB & Grafana Request URLs
 alert_rules_url = "api/v1/provisioning/alert-rules/"
 dashboard_url = "api/dashboards/uid/"
 update_dashboard_url = "api/dashboards/db/"
 datasource_url = "api/datasources/"
 query_url = "query"
 search_url = "api/search/"
+folder_url = "api/folders/"
 
-main_folder_uid = "c647d423-8003-4ae5-b26a-8495098f82b2"
-rule_group = "10 Sec Evaluation Group"
+folder_name = os.getenv("ALERT_FOLDER_NAME")
+rule_group = os.getenv("EVALUATION_GROUP_NAME")
 
+# Threshold Configuration Class
 class ThresholdConfiguration:
     configurations = []
 
@@ -269,7 +273,10 @@ class Threshold:
             alert_template = json.load(file)
 
             alert_template["ruleGroup"] = rule_group
-            alert_template["folderUID"] = main_folder_uid
+
+            folders = httpGetRequest(grafana_url+folder_url, provisioning_header)
+            alert_template["folderUID"] = folders[getJsonArrayIndex("title", folders, folder_name)[0]]["uid"]
+            
             if inputJson is None:
                 alert_template["title"] = input("Enter name: ") + (" Upper " if bound_type == "gt" else " Lower ") + alert_type + " Alert" 
             else:
