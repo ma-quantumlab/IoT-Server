@@ -1,4 +1,4 @@
-paho.mqtt.client
+paho-mqtt
 argcomplete
 functools
 importlib
@@ -7,7 +7,4 @@ argparse
 datetime
 pathlib
 dotenv
-time
-json
 pytz
-os
