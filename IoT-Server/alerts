@@ -25,7 +25,7 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
-# Request headers and parameters 
+# Request Headers and Parameters 
 provisioning_header = {
     "Content-Type":"application/json",
     "Authorization":f"Bearer {grafana_token}"
