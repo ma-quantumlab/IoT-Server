@@ -1,4 +1,4 @@
-#! bin/python
+#! /usr/bin/python
 # PYTHON_ARGCOMPLETE_OK
 
 """
@@ -15,6 +15,7 @@ import json
 import os
 
 BLUE = "\033[94m"
+LIGHT_BLUE = "\033[38;5;153m"
 GREEN = "\033[92m"
 RESET = "\033[0m"
 
@@ -59,10 +60,11 @@ class ThresholdConfiguration:
     configurations = []
 
     def __init__(self, file_name):
+        self.file_name = file_name
         self.config_json = json.load(open(file_name))
 
     def __str__(self):
-        return f"{GREEN}Name:{RESET} {BLUE}{"'"+self.getName()+"'"}{RESET}"
+        return f"{GREEN}Name:{RESET} {BLUE}{"'"+self.getName()+"'":<{50}}{RESET} | {GREEN}File Name:{RESET} {BLUE}{"'"+self.file_name+"'"}"
 
     def setAlerts(self):
         for alert in self.config_json["alerts"]:
@@ -78,7 +80,7 @@ class ThresholdConfiguration:
                 Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, alert)
         
         for threshold in Threshold.thresholds:
-            if not getJsonArrayIndex("name", self.config_json["alerts"], threshold.getName(), True):
+            if not getJsonArrayIndex("title", self.config_json["alerts"], threshold.getName(), True):
                 Threshold.delete(threshold)
 
     def getName(self):
@@ -99,8 +101,12 @@ class Threshold:
     def __init__(self, alertJson):
         self.alertJson = alertJson
 
-    def __str__(self): # Prints status of threshold to command line 
-        return f"{GREEN}Name:{RESET} {BLUE}{"'"+self.getName()+"'":<{75}}{RESET} | {GREEN}Value:{RESET} {BLUE}{self.getThreshold():<{15}}{RESET} | {GREEN}State:{RESET} {BLUE}{self.getStateString():<{20}}{RESET}"
+    def __str__(self): # Prints status of threshold to command line
+        if self.getStateString() == "ON":
+            BLUE_COLOR = BLUE
+        else:
+            BLUE_COLOR = LIGHT_BLUE
+        return f"{GREEN}Name:{RESET} {BLUE_COLOR}{"'"+self.getName()+"'":<{50}}{RESET} | {GREEN}Threshold:{RESET} {BLUE_COLOR}{self.getAlertType()+str(self.getThreshold()):<{25}}{RESET} | {GREEN}State:{RESET} {BLUE_COLOR}{self.getStateString():<{25}}{RESET}"
 
     def getName(self): # Returns title of alert
         return self.alertJson["title"] 
@@ -116,6 +122,11 @@ class Threshold:
 
     def getAlertId(self): # Returns alert uid
         return self.alertJson["uid"]
+    
+    def getAlertType(self): # Returns alert type
+        c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
+        bound_type = self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["type"]
+        return "Greater than " if bound_type == "gt" else "Less than "
     
     def getDatasourceUid(self): # Returns the uid of the Data source, i.e. which Influx DB database 
         return self.alertJson["data"][getJsonArrayIndex("refId", self.alertJson["data"], "A")[0]]["datasourceUid"]
@@ -449,7 +460,7 @@ if __name__ == "__main__":
         
     if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete) is not None):
         if arguments.delete == "*":
-            if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]): # NOT DELETING EVERYTJON ????? 
+            if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]) == "Yes": # NOT DELETING EVERYTJON ????? 
                 for threshold in Threshold.thresholds[::-1]:
                      Threshold.delete(threshold)
             quit()
