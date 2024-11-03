@@ -1,11 +1,13 @@
+import os
+
 def get_value(mqtt_subsection, today, required):
 
     from Log_watcher import DataSource, log_root, index
     
     path = log_root + today + "\\" + "Status_" + today + ".log"
 
-    #if not os.path.exists(path):
-        #return None
+    if not os.path.exists(path) and not required:
+        return None
 
     lastline = DataSource.get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
