@@ -1,0 +1,10 @@
+paho-mqtt
+argcomplete
+functools
+importlib
+requests
+argparse
+datetime
+pathlib
+dotenv
+pytz
