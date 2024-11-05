@@ -159,11 +159,7 @@
         {
             "title":"Bob Water In Temperature Upper Critical Alert",
             "threshold":30,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_compressor",
-            "feild":"Bob Compressor Water In",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Oil Temperature Upper Warning Alert",
