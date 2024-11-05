@@ -56,5 +56,4 @@ def export_data_to_csv():
 
 export_data_to_csv()
 
-# Clean up
 client.close()

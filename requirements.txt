@@ -1,5 +1,6 @@
-paho-mqtt
+influxdb_client
 argcomplete
+paho-mqtt
 functools
 importlib
 requests
