@@ -1,0 +1,60 @@
+#! /usr/bin/python
+
+from influxdb_client import InfluxDBClient
+import csv
+import os
+
+INFLUX_URL = "http://localhost:8086"
+INFLUX_TOKEN = "your_influxdb_token"
+ORG = "your_org"
+
+client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=ORG)
+
+def get_all_databases():
+    buckets_api = client.buckets_api()
+    return buckets_api.find_buckets().buckets
+
+def query_data(database, measurement):
+    query_api = client.query_api()
+    query = f'from(bucket: "{database}") |> range(start: 0) |> filter(fn: (r) => r._measurement == "{measurement}")'
+    return query_api.query(query)
+
+def export_data_to_csv():
+    databases = get_all_databases()
+    
+    for database in databases:
+        database_name = database.name
+        
+        os.makedirs(database_name, exist_ok=True)
+        
+        query_api = client.query_api()
+        measurements_query = f'import "influxdata/influxdb/schema" schema.measurements(bucket: "{database_name}")'
+        measurements = query_api.query(measurements_query)
+        measurements = [record.values["_value"] for table in measurements for record in table.records]
+
+        for measurement in measurements:
+            result = query_data(database_name, measurement)
+            
+            csv_file_path = os.path.join(database_name, f"{measurement}.csv")
+            with open(csv_file_path, mode="w", newline="") as csv_file:
+                csv_writer = csv.writer(csv_file)
+                
+                headers_written = False
+                for table in result:
+                    for record in table.records:
+                        if not headers_written:
+                            headers = ["timestamp"] + list(record.values.keys())
+                            csv_writer.writerow(headers)
+                            headers_written = True
+                        
+                        # Write row data
+                        row = [record.get_time()]
+                        row += [record.values.get(field) for field in headers[1:]]
+                        csv_writer.writerow(row)
+
+            print(f"Exported {measurement} to {csv_file_path}")
+
+export_data_to_csv()
+
+# Clean up
+client.close()

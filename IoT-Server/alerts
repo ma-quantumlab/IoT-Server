@@ -111,7 +111,7 @@ class Threshold:
             BLUE_COLOR = BLUE
         else:
             BLUE_COLOR = LIGHT_BLUE
-        return f"{GREEN}Name:{RESET} {BLUE_COLOR}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}Threshold:{RESET} {BLUE_COLOR}{self.getAlertType()+str(self.getThreshold()):<{25}}{RESET} | {GREEN}State:{RESET} {BLUE_COLOR}{self.getStateString():<{25}}{RESET}"
+        return f"{GREEN}Name:{RESET} {BLUE_COLOR}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}Threshold:{RESET} {BLUE_COLOR}{self.getAlertType()+str(self.getThreshold()):<{25}}{RESET} | {GREEN}State:{RESET} {BLUE_COLOR}{self.getStateString()}{RESET}"
 
     def getName(self): # Returns title of alert
         return self.alertJson["title"] 
@@ -469,7 +469,7 @@ if __name__ == "__main__":
         
     if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete) is not None):
         if arguments.delete == "*":
-            if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]) == "Yes": # NOT DELETING EVERYTJON ????? 
+            if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]) == "Yes":
                 for threshold in Threshold.thresholds[::-1]:
                      Threshold.delete(threshold)
             quit()
