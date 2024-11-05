@@ -11,7 +11,7 @@
             "program": "${file}",
             "cwd":"${fileDirname}",
             "console": "integratedTerminal",
-            "args": [
+            "args": [ "--name", "Bob Differential Pressure Upper Critical Alert", "--threshold", "9999"
             ]
         }
     ]

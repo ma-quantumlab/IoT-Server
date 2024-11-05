@@ -214,7 +214,7 @@ class Threshold:
         
     def changeDashboardThreshold(self, value, editAlertJson=True): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
         if editAlertJson is True:
-            self.setThresholdValue(self, value)
+            self.setThresholdValue(value)
 
         for dashboardId, panelNum in self.getAllDashboardPanels():
             thresholdNum = None
