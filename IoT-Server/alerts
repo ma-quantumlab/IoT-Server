@@ -321,8 +321,9 @@ class Threshold:
         
     @staticmethod
     def delete(threshold): # Deletes dashboard thresholds, alert from api, etc.
+        if threshold.getStateString() == "ON":
+            threshold.removeDashboardThreshold()
         httpDeleteRequest(grafana_url+alert_rules_url+threshold.getAlertId())
-        threshold.removeDashboardThreshold()
         Threshold.thresholds.pop(Threshold.getThresholdFromName(threshold.getName(), False, True)[0])
         
     @staticmethod
