@@ -494,13 +494,13 @@ if __name__ == "__main__":
             for threshold in thresholds:
                 threshold.changeDashboardThresholdState(arguments.state)
 
-        if "alert" in arguments.json:
-            print(json.dumps(httpGetRequest(grafana_url+alert_rules_url+Threshold.getThresholdFromName(arguments.name, False).getAlertId(), provisioning_header)))
-            quit()
+    if arguments.json and "alert" in arguments.json:
+        print(json.dumps(httpGetRequest(grafana_url+alert_rules_url+Threshold.getThresholdFromName(arguments.name, False).getAlertId(), provisioning_header)))
+        quit()
 
-        if "dashboard" in arguments.json:
-            print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name, False).getDashboardId(), provisioning_header)))
-            quit()        
+    if arguments.json and "dashboard" in arguments.json:
+        print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name, False).getDashboardId(), provisioning_header)))
+        quit()        
 
     print(f"{GREEN}----------- Configurations -----------{RESET}")
     for config in ThresholdConfiguration.configurations:
