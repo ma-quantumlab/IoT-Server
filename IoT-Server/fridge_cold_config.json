@@ -4,301 +4,157 @@
         {
             "title":"Alice 50 K Temperature Upper Warning Alert",
             "threshold":50,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature 50K",
-            "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Alice Fridge Dashboard",
-                "panelId":1
-            }
+            "state":"ON"
         },
         {
             "title":"Alice 50 K Temperature Upper Critical Alert",
             "threshold":303.15,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature 50K",
-            "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Alice Fridge Dashboard",
-                "panelId":1
-            }
+            "state":"ON"
         },
         {
             "title":"Alice 4 K Temperature Upper Warning Alert",
             "threshold":4,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature 4K",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice 4 K Temperature Upper Critical Alert",
             "threshold":303.15,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature 4K",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Still Temperature Upper Warning Alert",
             "threshold":1.1,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature Still",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Still Temperature Upper Critical Alert",
             "threshold":1.3,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature Still",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice MXC Temperature Upper Warning Alert",
             "threshold":0.035,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature MXC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice MXC Temperature Upper Critical Alert",
             "threshold":0.085,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_temperature",
-            "feild":"Alice Temperature MXC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Flowmeter Temperature Lower Critical Alert",
             "threshold":0.1,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_flowmeter",
-            "feild":"Alice Flowmeter",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Flowmeter Temperature Upper Critical Alert",
             "threshold":0.8,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_flowmeter",
-            "feild":"Alice Flowmeter",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice OVC Can Pressure Upper Critical Alert",
             "threshold":0.0001,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_pressure",
-            "feild":"Alice Pressure OVC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Differential Pressure Upper Warning Alert",
             "threshold":40,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_pressure",
-            "feild":"Alice Pressure Differential Across Trap",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Differential Pressure Upper Critical Alert",
             "threshold":60,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_pressure",
-            "feild":"Alice Pressure Differential Across Trap",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Tank Pressure Upper Critical Alert",
             "threshold":0.005,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_pressure",
-            "feild":"Alice Pressure Tank",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Water In Temperature Upper Warning Alert",
             "threshold":25,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_compressor",
-            "feild":"Alice Compressor Water In",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Water In Temperature Upper Critical Alert",
             "threshold":30,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_compressor",
-            "feild":"Alice Compressor Water In",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Oil Temperature Upper Warning Alert",
             "threshold":45,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_compressor",
-            "feild":"Alice Compressor Oil Temperature",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Alice Error Status Upper Warning Alert",
             "threshold":0.5,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"alice_compressor",
-            "feild":"Alice Compressor Error Status",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob 50 K Temperature Upper Warning Alert",
             "threshold":50,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature 50K",
-            "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Bob Fridge Dashboard",
-                "panelId":1
-            }
+            "state":"ON"
         },
         {
             "title":"Bob 50 K Temperature Upper Critical Alert",
             "threshold":303.15,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature 50K",
-            "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Bob Fridge Dashboard",
-                "panelId":1
-            }
+            "state":"ON"
         },
         {
             "title":"Bob 4 K Temperature Upper Warning Alert",
             "threshold":4,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature 4K",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob 4 K Temperature Upper Critical Alert",
             "threshold":303.15,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature 4K",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Still Temperature Upper Warning Alert",
             "threshold":1.1,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature Still",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Still Temperature Upper Critical Alert",
             "threshold":1.3,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature Still",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob MXC Temperature Upper Warning Alert",
             "threshold":0.035,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature MXC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob MXC Temperature Upper Critical Alert",
             "threshold":0.085,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_temperature",
-            "feild":"Bob Temperature MXC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob OVC Can Pressure Upper Critical Alert",
             "threshold":0.0001,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_pressure",
-            "feild":"Bob Pressure OVC",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Differential Pressure Upper Warning Alert",
             "threshold":40,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_pressure",
-            "feild":"Bob Pressure Differential Across Trap",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Differential Pressure Upper Critical Alert",
             "threshold":60,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_pressure",
-            "feild":"Bob Pressure Differential Across Trap",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Tank Pressure Upper Critical Alert",
             "threshold":0.005,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_pressure",
-            "feild":"Bob Pressure Tank",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Water In Temperature Upper Warning Alert",
             "threshold":25,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_compressor",
-            "feild":"Bob Compressor Water In",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Water In Temperature Upper Critical Alert",
@@ -312,20 +168,12 @@
         {
             "title":"Bob Oil Temperature Upper Warning Alert",
             "threshold":45,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_compressor",
-            "feild":"Bob Compressor Oil Temperature",
-            "nodata":"OK"
+            "state":"ON"
         },
         {
             "title":"Bob Error Status Upper Warning Alert",
             "threshold":0.5,
-            "state":"ON",
-            "database":"fridge_database",
-            "measurement":"bob_compressor",
-            "feild":"Bob Compressor Error Status",
-            "nodata":"OK"
+            "state":"ON"
         }
     ]
 }

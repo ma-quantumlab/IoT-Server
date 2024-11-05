@@ -66,30 +66,31 @@ class ThresholdConfiguration:
 
     def __init__(self, file_name):
         self.file_name = file_name
-        self.config_json = json.load(open(file_name))
+        self.thresholds_config_json = json.load(open(file_name))
+        self.alerts_config_json = json.load(open("alerts_config.json"))
 
     def __str__(self):
         return f"{GREEN}Name:{RESET} {BLUE}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}File Name:{RESET} {BLUE}{Q+self.file_name+Q}"
 
     def setAlerts(self):
-        for alert in self.config_json["alerts"]:
+        for alert in self.thresholds_config_json["alerts"]:
             if (threshold := Threshold.getThresholdFromName(alert["title"], False)) is not None:
                 if threshold.getThreshold() != alert["threshold"]:
-                    threshold.changeDashboardThreshold(alert["value"])
+                    threshold.changeDashboardThreshold(alert["threshold"])
                 if threshold.getStateString() != alert["state"]:
                     threshold.changeDashboardThresholdState(alert["state"])
                     
             else:
                 boundType = "lt" if "Lower" in alert["title"] else "gt"
                 alertType = "Critical" if "Critical" in alert["title"] else "Warning"
-                Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, alert)
+                Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, self.alerts_config_json)
         
         for threshold in Threshold.thresholds:
-            if not getJsonArrayIndex("title", self.config_json["alerts"], threshold.getName(), True):
+            if not getJsonArrayIndex("title", self.thresholds_config_json["alerts"], threshold.getName(), True):
                 Threshold.delete(threshold)
 
     def getName(self):
-        return self.config_json["name"]
+        return self.thresholds_config_json["name"]
     
     @staticmethod
     def getConfigFromName(name):
@@ -443,7 +444,7 @@ if __name__ == "__main__":
     alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
 
     for file_name in os.listdir(os.path.dirname(os.path.abspath(__file__))):
-        if file_name.endswith("config.json"):
+        if file_name.endswith("config.json") and not "alerts_config.json":
             ThresholdConfiguration.configurations.append(ThresholdConfiguration(file_name))
 
     for alert in alerts:
