@@ -162,7 +162,7 @@ class Threshold:
     def setThresholdValue(self, value):
         c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
         self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"][0] = value
-        httpPutRequest(alert_rules_url+self.getAlertId(), self.alertJson)
+        httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
         for dashboardId, panelNum in self.getAllDashboardPanels():
