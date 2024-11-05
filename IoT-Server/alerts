@@ -442,7 +442,7 @@ def getArguments():
 if __name__ == "__main__":
     alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
 
-    for file_name in os.listdir(os.getcwd()):
+    for file_name in os.listdir(os.path.dirname(os.path.abspath(__file__))):
         if file_name.endswith("config.json"):
             ThresholdConfiguration.configurations.append(ThresholdConfiguration(file_name))
 
