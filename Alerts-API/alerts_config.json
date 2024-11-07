@@ -1,4 +1,5 @@
 {
+    "name":"Alerts Config",
     "alerts":[
         {
             "title":"Alice 50 K Temperature Upper Warning Alert",
