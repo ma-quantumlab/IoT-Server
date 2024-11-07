@@ -172,23 +172,25 @@ class Threshold:
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardId, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
             value = self.getThreshold()
+            current_values = [item['value'] for item in dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]]
+            index = next((i for i, v in enumerate(current_values) if v is not None and value < v), len(current_values))
 
             if "Upper" in self.getName():
                 if "Warning" in self.getName():
-                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"orange", "value":value})                    
+                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"orange", "value":value})                    
                 else:
-                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"red", "value":value})
+                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"red", "value":value})
             else:
                 if "Warning" in self.getName():
                     dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("green")[0]]["color"] = "dark-orange"
-                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"green", "value":value})
+                    dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"green", "value":value})
                 else:
                     if getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], "dark-orange", True):
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("dark-orange")[0]]["color"] = "dark-red"
-                        dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"dark-orange", "value":value})
+                        dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"dark-orange", "value":value})
                     else:
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("green")[0]]["color"] = "dark-red"
-                        dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].append({"color":"green", "value":value})
+                        dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"green", "value":value})
 
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
@@ -307,7 +309,7 @@ class Threshold:
                 alert_template["noDataState"] = inputJson["nodata"]
 
             dashboards = Threshold.getDashboards()
-            if "annotations" in inputJson:
+            if inputJson and "annotations" in inputJson:
                 alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["annotations"]["dashboardName"]]
                 alert_template["annotations"]["__panelId__"] = str(inputJson["annotations"]["panelId"])
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
@@ -316,9 +318,13 @@ class Threshold:
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
 
-            httpPostRequest(grafana_url+alert_rules_url, alert_template, datasource_header)
             alert = Threshold(alert_template)
-            alert.createDashboardThreshold()
+
+            if state == "ON":
+                alert.createDashboardThreshold()
+            
+            httpPostRequest(grafana_url+alert_rules_url, alert_template, datasource_header)
+            
             Threshold.thresholds.append(alert)         
             return alert
         
@@ -472,7 +478,7 @@ if __name__ == "__main__":
         else:
             quit()
         
-    if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete) is not None):
+    if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete, False) is not None):
         if arguments.delete == "*":
             if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]) == "Yes":
                 for threshold in Threshold.thresholds[::-1]:
