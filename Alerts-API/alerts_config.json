@@ -7,11 +7,7 @@
             "measurement":"alice_temperature",
             "feild":"Alice Temperature 50K",
             "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Alice Fridge Dashboard",
-                "panelId":1
-            }
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice 50 K Temperature Upper Critical Alert",
@@ -19,123 +15,135 @@
             "measurement":"alice_temperature",
             "feild":"Alice Temperature 50K",
             "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Alice Fridge Dashboard",
-                "panelId":1
-            }
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice 4 K Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature 4K",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice 4 K Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature 4K",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Still Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature Still",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Still Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature Still",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice MXC Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature MXC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice MXC Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_temperature",
             "feild":"Alice Temperature MXC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Flowmeter Temperature Lower Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_flowmeter",
             "feild":"Alice Flowmeter",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Flowmeter Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_flowmeter",
             "feild":"Alice Flowmeter",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice OVC Can Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_pressure",
             "feild":"Alice Pressure OVC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Differential Pressure Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_pressure",
             "feild":"Alice Pressure Differential Across Trap",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Differential Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_pressure",
             "feild":"Alice Pressure Differential Across Trap",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Tank Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_pressure",
             "feild":"Alice Pressure Tank",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Water In Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_compressor",
             "feild":"Alice Compressor Water In",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Water In Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"alice_compressor",
             "feild":"Alice Compressor Water In",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Oil Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_compressor",
             "feild":"Alice Compressor Oil Temperature",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Alice Error Status Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"alice_compressor",
             "feild":"Alice Compressor Error Status",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
         },
         {
             "title":"Bob 50 K Temperature Upper Warning Alert",
@@ -143,11 +151,7 @@
             "measurement":"bob_temperature",
             "feild":"Bob Temperature 50K",
             "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Bob Fridge Dashboard",
-                "panelId":1
-            }
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob 50 K Temperature Upper Critical Alert",
@@ -155,109 +159,135 @@
             "measurement":"bob_temperature",
             "feild":"Bob Temperature 50K",
             "nodata":"OK",
-            "annotations":
-            {   
-                "dashboardName":"Bob Fridge Dashboard",
-                "panelId":1
-            }
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob 4 K Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature 4K",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob 4 K Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature 4K",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Still Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature Still",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Still Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature Still",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob MXC Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature MXC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob MXC Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_temperature",
             "feild":"Bob Temperature MXC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Flowmeter Temperature Lower Critical Alert",
+            "database":"fridge_database",
+            "measurement":"bob_flowmeter",
+            "feild":"Bob Flowmeter",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Flowmeter Temperature Upper Critical Alert",
+            "database":"fridge_database",
+            "measurement":"bob_flowmeter",
+            "feild":"Bob Flowmeter",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob OVC Can Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_pressure",
             "feild":"Bob Pressure OVC",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Differential Pressure Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_pressure",
             "feild":"Bob Pressure Differential Across Trap",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Differential Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_pressure",
             "feild":"Bob Pressure Differential Across Trap",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Tank Pressure Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_pressure",
             "feild":"Bob Pressure Tank",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Water In Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_compressor",
             "feild":"Bob Compressor Water In",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Water In Temperature Upper Critical Alert",
             "database":"fridge_database",
             "measurement":"bob_compressor",
             "feild":"Bob Compressor Water In",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Oil Temperature Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_compressor",
             "feild":"Bob Compressor Oil Temperature",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         },
         {
             "title":"Bob Error Status Upper Warning Alert",
             "database":"fridge_database",
             "measurement":"bob_compressor",
             "feild":"Bob Compressor Error Status",
-            "nodata":"OK"
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
         }
     ]
 }

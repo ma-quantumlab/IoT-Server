@@ -74,7 +74,7 @@ class ThresholdConfiguration:
 
     def setAlerts(self):
         for alert in self.thresholds_config_json["alerts"]:
-            alert_config = getJsonArrayIndex("title", self.alerts_config_json, alerts["title"])
+            alert_config = self.alerts_config_json[getJsonArrayIndex("title", self.alerts_config_json, alert["title"])[0]]
 
             if (threshold := Threshold.getThresholdFromName(alert["title"], False)) is not None:
                 if threshold.getThreshold() != alert["threshold"]:
@@ -147,7 +147,7 @@ class Threshold:
         feild_type_index = getJsonArrayIndex("type", self.alertJson["data"][a_refId_index]["model"]["select"][0], "field")[0]
         return self.alertJson["data"][a_refId_index]["model"]["select"][0][feild_type_index]["params"][0]
     
-    def getAllDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel number
+    def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
         dashboardPanels = []
         for dashboard in Threshold.getDashboards().values():
             for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+dashboard, provisioning_header)["dashboard"]["panels"]):
@@ -167,12 +167,12 @@ class Threshold:
         httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
-        for dashboardId, panelNum in self.getAllDashboardPanels():
+        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
 
-            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardId, provisioning_header)
+            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
             value = self.getThreshold()
-            current_values = [item['value'] for item in dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]]
+            current_values = [item.get('value', None) for item in dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]]
             index = next((i for i, v in enumerate(current_values) if v is not None and value < v), len(current_values))
 
             if "Upper" in self.getName():
@@ -195,9 +195,9 @@ class Threshold:
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
     def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
-        for dashboardId, panelNum in self.getAllDashboardPanels():
+        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
 
-            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardId, provisioning_header)
+            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
             if "Upper" in self.getName():
@@ -220,9 +220,9 @@ class Threshold:
         if editAlertJson is True:
             self.setThresholdValue(value)
 
-        for dashboardId, panelNum in self.getAllDashboardPanels():
+        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
             thresholdNum = None
-            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardId, provisioning_header)
+            dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
 
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
@@ -239,6 +239,8 @@ class Threshold:
                     thresholdNum = color_indices("green")[0]
 
             dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][thresholdNum]["value"] = value
+            if dashboardJson["dashboard"]["panels"][panelNum]["type"] == "timeseries":
+                dashboardJson["dashboard"]["panels"][panelNum]["thresholdsStyle"]["mode"] = "area"
 
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
 
@@ -310,16 +312,27 @@ class Threshold:
 
             dashboards = Threshold.getDashboards()
             if inputJson and "annotations" in inputJson:
-                alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["annotations"]["dashboardName"]]
-                alert_template["annotations"]["__panelId__"] = str(inputJson["annotations"]["panelId"])
+                alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["dashboardname"]]
+                
+                panelId = None
+                for panel in httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"]:
+                    if Threshold.checkPanelMatch(panel, databases[database], measurement, field):
+                        panelId = panel["id"]
+                        break
+
+                if panelId == None:
+                    raise Exception(f"No matching panels for {inputJson['title']}")
+                
+                alert_template["annotations"]["__panelId__"] = panelId
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
-                alert_template["annotations"]["__dashboardUid__"] = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
-                alert_template["annotations"]["__panelId__"] = input("Enter in panel ID : ")  # Alternative solution! 
+                dashboardUid = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
+                panels = Threshold.getPanels(dashboardUid, "timeseries")
+                alert_template["annotations"]["__dashboardUid__"] = dashboardUid
+                alert_template["annotations"]["__panelId__"] = panels[Threshold.getCheck("timeseries panel names", list(panels.keys()))]
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
 
             alert = Threshold(alert_template)
-
             if state == "ON":
                 alert.createDashboardThreshold()
             
@@ -362,6 +375,22 @@ class Threshold:
             dashboardUids[dashboard["title"]] = dashboard["uid"]
 
         return dashboardUids
+    
+    @staticmethod
+    def getPanels(dashboardUid, type=None): # Gets all panel names and respective id's from dashboard
+        panelIds = {}   
+        for panel in httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"]:
+            if type and panel["type"] != type:
+                continue
+            panelIds[panel["title"]] = panel["id"]
+
+        return panelIds
+    
+    @staticmethod
+    def checkPanelMatch(panelJson, datasourceUid, measurement, feild):
+        return panelJson["targets"][0]["datasource"]["uid"] == datasourceUid \
+            and panelJson["targets"][0]["measurement"] == measurement \
+            and panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", panelJson["targets"][0]["select"][0], "field")[0]]["params"][0] == feild
     
     @staticmethod
     def getCheck(parameterName, parameters):
@@ -507,7 +536,7 @@ if __name__ == "__main__":
         quit()
 
     if arguments.json and "dashboard" in arguments.json:
-        print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name, False).getDashboardId(), provisioning_header)))
+        print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name, False).getAnnotatedDashboardUid(), provisioning_header)))
         quit()        
 
     print(f"{GREEN}----------- Configurations -----------{RESET}")
