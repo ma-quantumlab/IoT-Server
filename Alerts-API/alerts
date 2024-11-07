@@ -2,7 +2,7 @@
 # PYTHON_ARGCOMPLETE_OK
 
 """
-Grafana Influx DB Command-line API 
+Grafana Influx DB Alert Command-line API 
 Ma Quantum Group
 """
 
@@ -159,12 +159,7 @@ class Threshold:
     def checkPanelMatch(self, panel): # Checks to see if datasource parameters match for a dashboard panel
         return panel["targets"][0]["datasource"]["uid"] == self.getDatasourceUid() \
             and panel["targets"][0]["measurement"] == self.getMeasurement() \
-            and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getFeild()
-    
-    def setThresholdValue(self, value):
-        c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
-        self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"][0] = value
-        httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
+            and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getFeild()        
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
         for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
@@ -215,9 +210,13 @@ class Threshold:
 
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
-    def changeDashboardThreshold(self, value, editAlertJson=True): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
-        if editAlertJson is True:
-            self.setThresholdValue(value)
+    def changeDashboardThreshold(self, value): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
+        c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
+        self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"][0] = value
+        httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
+
+        if self.getStateString() == "OFF":
+            return
 
         for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
             thresholdNum = None
