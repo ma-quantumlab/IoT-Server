@@ -359,10 +359,6 @@ class Threshold:
         if result == []:
             return None
         return result if multipleThresholds else result[0]
-
-    @staticmethod
-    def removeDescriptors(string):
-        return string.replace("Warning", "").replace("Critical", "").replace("Alert", "").replace("Upper", "").replace("Lower", "").rstrip()
     
     @staticmethod
     def getDashboards(): # Gets all dashboards on grafana 

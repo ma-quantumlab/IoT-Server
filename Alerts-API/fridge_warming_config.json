@@ -132,6 +132,16 @@
             "state":"OFF"
         },
         {
+            "title":"Bob Flowmeter Temperature Lower Critical Alert",
+            "threshold":0.1,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Flowmeter Temperature Upper Critical Alert",
+            "threshold":0.8,
+            "state":"OFF"
+        },
+        {
             "title":"Bob OVC Can Pressure Upper Critical Alert",
             "threshold":0.0001,
             "state":"OFF"
