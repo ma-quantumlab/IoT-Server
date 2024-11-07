@@ -67,13 +67,15 @@ class ThresholdConfiguration:
     def __init__(self, file_name):
         self.file_name = file_name
         self.thresholds_config_json = json.load(open(file_name))
-        self.alerts_config_json = json.load(open("alerts_config.json"))
+        self.alerts_config_json = json.load(open("alerts_config.json"))["alerts"]
 
     def __str__(self):
         return f"{GREEN}Name:{RESET} {BLUE}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}File Name:{RESET} {BLUE}{Q+self.file_name+Q}"
 
     def setAlerts(self):
         for alert in self.thresholds_config_json["alerts"]:
+            alert_config = getJsonArrayIndex("title", self.alerts_config_json, alerts["title"])
+
             if (threshold := Threshold.getThresholdFromName(alert["title"], False)) is not None:
                 if threshold.getThreshold() != alert["threshold"]:
                     threshold.changeDashboardThreshold(alert["threshold"])
@@ -83,7 +85,7 @@ class ThresholdConfiguration:
             else:
                 boundType = "lt" if "Lower" in alert["title"] else "gt"
                 alertType = "Critical" if "Critical" in alert["title"] else "Warning"
-                Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, self.alerts_config_json)
+                Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, alert_config)
         
         for threshold in Threshold.thresholds:
             if not getJsonArrayIndex("title", self.thresholds_config_json["alerts"], threshold.getName(), True):
