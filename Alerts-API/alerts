@@ -166,6 +166,7 @@ class Threshold:
 
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
+            
             value = self.getThreshold()
             current_values = [item.get('value', None) for item in dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]]
             index = next((i for i, v in enumerate(current_values) if v is not None and value < v), len(current_values))
@@ -187,6 +188,9 @@ class Threshold:
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("green")[0]]["color"] = "dark-red"
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].insert(index, {"color":"green", "value":value})
 
+            if dashboardJson["dashboard"]["panels"][panelNum]["type"] == "timeseries":
+                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["custom"]["thresholdsStyle"]["mode"] = "area"
+            
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
     def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
@@ -237,8 +241,6 @@ class Threshold:
                     thresholdNum = color_indices("green")[0]
 
             dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][thresholdNum]["value"] = value
-            if dashboardJson["dashboard"]["panels"][panelNum]["type"] == "timeseries":
-                dashboardJson["dashboard"]["panels"][panelNum]["thresholdsStyle"]["mode"] = "area"
 
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
 
