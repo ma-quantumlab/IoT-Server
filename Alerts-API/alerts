@@ -196,7 +196,6 @@ class Threshold:
         
     def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
         for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
-
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
@@ -311,19 +310,19 @@ class Threshold:
                 alert_template["noDataState"] = inputJson["nodata"]
 
             dashboards = Threshold.getDashboards()
-            if inputJson and "annotations" in inputJson:
+            if inputJson and "dashboardname" in inputJson:
                 alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["dashboardname"]]
-                
                 panelId = None
-                for panel in httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"]:
-                    if Threshold.checkPanelMatch(panel, databases[database], measurement, field):
+
+                for panel in httpGetRequest(grafana_url+dashboard_url+dashboards[inputJson["dashboardname"]], provisioning_header)["dashboard"]["panels"]:
+                    if Threshold.checkPanelMatchToJson(panel, databases[database], measurement, field):
                         panelId = panel["id"]
                         break
 
                 if panelId == None:
                     raise Exception(f"No matching panels for {inputJson['title']}")
-                
-                alert_template["annotations"]["__panelId__"] = panelId
+                alert_template["annotations"]["__panelId__"] = str(panelId)
+
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
                 dashboardUid = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
                 panels = Threshold.getPanels(dashboardUid, "timeseries")
@@ -331,7 +330,6 @@ class Threshold:
                 alert_template["annotations"]["__panelId__"] = panels[Threshold.getCheck("timeseries panel names", list(panels.keys()))]
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
-
             alert = Threshold(alert_template)
             if state == "ON":
                 alert.createDashboardThreshold()
@@ -387,7 +385,7 @@ class Threshold:
         return panelIds
     
     @staticmethod
-    def checkPanelMatch(panelJson, datasourceUid, measurement, feild):
+    def checkPanelMatchToJson(panelJson, datasourceUid, measurement, feild):
         return panelJson["targets"][0]["datasource"]["uid"] == datasourceUid \
             and panelJson["targets"][0]["measurement"] == measurement \
             and panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", panelJson["targets"][0]["select"][0], "field")[0]]["params"][0] == feild
