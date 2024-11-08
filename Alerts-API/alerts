@@ -440,16 +440,12 @@ def strictInput(question, correctValues):
             print(f"Incorrect value: {answer}, enter correct value: '{', '.join(correctValues)}'")
 
 def removeDescriptors(string):
-    return string.replace("Warning", "").replace("Critical", "").replace("Upper", "").replace("Lower", "").rstrip()
+    return string.replace("Warning", "").replace("Critical", "").replace("Upper", "").replace("Lower", "").replace("Alert", "").rstrip()
 
-def getJsonArrayIndex(subfield, json, value, empty=False, strictCheck=True):
+def getJsonArrayIndex(subfield, json, value, empty=False):
         arrIndices = []
         for index, subJson in enumerate(json):
-            if strictCheck and value == subJson[subfield]:
-                arrIndices.append(index)
-                break
-
-            if not strictCheck and value in subJson[subfield]:
+            if value == subJson[subfield]:
                 arrIndices.append(index)
                 break
 
