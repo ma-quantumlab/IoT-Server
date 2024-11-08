@@ -426,6 +426,7 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
         httpPostRequest(url, jsonMessage, provisioning_header)
 
 def httpDeleteRequest(url, header=datasource_header):
+    header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
         print(f"Error in request DELETE: {json.dumps(request.json())}")
