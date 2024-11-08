@@ -35,7 +35,8 @@ provisioning_header = {
 datasource_header = {
     "Content-Type":"application/json",
     "Application":"application/json",
-    "Authorization":f"Bearer {grafana_token}"
+    "Authorization":f"Bearer {grafana_token}",
+    "X-Disable-Provenance":"true"
 }
 
 influx_db_get_measurements_parameter = lambda database_name : {
@@ -429,7 +430,7 @@ def httpDeleteRequest(url, header=datasource_header):
     if request.status_code != 204:
         print(f"Error in request DELETE: {json.dumps(request.json())}")
         time.sleep(2)
-        httpDeleteRequest(url, datasource_header)
+        httpDeleteRequest(url)
 
 def strictInput(question, correctValues):
     while True:
