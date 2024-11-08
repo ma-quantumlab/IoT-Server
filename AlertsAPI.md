@@ -77,6 +77,41 @@ Name: 'Pause Alerts'                                     | File Name: 'pause_con
 
 ## Edit Alert Value
 
-To edit a single alert value type `alerts --name "<alert name>" --threshold <new threshold value>` where the threshold value can be any float number. You can only edit one alert at a time. Below is an exmaple of what editing an alert would appear as. 
+To edit a single alert value type `alerts --name "<alert name>" --threshold <new threshold value>` where the threshold value can be any floating point number. One can only edit one alert at a time. Below is an exmaple of what editing an alert would appear as.
+
+```
+malab@maserver:~ $ alerts
+----------- Configurations -----------
+Name: 'Fridge Cold'                                      | File Name: 'fridge_cold_config.json'
+Name: 'Fridge Warm'                                      | File Name: 'fridge_warming_config.json'
+Name: 'Test'                                             | File Name: 'test_config.json'
+Name: 'Pause Alerts'                                     | File Name: 'pause_config.json'
+-----------     Alerts     -----------
+Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
+malab@maserver:~ $
+malab@maserver:~ $
+malab@maserver:~ $
+malab@maserver:~ $ alerts --name "Alice 50 K Temperature Upper Warning Alert" --threshold 999.111
+----------- Configurations -----------
+Name: 'Fridge Cold'                                      | File Name: 'fridge_cold_config.json'
+Name: 'Fridge Warm'                                      | File Name: 'fridge_warming_config.json'
+Name: 'Test'                                             | File Name: 'test_config.json'
+Name: 'Pause Alerts'                                     | File Name: 'pause_config.json'
+-----------     Alerts     -----------
+Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 999.111      | State: ON
+```
+
+## Edit Alert State
+
+To edit a the state of alerts type `alerts --name "<alert name>" --state "<new state value>"` where new state can only take values "ON" or "OFF". It is possible to edit the state of multiple alerts at once by passing in a string that is contained in the alerts you want to change. For example to set the state of all alerts containing the word "Warning" to "OFF" one would type the command `alerts --name "Warning" --state "OFF"`. Below shows an example of this. 
+
+```
+```
+
+## Creating Alerts
+
+Creating alerts are more invoed than simply editing or deleting them. The user can create new alerts by editing the configuraiton JSON to include additinoal alerts however there are only bounded . In order to create new alerts the user must have a familiarity of how the server stores and retrevis the data on grafana. This is further explined in teh README.md file. 
+
+Assuming the reader understands the high level of 
 
 ## Alert Naming Nomenclature
