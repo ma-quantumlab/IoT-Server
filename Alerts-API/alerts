@@ -74,7 +74,7 @@ class ThresholdConfiguration:
 
     def setAlerts(self):
         for alert in self.thresholds_config_json["alerts"]:
-            alert_config = self.alerts_config_json[getJsonArrayIndex("title", self.alerts_config_json, alert["title"])[0]]
+            alert_config = self.alerts_config_json[getJsonArrayIndex("title", self.alerts_config_json, removeDescriptors(alert["title"]))[0]]
 
             if (threshold := Threshold.getThresholdFromName(alert["title"], False)) is not None:
                 if threshold.getThreshold() != alert["threshold"]:
@@ -288,7 +288,7 @@ class Threshold:
             if inputJson is None:
                 alert_template["title"] = input("Enter name: ") + (" Upper " if bound_type == "gt" else " Lower ") + alert_type + " Alert" 
             else:
-                alert_template["title"] = inputJson["title"] 
+                alert_template["title"] = inputJson["title"] + (" Upper " if bound_type == "gt" else " Lower ") + alert_type + " Alert" 
 
             a_refId_index = getJsonArrayIndex("refId", alert_template["data"], "A")[0]
             c_refId_index = getJsonArrayIndex("refId", alert_template["data"], "C")[0]
@@ -439,10 +439,17 @@ def strictInput(question, correctValues):
         else:
             print(f"Incorrect value: {answer}, enter correct value: '{', '.join(correctValues)}'")
 
-def getJsonArrayIndex(subfield, json, value, empty=False):
+def removeDescriptors(string):
+    return string.replace("Warning", "").replace("Critical", "").replace("Upper", "").replace("Lower", "").rstrip()
+
+def getJsonArrayIndex(subfield, json, value, empty=False, strictCheck=True):
         arrIndices = []
         for index, subJson in enumerate(json):
-            if value == subJson[subfield]:
+            if strictCheck and value == subJson[subfield]:
+                arrIndices.append(index)
+                break
+
+            if not strictCheck and value in subJson[subfield]:
                 arrIndices.append(index)
                 break
 
