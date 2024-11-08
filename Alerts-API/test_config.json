@@ -1,10 +1,16 @@
 {
     "name":"Test",
+    "description":"for alert api demo",
     "alerts":
     [
         {
             "title":"Alice 50 K Temperature Upper Warning Alert",
             "threshold":50,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 4 K Temperature Upper Warning Alert",
+            "threshold":4,
             "state":"ON"
         }
     ]

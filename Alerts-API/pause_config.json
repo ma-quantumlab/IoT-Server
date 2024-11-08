@@ -1,5 +1,6 @@
 {
     "name":"Pause Alerts",
+    "description":"for pausing all alerts",
     "alerts":
     [
         {

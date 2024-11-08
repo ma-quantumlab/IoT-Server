@@ -1,5 +1,6 @@
 {
     "name":"Fridge Cold",
+    "description":"fridge cooling values",
     "alerts":
     [
         {
