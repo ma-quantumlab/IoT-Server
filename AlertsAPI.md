@@ -1,4 +1,4 @@
-## Alerts API
+# Alerts API
 
 The alerts API is a command line tool designed to allow users to view, edit, create and delele alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of preconfigured alerts so the user can simply edit the configuration JSON instead of editing individual alerts. 
 
@@ -18,7 +18,7 @@ From the output we see that under the "Configurations" section there are the 3 c
 
 Additionally there is another file, the `alerts_config.json` file which defines how each alert is set up; unless a user is adding an additional datasource this file should not be edited. 
 
-### Setting Alert Configuration 
+## Setting Alert Configuration 
 
 Most of what users will do is set different alert configurations. As described above all alert configurations can be viewed when invoking the `alerts` command. A typical alert configuration file is structured as shown below, in this example we are looking at the "Test" configuration file:
 
@@ -49,7 +49,7 @@ Name: 'Pause Alerts'                                     | File Name: 'pause_con
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 ```
 
-### Deleting Alerts
+## Deleting Alerts
 
 To delete an alert type `alerts --delete "<alert name>"` into the command line. It is possible to delete multiple alerts at once; for example if one is intrested in deleting all alerts that contain the word "Warning" the following command can be invoked `alerts --delete "Warning"`. If the user is intrested in deleting every alert the following command can be invoked `alerts --delete "*"`. Below is an example of what deleting an alert would appear as.
 
@@ -75,4 +75,8 @@ Name: 'Pause Alerts'                                     | File Name: 'pause_con
 -----------     Alerts     -----------
 ```
 
-### Alert Naming Nomenclature
+## Edit Alert Value
+
+To edit a single alert value type `alerts --name "<alert name>" --threshold <new threshold value>` where the threshold value can be any float number. You can only edit one alert at a time. Below is an exmaple of what editing an alert would appear as. 
+
+## Alert Naming Nomenclature
