@@ -1,5 +1,5 @@
 {
-    "name":"Fridge Cold",
+    "name":"Test",
     "alerts":[
         {
             "title":"Alice 50 K Temperature Upper Warning Alert",
