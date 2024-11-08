@@ -1,6 +1,7 @@
 {
     "name":"Fridge Cold",
-    "alerts":[
+    "alerts":
+    [
         {
             "title":"Alice 50 K Temperature Upper Warning Alert",
             "threshold":50,

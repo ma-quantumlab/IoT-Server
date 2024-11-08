@@ -1,6 +1,7 @@
 {
     "name":"Alerts Config",
-    "alerts":[
+    "alerts":
+    [
         {
             "title":"Alice 50 K Temperature",
             "database":"fridge_database",
