@@ -156,19 +156,19 @@ It is assumed the reader understands the high level overview of how Grafana quer
 
 In total there are four types of alerts that can be created. In order to create an alert the user must define the threshold and the initial state it should be placed in which can both be changed as demonstrated above. To create the alert type `alerts <alert type flag> --threshold <threshold value> --state <state value>` where the alert type flag can be one of the four values mentioned above: `--create_upper_critical`, `--create_lower_critical`, `--create_upper_warning`, `--create_lower_warning`.
 
-An example of a possible alert request is shown below, immediatly after it is entered 
-
-
+An example of a possible alert request with threshold value 999 and initial state "ON" is shown below. 
 ```
-malab@maserver:~/IoT-Server $ alerts
+malab@maserver:~ $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
 Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
 Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
 -----------     Alerts     -----------
-```
-```
+malab@maserver:~ $
+malab@maserver:~ $
+malab@maserver:~ $
+malab@maserver:~ $ alerts --create_upper_critical --threshold 999 --state "ON"
 Creating alert ... Enter in values below:
 Choose Influx DB databases, or number from list:
 0. fridge_database
@@ -176,6 +176,7 @@ Choose Influx DB databases, or number from list:
 2. weather_database
 Name or Index: 0
 ```
+Immediatly after the request is sent the program will first request which Influx Database the user wishes to query data from; in this example the "fridge_database" was chosen. Following that the program will request you chose a measurment from the respective list of possible measurments within that database to query from in this example the user chose "alice_temperature" 
 ```
 Choose Measurement from database fridge_database, or number from list:
 0. alice_compressor
@@ -188,6 +189,7 @@ Choose Measurement from database fridge_database, or number from list:
 7. bob_temperature
 Name or Index: 3
 ```
+Finally the program will request the user to chose a feild from the measurment chose above; in this example the feild "Alice Temperature 50K" was chosen. 
 ```
 Choose field from measurement alice_temperature, or number from list:
 0. Alice Temperature 4K
@@ -196,13 +198,10 @@ Choose field from measurement alice_temperature, or number from list:
 3. Alice Temperature Still
 Name or Index: 1
 ```
+Following this the program will prompt the user to 
 ```
 Enter name: Alice 50 K Temperature
-```
-```
 State alert when NO DATA? ('OK'/'Alerting') OK
-```
-```
 Configure dashboard-alert pair? ('y'/'n') y
 ```
 ```
