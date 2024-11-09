@@ -323,13 +323,13 @@ class Threshold:
 
                 if panelId == None:
                     raise Exception(f"No matching panels for {inputJson['title']}")
-                alert_template["annotations"]["__panelId__"] = str(panelId)
+                alert_template["annotations"]["__panelId0__"] = str(panelId)
 
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
                 dashboardUid = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
                 panels = Threshold.getPanels(dashboardUid, "timeseries")
                 alert_template["annotations"]["__dashboardUid__"] = dashboardUid
-                alert_template["annotations"]["__panelId__"] = panels[Threshold.getCheck("timeseries panel names", list(panels.keys()))]
+                alert_template["annotations"]["__panelId__"] = str(panels[Threshold.getCheck("timeseries panel names", list(panels.keys()))])
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
             alert = Threshold(alert_template)
