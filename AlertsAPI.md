@@ -125,7 +125,56 @@ Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater th
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: ON
 ```
 
-If the user is interested in creating a new configuration file 
+If the user is interested in creating a new configuration file they must first assure that the measurements that want to be used are defined within the `alert_config.json` file. An example of this is shown that creates the alerts displayed on the image of the panel at the top of this page. The `alert_config.json` is shown below containing the "Alice 50 K Temperature" measurement specifications:
+
+``` json
+{
+    "name":"Alerts Config",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature 50K",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        }
+    ]
+}
+```
+
+Below is what a configuration file would look like which creates four different alerts; realize that the configuration file must end in "config.json" to be recognized by the program. Notice how the type of alert is defined within the title section, the title must follow the specifications outlined in the [Alert Naming System Section](#alert-naming-system).
+
+``` json
+{
+    "name":"Test Config File",
+    "description":"for alert api demo",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature Lower Critical Alert",
+            "threshold":47.05,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Lower Warning Alert",
+            "threshold":47.07,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Warning Alert",
+            "threshold":47.09,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Critical Alert",
+            "threshold":47.1,
+            "state":"ON"
+        }
+    ]
+}
+```
 
 ## Deleting Alerts
 
