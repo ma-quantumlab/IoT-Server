@@ -82,7 +82,7 @@ Most of what users will do is set different alert configurations. As described a
 }
 ```
 
-The user can edit the threshold (any float value) or state ("ON" or "OFF") section, the names of the alerts follow a specifc pattern that allows for no repeats and for the program to recognize properties of the alert. These should generally not be edited, refer to the Alerts Name Nomenclature section if so. In order to enable the configuration file type `alerts --config "<configuration name>"`. Below is an example with the "Test" configuration file. If no error occurs you should see an output with the new alerts configured. 
+The user can edit the threshold (any float value) or state ("ON" or "OFF") section, the names of the alerts follow a specifc pattern that allows for no repeats and for the program to recognize properties of the alert. These should generally not be edited, refer to the [Alert Naming System Section](#alert-naming-system) section if so. In order to enable the configuration file type `alerts --config "<configuration name>"`. Below is an example with the "Test" configuration file. If no error occurs you should see an output with the new alerts configured. 
 
 ```
 malab@maserver:~ $ alerts
@@ -106,7 +106,7 @@ Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater th
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: ON
 ```
 
-If the user is interested in creating a new configuration file they must first assure that the measurements that want to be used are defined within the `alert_config.json` file. An example of this is shown that creates the alerts displayed on the image of the panel at the top of this page. The `alert_config.json` is shown below containing the "Alice 50 K Temperature" measurement specifications:
+If the user is interested in creating a new configuration file they must first assure that the measurements that want to be used are defined within the `alert_config.json` file. To create the configuration file that configures the same alerts shown in the panel image above the `alert_config.json` must contain a "Alice 50 K Temperature" section as shown below:
 
 ``` json
 {
