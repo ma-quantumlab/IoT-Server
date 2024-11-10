@@ -323,7 +323,7 @@ class Threshold:
 
                 if panelId == None:
                     raise Exception(f"No matching panels for {inputJson['title']}")
-                alert_template["annotations"]["__panelId0__"] = str(panelId)
+                alert_template["annotations"]["__panelId__"] = str(panelId)
 
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
                 dashboardUid = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
