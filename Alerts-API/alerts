@@ -143,7 +143,7 @@ class Threshold:
     def getMeasurement(self): # Returns name of measurement from Influx DB database
         return self.alertJson["data"][getJsonArrayIndex("refId", self.alertJson["data"], "A")[0]]["model"]["measurement"]
     
-    def getFeild(self): # Returns name of Feild from Influx DB measurement
+    def getField(self): # Returns name of Field from Influx DB measurement
         a_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "A")[0]
         field_type_index = getJsonArrayIndex("type", self.alertJson["data"][a_refId_index]["model"]["select"][0], "field")[0]
         return self.alertJson["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0]
@@ -160,7 +160,7 @@ class Threshold:
     def checkPanelMatch(self, panel): # Checks to see if datasource parameters match for a dashboard panel
         return panel["targets"][0]["datasource"]["uid"] == self.getDatasourceUid() \
             and panel["targets"][0]["measurement"] == self.getMeasurement() \
-            and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getFeild()        
+            and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getField()        
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
         for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
