@@ -6,7 +6,7 @@
             "title":"Alice 50 K Temperature",
             "database":"fridge_database",
             "measurement":"alice_temperature",
-            "feild":"Alice Temperature 50K",
+            "field":"Alice Temperature 50K",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -14,7 +14,7 @@
             "title":"Alice 4 K Temperature",
             "database":"fridge_database",
             "measurement":"alice_temperature",
-            "feild":"Alice Temperature 4K",
+            "field":"Alice Temperature 4K",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -22,7 +22,7 @@
             "title":"Alice Still Temperature",
             "database":"fridge_database",
             "measurement":"alice_temperature",
-            "feild":"Alice Temperature Still",
+            "field":"Alice Temperature Still",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -30,7 +30,7 @@
             "title":"Alice MXC Temperature",
             "database":"fridge_database",
             "measurement":"alice_temperature",
-            "feild":"Alice Temperature MXC",
+            "field":"Alice Temperature MXC",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -38,7 +38,7 @@
             "title":"Alice Flowmeter Temperature",
             "database":"fridge_database",
             "measurement":"alice_flowmeter",
-            "feild":"Alice Flowmeter",
+            "field":"Alice Flowmeter",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -46,7 +46,7 @@
             "title":"Alice OVC Can Pressure",
             "database":"fridge_database",
             "measurement":"alice_pressure",
-            "feild":"Alice Pressure OVC",
+            "field":"Alice Pressure OVC",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -54,7 +54,7 @@
             "title":"Alice Still Side Pressure",
             "database":"fridge_database",
             "measurement":"alice_pressure",
-            "feild":"Alice Pressure Still Side",
+            "field":"Alice Pressure Still Side",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -62,7 +62,7 @@
             "title":"Alice Differential Pressure",
             "database":"fridge_database",
             "measurement":"alice_pressure",
-            "feild":"Alice Pressure Differential Across Trap",
+            "field":"Alice Pressure Differential Across Trap",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -70,7 +70,7 @@
             "title":"Alice Tank Pressure",
             "database":"fridge_database",
             "measurement":"alice_pressure",
-            "feild":"Alice Pressure Tank",
+            "field":"Alice Pressure Tank",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -78,7 +78,7 @@
             "title":"Alice Water In Temperature",
             "database":"fridge_database",
             "measurement":"alice_compressor",
-            "feild":"Alice Compressor Water In",
+            "field":"Alice Compressor Water In",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -86,7 +86,7 @@
             "title":"Alice Water Out Temperature",
             "database":"fridge_database",
             "measurement":"alice_compressor",
-            "feild":"Alice Compressor Water Out",
+            "field":"Alice Compressor Water Out",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -94,7 +94,7 @@
             "title":"Alice Oil Temperature",
             "database":"fridge_database",
             "measurement":"alice_compressor",
-            "feild":"Alice Compressor Oil Temperature",
+            "field":"Alice Compressor Oil Temperature",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -102,7 +102,7 @@
             "title":"Alice Error Status",
             "database":"fridge_database",
             "measurement":"alice_compressor",
-            "feild":"Alice Compressor Error Status",
+            "field":"Alice Compressor Error Status",
             "nodata":"OK",
             "dashboardname":"Alice Fridge Dashboard"
         },
@@ -110,7 +110,7 @@
             "title":"Bob 50 K Temperature",
             "database":"fridge_database",
             "measurement":"bob_temperature",
-            "feild":"Bob Temperature 50K",
+            "field":"Bob Temperature 50K",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -118,7 +118,7 @@
             "title":"Bob 4 K Temperature",
             "database":"fridge_database",
             "measurement":"bob_temperature",
-            "feild":"Bob Temperature 4K",
+            "field":"Bob Temperature 4K",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -126,7 +126,7 @@
             "title":"Bob Still Temperature",
             "database":"fridge_database",
             "measurement":"bob_temperature",
-            "feild":"Bob Temperature Still",
+            "field":"Bob Temperature Still",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -134,7 +134,7 @@
             "title":"Bob MXC Temperature",
             "database":"fridge_database",
             "measurement":"bob_temperature",
-            "feild":"Bob Temperature MXC",
+            "field":"Bob Temperature MXC",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -142,7 +142,7 @@
             "title":"Bob Flowmeter Temperature",
             "database":"fridge_database",
             "measurement":"bob_flowmeter",
-            "feild":"Bob Flowmeter",
+            "field":"Bob Flowmeter",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -150,7 +150,7 @@
             "title":"Bob OVC Can Pressure",
             "database":"fridge_database",
             "measurement":"bob_pressure",
-            "feild":"Bob Pressure OVC",
+            "field":"Bob Pressure OVC",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -158,7 +158,7 @@
             "title":"Bob Still Side Pressure",
             "database":"fridge_database",
             "measurement":"bob_pressure",
-            "feild":"Bob Pressure Still Side",
+            "field":"Bob Pressure Still Side",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -166,7 +166,7 @@
             "title":"Bob Differential Pressure",
             "database":"fridge_database",
             "measurement":"bob_pressure",
-            "feild":"Bob Pressure Differential Across Trap",
+            "field":"Bob Pressure Differential Across Trap",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -174,7 +174,7 @@
             "title":"Bob Tank Pressure",
             "database":"fridge_database",
             "measurement":"bob_pressure",
-            "feild":"Bob Pressure Tank",
+            "field":"Bob Pressure Tank",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -182,7 +182,7 @@
             "title":"Bob Water In Temperature",
             "database":"fridge_database",
             "measurement":"bob_compressor",
-            "feild":"Bob Compressor Water In",
+            "field":"Bob Compressor Water In",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -190,7 +190,7 @@
             "title":"Bob Water Out Temperature",
             "database":"fridge_database",
             "measurement":"bob_compressor",
-            "feild":"Bob Compressor Water Out",
+            "field":"Bob Compressor Water Out",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -198,7 +198,7 @@
             "title":"Bob Oil Temperature",
             "database":"fridge_database",
             "measurement":"bob_compressor",
-            "feild":"Bob Compressor Oil Temperature",
+            "field":"Bob Compressor Oil Temperature",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         },
@@ -206,7 +206,7 @@
             "title":"Bob Error Status",
             "database":"fridge_database",
             "measurement":"bob_compressor",
-            "feild":"Bob Compressor Error Status",
+            "field":"Bob Compressor Error Status",
             "nodata":"OK",
             "dashboardname":"Bob Fridge Dashboard"
         }
