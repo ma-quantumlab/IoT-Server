@@ -145,8 +145,8 @@ class Threshold:
     
     def getFeild(self): # Returns name of Feild from Influx DB measurement
         a_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "A")[0]
-        feild_type_index = getJsonArrayIndex("type", self.alertJson["data"][a_refId_index]["model"]["select"][0], "field")[0]
-        return self.alertJson["data"][a_refId_index]["model"]["select"][0][feild_type_index]["params"][0]
+        field_type_index = getJsonArrayIndex("type", self.alertJson["data"][a_refId_index]["model"]["select"][0], "field")[0]
+        return self.alertJson["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0]
     
     def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
         dashboardPanels = []
@@ -276,7 +276,7 @@ class Threshold:
         if inputJson is None:
             field = Threshold.getCheck(f"field from measurement {measurement}", fields)
         else:
-            field = inputJson["feild"]
+            field = inputJson["field"]
 
         with open('alert_template.json', 'r') as file:
             alert_template = json.load(file)
@@ -298,8 +298,8 @@ class Threshold:
             alert_template["data"][a_refId_index]["model"]["datasource"]["uid"] = databases[database]
             alert_template["data"][a_refId_index]["model"]["measurement"] = measurement
 
-            feild_type_index = getJsonArrayIndex("type", alert_template["data"][a_refId_index]["model"]["select"][0], "field")[0]
-            alert_template["data"][a_refId_index]["model"]["select"][0][feild_type_index]["params"][0] = field
+            field_type_index = getJsonArrayIndex("type", alert_template["data"][a_refId_index]["model"]["select"][0], "field")[0]
+            alert_template["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0] = field
 
             alert_template["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"].append(threshold)
             alert_template["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["type"] = bound_type
@@ -383,10 +383,10 @@ class Threshold:
         return panelIds
     
     @staticmethod
-    def checkPanelMatchToJson(panelJson, datasourceUid, measurement, feild):
+    def checkPanelMatchToJson(panelJson, datasourceUid, measurement, field):
         return panelJson["targets"][0]["datasource"]["uid"] == datasourceUid \
             and panelJson["targets"][0]["measurement"] == measurement \
-            and panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", panelJson["targets"][0]["select"][0], "field")[0]]["params"][0] == feild
+            and panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", panelJson["targets"][0]["select"][0], "field")[0]]["params"][0] == field
     
     @staticmethod
     def getCheck(parameterName, parameters):
