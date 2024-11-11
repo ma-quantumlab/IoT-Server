@@ -65,7 +65,8 @@ Most of what users will do is set different alert configurations. As described a
             "threshold":4,
             "state":"ON"
         }
-    ]
+    ],
+    "longdescription":"..."
 }
 ```
 
@@ -140,7 +141,8 @@ Below is what a configuration file would look like which creates four different 
             "threshold":47.1,
             "state":"ON"
         }
-    ]
+    ],
+    "longdescription":"..."
 }
 ```
 
