@@ -13,17 +13,19 @@
 
 The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit the configuration JSON instead of editing individual alerts. 
 
-In order to use the alerts API the user must ssh onto the MaLab server. To do this one simply has to enter a command line and type: 
+To view the grafana dashboards go to [http://192.168.1.104:3000/]() on any computer connected to the server. 
+
+In order to use the alerts API the user must ssh onto the MaLab server. To do this one simply has to enter a command line and type `ssh malab@192.168.1.104` and then type in the password "malabserver" into the prompt. Once the user is in the server they will have access to the alerts API. 
 
 The simplest action one can perform with this tool is to simply view the status of the alerts and view which configuration files are available. To do this simply invoke `alerts` in the command line as shown below.
 
-```
+``` bash
 malab@maserver:~ $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 ```
 
@@ -33,7 +35,7 @@ Additionally there is another file, the `alerts_config.json` file which defines 
 
 Alerts will be visible directly on any time-series panel that queries the same Influx DB data as the alert; as shown below for the following configuration of alerts:
 
-```
+``` bash
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Lower Critical Alert'      | Threshold: Less than 47.05           | State: ON
 Name: 'Alice 50 K Temperature Lower Warning Alert'       | Threshold: Less than 47.07           | State: ON
@@ -52,7 +54,7 @@ Most of what users will do is set different alert configurations. As described a
 ``` json
 {
     "name":"Test",
-    "description":"for alert api demo",
+    "description":"alert api demo",
     "alerts":
     [
         {
@@ -71,13 +73,13 @@ Most of what users will do is set different alert configurations. As described a
 
 The user can edit the threshold (any float value) or state ("ON" or "OFF") section, the names of the alerts follow a specifc pattern that allows for no repeats and for the program to recognize properties of the alert. These should generally not be edited, refer to the [Alert Naming System Section](#alert-naming-system) section if so. In order to enable the configuration file type `alerts --config "<configuration name>"`. Below is an example with the "Test" configuration file. If no error occurs you should see an output with the new alerts configured. 
 
-```
+``` bash
 malab@maserver:~ $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 malab@maserver:~ $
 malab@maserver:~ $
@@ -86,8 +88,8 @@ malab@maserver:~ $ alerts --config "Test"
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: ON
@@ -117,7 +119,7 @@ Below is what a configuration file would look like which creates four different 
 ``` json
 {
     "name":"Test Config File",
-    "description":"for alert api demo",
+    "description":"alert api demo",
     "alerts":
     [
         {
@@ -148,13 +150,13 @@ Below is what a configuration file would look like which creates four different 
 
 To delete an alert type `alerts --delete "<alert name>"` into the command line. It is possible to delete multiple alerts at once; for example if one is interested in deleting all alerts that contain the word "Warning" the following command can be invoked `alerts --delete "Warning"`. If the user is interested in deleting every alert the following command can be invoked `alerts --delete "*"`. Below is an example of what deleting an alert would appear as.
 
-```
+``` bash
 malab@maserver:~ $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: ON
@@ -166,8 +168,8 @@ Are you sure you want to delete: 'Alice 4 K Temperature Upper Warning Alert'? It
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 ```
@@ -176,13 +178,13 @@ Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater th
 
 To edit a single alert value type `alerts --name "<alert name>" --threshold <new threshold value>` where the threshold value can be any floating point number. One can only edit one alert at a time. Below is an example of what editing an alert would appear as.
 
-```
+``` bash
 malab@maserver:~ $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 malab@maserver:~ $
@@ -192,8 +194,8 @@ malab@maserver:~ $ alerts --name "Alice 50 K Temperature Upper Warning Alert" --
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 999.111      | State: ON
 ```
@@ -202,13 +204,13 @@ Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater th
 
 To edit a the state of alerts type `alerts --name "<alert name>" --state "<new state value>"` where new state can only take values "ON" or "OFF". It is possible to edit the state of multiple alerts at once by passing in a string that is contained in the alerts you want to change. For example to set the state of all alerts containing the word "Warning" to "OFF" one would type the command `alerts --name "Warning" --state "OFF"`. Below shows an example of this. 
 
-```
+``` bash
 malab@maserver:~/IoT-Server $ alerts
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: ON
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: ON
@@ -219,8 +221,8 @@ malab@maserver:~/IoT-Server $ alerts --name "Warning" --state "OFF"
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Warning Alert'       | Threshold: Greater than 50           | State: OFF
 Name: 'Alice 4 K Temperature Upper Warning Alert'        | Threshold: Greater than 4            | State: OFF
@@ -234,20 +236,9 @@ It is assumed the reader understands the high level overview of how Grafana quer
 
 In total there are four types of alerts that can be created. In order to create an alert the user must define the threshold and the initial state it should be placed in which can both be changed as demonstrated above. To create the alert type `alerts <alert type flag> --threshold <threshold value> --state <state value>` where the alert type flag can be one of the four values mentioned above: `--create_upper_critical`, `--create_lower_critical`, `--create_upper_warning`, `--create_lower_warning`.
 
-An example of a possible alert request with threshold value 999 and initial state "ON" is shown below. 
+An example of a possible alert request with threshold value 999 and initial state "ON" is `alerts --create_upper_critical --threshold 999 --state "ON"`. After the initial  
 
 ```
-malab@maserver:~ $ alerts
------------ Configurations -----------
-Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
-Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
------------     Alerts     -----------
-malab@maserver:~ $
-malab@maserver:~ $
-malab@maserver:~ $
-malab@maserver:~ $ alerts --create_upper_critical --threshold 999 --state "ON"
 Creating alert ... Enter in values below:
 Choose Influx DB databases, or number from list:
 0. fridge_database
@@ -326,8 +317,8 @@ Once all of the above are completed the program will send the request to create 
 ----------- Configurations -----------
 Name: 'Fridge Cold'        | File Name: 'fridge_cold_config.json'      | Description: fridge cooling values
 Name: 'Fridge Warm'        | File Name: 'fridge_warming_config.json'   | Description: fridge warming values
-Name: 'Test'               | File Name: 'test_config.json'             | Description: for alert api demo
-Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: for pausing all alerts
+Name: 'Test'               | File Name: 'test_config.json'             | Description: alert api demo
+Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Description: pausing all alerts
 -----------     Alerts     -----------
 Name: 'Alice 50 K Temperature Upper Critical Alert'      | Threshold: Greater than 999          | State: ON
 ```
