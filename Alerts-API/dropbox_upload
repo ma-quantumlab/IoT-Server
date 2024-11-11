@@ -10,19 +10,20 @@ import os
 
 load_dotenv()
 
-INFLUX_HOST = os.getenv("INFLUX_HOST")
 INFLUX_PORT = 8086
-INFLUX_USER = os.getenv("INFLUX_USER")
-INFLUX_PASSWORD = os.getenv("INFLUX_PASSWORD")
 
-app_key = os.getenv("APP_KEY")
-app_secret =  os.getenv("APP_SECRET")
-refresh_token = os.getenv("REFRESH_TOKEN")
+access_token = requests.post(
+        "https://api.dropbox.com/oauth2/token",
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": os.getenv("REFRESH_TOKEN"),
+            "client_id": os.getenv("APP_KEY"),
+            "client_secret": os.getenv("APP_SECRET"),
+        }
+    ).json()["access_token"]
 
-access_token = refresh_access_token(refresh_token, app_key, app_secret)
 dbx = dropbox.Dropbox(access_token)
-
-client = InfluxDBClient(host=INFLUX_HOST, port=INFLUX_PORT, username=INFLUX_USER, password=INFLUX_PASSWORD)
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
 def query_data(database, measurement):
     client.switch_database(database)
@@ -30,14 +31,14 @@ def query_data(database, measurement):
     return client.query(query)
 
 if __name__ == "__main__":
-    databases = [db['name'] for db in client.get_list_database()]
+    databases = [db["name"] for db in client.get_list_database()]
     
     for database in databases:
         os.makedirs(database, exist_ok=True)
         
         client.switch_database(database)
         
-        measurements = [m['name'] for m in client.get_list_measurements()]
+        measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
             result = query_data(database, measurement)
@@ -53,10 +54,12 @@ if __name__ == "__main__":
                         csv_writer.writerow(headers)
                         headers_written = True
                     
-                    row = [point.get('time')]
+                    row = [point.get("time")]
                     row += [point.get(field) for field in headers[1:]]
                     csv_writer.writerow(row)
 
-            print(f"Exported {measurement} to {csv_file_path}")
+            with open(csv_file_path, "rb") as f:
+                dbx.files_upload(f.read(), "/ServerData/"+measurement+".csv")
+            print(f"Uploaded {measurement} to {csv_file_path}")
 
 client.close()
