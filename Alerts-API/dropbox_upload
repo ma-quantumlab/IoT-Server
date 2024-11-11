@@ -1,59 +1,62 @@
-#! /usr/bin/python
+#! /opt/anaconda3/bin/python
 
-from influxdb_client import InfluxDBClient
+from influxdb import InfluxDBClient
+from dotenv import load_dotenv 
+import requests
+import dropbox
+import glob
 import csv
 import os
 
-INFLUX_URL = "http://localhost:8086"
-INFLUX_TOKEN = "your_influxdb_token"
-ORG = "your_org"
+load_dotenv()
 
-client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=ORG)
+INFLUX_HOST = os.getenv("INFLUX_HOST")
+INFLUX_PORT = 8086
+INFLUX_USER = os.getenv("INFLUX_USER")
+INFLUX_PASSWORD = os.getenv("INFLUX_PASSWORD")
 
-def get_all_databases():
-    buckets_api = client.buckets_api()
-    return buckets_api.find_buckets().buckets
+app_key = os.getenv("APP_KEY")
+app_secret =  os.getenv("APP_SECRET")
+refresh_token = os.getenv("REFRESH_TOKEN")
+
+access_token = refresh_access_token(refresh_token, app_key, app_secret)
+dbx = dropbox.Dropbox(access_token)
+
+client = InfluxDBClient(host=INFLUX_HOST, port=INFLUX_PORT, username=INFLUX_USER, password=INFLUX_PASSWORD)
 
 def query_data(database, measurement):
-    query_api = client.query_api()
-    query = f'from(bucket: "{database}") |> range(start: 0) |> filter(fn: (r) => r._measurement == "{measurement}")'
-    return query_api.query(query)
+    client.switch_database(database)
+    query = f'SELECT * FROM "{measurement}"'
+    return client.query(query)
 
-def export_data_to_csv():
-    databases = get_all_databases()
+if __name__ == "__main__":
+    databases = [db['name'] for db in client.get_list_database()]
     
     for database in databases:
-        database_name = database.name
+        os.makedirs(database, exist_ok=True)
         
-        os.makedirs(database_name, exist_ok=True)
+        client.switch_database(database)
         
-        query_api = client.query_api()
-        measurements_query = f'import "influxdata/influxdb/schema" schema.measurements(bucket: "{database_name}")'
-        measurements = query_api.query(measurements_query)
-        measurements = [record.values["_value"] for table in measurements for record in table.records]
+        measurements = [m['name'] for m in client.get_list_measurements()]
 
         for measurement in measurements:
-            result = query_data(database_name, measurement)
+            result = query_data(database, measurement)
             
-            csv_file_path = os.path.join(database_name, f"{measurement}.csv")
+            csv_file_path = os.path.join(database, f"{measurement}.csv")
             with open(csv_file_path, mode="w", newline="") as csv_file:
                 csv_writer = csv.writer(csv_file)
                 
                 headers_written = False
-                for table in result:
-                    for record in table.records:
-                        if not headers_written:
-                            headers = ["timestamp"] + list(record.values.keys())
-                            csv_writer.writerow(headers)
-                            headers_written = True
-                        
-                        # Write row data
-                        row = [record.get_time()]
-                        row += [record.values.get(field) for field in headers[1:]]
-                        csv_writer.writerow(row)
+                for point in result.get_points(measurement=measurement):
+                    if not headers_written:
+                        headers = ["time"] + list(point.keys())
+                        csv_writer.writerow(headers)
+                        headers_written = True
+                    
+                    row = [point.get('time')]
+                    row += [point.get(field) for field in headers[1:]]
+                    csv_writer.writerow(row)
 
             print(f"Exported {measurement} to {csv_file_path}")
-
-export_data_to_csv()
 
 client.close()
