@@ -1,14 +1,5 @@
 # Alerts API
 
-## Table of Contents
-- [Getting Started](#getting-started)
-- [Setting Alert Configurations](#enabling-alert-configurations)
-- [Deleting Alerts](#deleting-alerts)
-- [Edit Alert Value](#edit-alert-value)
-- [Edit Alert State](#edit-alert-state)
-- [Creating Alerts](#creating-alerts)
-- [Alert Naming System](#alert-naming-system)
-
 ## Getting Started 
 
 The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit the configuration JSON instead of editing individual alerts. 
@@ -31,8 +22,6 @@ Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Descrip
 
 From the output we see that under the "Configurations" section there are the 4 configuration files shown; any file in the `~/IoT-Server/Alerts-API` that ends with "config.json" will be automatically considered a configuration file. As shown under the "Alerts" section, there are no Alerts defined yet. 
 
-Additionally there is another file, the `alerts_config.json` file which defines how each alert is set up; unless a user is adding an additional data-source this file should not be edited. 
-
 Alerts will be visible directly on any time-series panel that queries the same Influx DB data as the alert; as shown below for the following configuration of alerts:
 
 ``` bash
@@ -46,6 +35,15 @@ Name: 'Alice 50 K Temperature Upper Critical Alert'      | Threshold: Greater th
 The Grafana time-series panel shades in "red"/"dark-red" or "orange"/"dark-orange" regions for the different types of alerts.
 
 <img width="1303" alt="Screenshot 2024-11-10 at 11 36 56 AM" src="https://github.com/user-attachments/assets/cfa209b3-00db-4f73-9217-afef459f05af">
+
+Please refer to the tutorials below to perform different tasks:
+
+- [Enabling Alert Configurations](#enabling-alert-configurations)
+- [Deleting Alerts](#deleting-alerts)
+- [Edit Alert Value](#edit-alert-value)
+- [Edit Alert State](#edit-alert-state)
+- [Creating Alerts](#creating-alerts)
+- [(Optional) Alert Naming System](#alert-naming-system)
 
 ## Enabling Alert Configurations
 
