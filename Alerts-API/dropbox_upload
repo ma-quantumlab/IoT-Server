@@ -12,6 +12,7 @@ load_dotenv()
 
 INFLUX_PORT = 8086
 
+# Fetch Dropbox access token
 access_token = requests.post(
     "https://api.dropbox.com/oauth2/token",
     data={
@@ -23,12 +24,17 @@ access_token = requests.post(
 ).json()["access_token"]
 
 dbx = dropbox.Dropbox(access_token)
-client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, 
+                        username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
 def query_data(database, measurement):
     client.switch_database(database)
     query = f'SELECT * FROM "{measurement}"'
     return client.query(query)
+
+def upload_to_dropbox(csv_content, measurement):
+    # Upload CSV data directly from in-memory buffer
+    dbx.files_upload(csv_content.encode(), f"/ServerData/{measurement}.csv")
 
 if __name__ == "__main__":
     databases = [db["name"] for db in client.get_list_database()]
@@ -40,9 +46,10 @@ if __name__ == "__main__":
         for measurement in measurements:
             result = query_data(database, measurement)
             
+            # Create CSV data in memory
             csv_buffer = io.StringIO()
             csv_writer = csv.writer(csv_buffer)
-            
+
             headers_written = False
             for point in result.get_points(measurement=measurement):
                 if not headers_written:
@@ -50,11 +57,12 @@ if __name__ == "__main__":
                     csv_writer.writerow(headers)
                     headers_written = True
                 
-                row = [point.get("time")]
+                row = [point.get("time")]  # Including timestamp
                 row += [point.get(field) for field in headers[1:]]
                 csv_writer.writerow(row)
             
-            csv_buffer.seek(0) 
-            dbx.files_upload(csv_buffer.getvalue().encode(), f"/ServerData/{measurement}.csv")
+            # Move to the start of the buffer and upload
+            csv_buffer.seek(0)
+            upload_to_dropbox(csv_buffer.getvalue(), measurement)
 
 client.close()

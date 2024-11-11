@@ -1,5 +1,5 @@
-influxdb
 argcomplete
+influxdb
 paho-mqtt
 functools
 importlib
