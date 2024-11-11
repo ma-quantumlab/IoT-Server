@@ -34,7 +34,7 @@ def query_data(database, measurement):
 
 def upload_to_dropbox(csv_content, measurement):
     date = datetime.now().strftime("%Y-%m-%d")
-    dbx.files_upload(csv_content.encode(), f"/ServerData/{measurement.replace('_', ' ').title() + date}.csv")
+    dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
 
 if __name__ == "__main__":
     databases = [db["name"] for db in client.get_list_database()]
