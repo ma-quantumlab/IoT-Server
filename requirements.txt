@@ -1,4 +1,4 @@
-influxdb_client
+influxdb
 argcomplete
 paho-mqtt
 functools

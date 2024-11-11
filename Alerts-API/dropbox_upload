@@ -1,10 +1,10 @@
 #! /opt/anaconda3/bin/python
 
 from influxdb import InfluxDBClient
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 import requests
 import dropbox
-import glob
+import io
 import csv
 import os
 
@@ -13,17 +13,18 @@ load_dotenv()
 INFLUX_PORT = 8086
 
 access_token = requests.post(
-        "https://api.dropbox.com/oauth2/token",
-        data = {
-            "grant_type": "refresh_token",
-            "refresh_token": os.getenv("REFRESH_TOKEN"),
-            "client_id": os.getenv("APP_KEY"),
-            "client_secret": os.getenv("APP_SECRET"),
-        }
-    ).json()["access_token"]
+    "https://api.dropbox.com/oauth2/token",
+    data={
+        "grant_type": "refresh_token",
+        "refresh_token": os.getenv("REFRESH_TOKEN"),
+        "client_id": os.getenv("APP_KEY"),
+        "client_secret": os.getenv("APP_SECRET"),
+    }
+).json()["access_token"]
 
 dbx = dropbox.Dropbox(access_token)
-client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, 
+                        username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
 def query_data(database, measurement):
     client.switch_database(database)
@@ -34,32 +35,27 @@ if __name__ == "__main__":
     databases = [db["name"] for db in client.get_list_database()]
     
     for database in databases:
-        os.makedirs(database, exist_ok=True)
-        
         client.switch_database(database)
-        
         measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
             result = query_data(database, measurement)
             
-            csv_file_path = os.path.join(database, f"{measurement}.csv")
-            with open(csv_file_path, mode="w", newline="") as csv_file:
-                csv_writer = csv.writer(csv_file)
+            csv_buffer = io.StringIO()
+            csv_writer = csv.writer(csv_buffer)
+            
+            headers_written = False
+            for point in result.get_points(measurement=measurement):
+                if not headers_written:
+                    headers = ["time"] + list(point.keys())
+                    csv_writer.writerow(headers)
+                    headers_written = True
                 
-                headers_written = False
-                for point in result.get_points(measurement=measurement):
-                    if not headers_written:
-                        headers = ["time"] + list(point.keys())
-                        csv_writer.writerow(headers)
-                        headers_written = True
-                    
-                    row = [point.get("time")]
-                    row += [point.get(field) for field in headers[1:]]
-                    csv_writer.writerow(row)
-
-            with open(csv_file_path, "rb") as f:
-                dbx.files_upload(f.read(), "/ServerData/"+measurement+".csv")
-            print(f"Uploaded {measurement} to {csv_file_path}")
+                row = [point.get("time")]
+                row += [point.get(field) for field in headers[1:]]
+                csv_writer.writerow(row)
+            
+            csv_buffer.seek(0) 
+            dbx.files_upload(csv_buffer.getvalue().encode(), f"/ServerData/{measurement}.csv")
 
 client.close()
