@@ -1,4 +1,4 @@
-#! /opt/anaconda3/bin/python
+#! /usr/bin/python
 
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
@@ -23,8 +23,7 @@ access_token = requests.post(
 ).json()["access_token"]
 
 dbx = dropbox.Dropbox(access_token)
-client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, 
-                        username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
 def query_data(database, measurement):
     client.switch_database(database)
