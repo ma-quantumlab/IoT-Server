@@ -1,6 +1,6 @@
 {
     "name":"Pause Alerts",
-    "description":"for pausing all alerts",
+    "description":"pausing all alerts",
     "alerts":
     [
         {

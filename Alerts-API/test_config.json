@@ -1,6 +1,6 @@
 {
     "name":"Test",
-    "description":"for alert api demo",
+    "description":"alert api demo",
     "alerts":
     [
         {
