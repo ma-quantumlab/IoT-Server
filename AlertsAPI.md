@@ -1,7 +1,7 @@
 # Alerts API
 
 ## Table of Contents
-- [Introduction](#introduction)
+- [Getting Started](#getting-started)
 - [Setting Alert Configurations](#enabling-alert-configurations)
 - [Deleting Alerts](#deleting-alerts)
 - [Edit Alert Value](#edit-alert-value)
@@ -9,7 +9,7 @@
 - [Creating Alerts](#creating-alerts)
 - [Alert Naming System](#alert-naming-system)
 
-## Introduction
+## Getting Started 
 
 The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit the configuration JSON instead of editing individual alerts. 
 
