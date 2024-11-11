@@ -2,11 +2,11 @@
 
 ## Getting Started 
 
-The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit the configuration JSON instead of editing individual alerts. 
+The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit a configuration JSON instead of editing individual alerts through the API. 
 
 To view the grafana dashboards go to [this link](http://192.168.1.104:3000/dashboards) on any computer connected to the server (The username is "malab" the password is "malabpurdue"). 
 
-In order to use the alerts API the user must ssh onto the MaLab server. To do this one simply has to enter a command line and type `ssh malab@192.168.1.104` and then type in the password "malabserver" into the prompt. Once the user is in the server they will have access to the alerts API. 
+In order to use the alerts API the user must ssh onto the MaLab server. To do this one simply has to enter a command line (on a computer connected to the internet) and type `ssh malab@192.168.1.104` and then type in the password "malabserver" into the prompt. Once the user is in the server they will have access to the alerts API. 
 
 The simplest action one can perform with this tool is to simply view the status of the alerts and view which configuration files are available. To do this simply invoke `alerts` in the command line as shown below.
 
@@ -20,9 +20,9 @@ Name: 'Pause Alerts'       | File Name: 'pause_config.json'            | Descrip
 -----------     Alerts     -----------
 ```
 
-From the output we see that under the "Configurations" section there are the 4 configuration files shown; any file in the `~/IoT-Server/Alerts-API` that ends with "config.json" will be automatically considered a configuration file. As shown under the "Alerts" section, there are no Alerts defined yet. 
+From the output we see that under the "Configurations" section there are the 4 configuration files shown. As shown under the "Alerts" section, there are no Alerts defined yet. 
 
-Alerts will be visible directly on any time-series panel that queries the same Influx DB data as the alert; as shown below for the following configuration of alerts:
+Alerts will be visible directly on any time-series panel that queries the same Influx DB data as the alert; when we set up the four alerts below, the Grafana panel will make this visible. 
 
 ``` bash
 -----------     Alerts     -----------
@@ -36,13 +36,13 @@ The Grafana time-series panel shades in "red"/"dark-red" or "orange"/"dark-orang
 
 <img width="1303" alt="Screenshot 2024-11-10 at 11 36 56 AM" src="https://github.com/user-attachments/assets/cfa209b3-00db-4f73-9217-afef459f05af">
 
-Please refer to the tutorials below to perform different tasks:
+There are many different things one can do with the API. 
 
-- [Enabling Alert Configurations](#enabling-alert-configurations)
-- [Deleting Alerts](#deleting-alerts)
-- [Edit Alert Value](#edit-alert-value)
-- [Edit Alert State](#edit-alert-state)
-- [Creating Alerts](#creating-alerts)
+- Visit [Enabling Alert Configurations](#enabling-alert-configurations) if the user is interested in setting up an alerts configuration file
+- Visit [Deleting Alerts](#deleting-alerts) to learn how to delete certain alerts
+- Visit [Edit Alert Value](#edit-alert-value) to edit certain alert values
+- Visit [Edit Alert State](#edit-alert-state) to edit certain alert states
+- Visit [Creating Alerts](#creating-alerts) to create new alerts via the API (for the most part users will create alerts via configuration files)
 - [(Optional) Alert Naming System](#alert-naming-system)
 
 ## Enabling Alert Configurations
