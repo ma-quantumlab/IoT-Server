@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     csv_writer.writerow(headers)
                     headers_written = True
                 
-                row = [point.get("time")]
+                row = [point.get("time").replace("T", " ").replace("Z", "")]
                 row += [point.get(field) for field in headers[1:]]
                 csv_writer.writerow(row)
             
