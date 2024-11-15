@@ -1,7 +1,7 @@
 {
     "name":"Fridge Cold",
     "short-description":"fridge cooling values",
-    "long-description":"This JSON contains 36 alerts which should be set when the fridge is cold, every alert is ON and ",
+    "long-description":"This JSON contains 36 alerts which should be set when the fridge is cold, every alert is ON and a full list of all the parameters in in Dhruv's OneNote under Raspberry Pi IoT Server/Bluefors Alert Thresholds",
     "alerts":
     [
         {

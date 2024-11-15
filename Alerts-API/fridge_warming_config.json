@@ -1,7 +1,7 @@
 {
     "name":"Fridge Warm",
     "short-description":"fridge warming values",
-    "long-description":"",
+    "long-description":"These alerts are identical to 'fridge_cold_config.json' however there are only a few actaully on, this should be enabled when the fridge is warming",
     "alerts":
     [
         {
