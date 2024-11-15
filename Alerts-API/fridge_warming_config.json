@@ -1,6 +1,7 @@
 {
     "name":"Fridge Warm",
-    "description":"fridge warming values",
+    "short-description":"fridge warming values",
+    "long-description":"",
     "alerts":
     [
         {

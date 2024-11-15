@@ -1,6 +1,7 @@
 {
     "name":"Pause Alerts",
-    "description":"pausing all alerts",
+    "short-description":"pausing all alerts",
+    "long-description":"This JSON contains the same alerts defined within 'fridge_warning_config.json' and 'fridge_cold.json' but instead every alert is paused. Users can invoke this alert when one does not want any of the alerts to go off but doesn't want to manually delete the alerts.",
     "alerts":
     [
         {

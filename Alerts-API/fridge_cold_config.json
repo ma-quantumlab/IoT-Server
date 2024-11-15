@@ -1,6 +1,7 @@
 {
     "name":"Fridge Cold",
-    "description":"fridge cooling values",
+    "short-description":"fridge cooling values",
+    "long-description":"This JSON contains 36 alerts which should be set when the fridge is cold, every alert is ON and ",
     "alerts":
     [
         {

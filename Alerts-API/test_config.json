@@ -1,6 +1,7 @@
 {
     "name":"Test",
-    "description":"alert api demo",
+    "short-description":"alert api demo",
+    "long-description":"...",
     "alerts":
     [
         {

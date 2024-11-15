@@ -52,7 +52,8 @@ Most of what users will do is set different alert configurations. As described a
 ``` json
 {
     "name":"Test",
-    "description":"alert api demo",
+    "short-description":"alert api demo",
+    "long-description":"...",
     "alerts":
     [
         {
@@ -118,7 +119,8 @@ Below is what a configuration file would look like which creates four different 
 ``` json
 {
     "name":"Test Config File",
-    "description":"alert api demo",
+    "short-description":"alert api demo",
+    "long-description":"...",
     "alerts":
     [
         {

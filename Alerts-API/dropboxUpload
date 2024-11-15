@@ -29,7 +29,7 @@ client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
 
 def query_data(database, measurement):
     client.switch_database(database)
-    query = f'SELECT * FROM "{measurement}"'
+    query = f'SELECT * FROM "{measurement}" WHERE time >= now() - 1d'
     return client.query(query)
 
 def upload_to_dropbox(csv_content, measurement):
