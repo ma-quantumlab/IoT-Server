@@ -246,7 +246,10 @@ class Threshold:
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
 
     def changeDashboardThresholdState(self, state): # Sets the state of the dashboard's threshold
-        if state == "ON":
+        if self.getStateString == state:
+            print("state already satisfied")
+            return
+        elif state == "ON":
             self.alertJson["isPaused"] = bool(False)
             self.createDashboardThreshold()
         else:
