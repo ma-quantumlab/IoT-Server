@@ -246,10 +246,9 @@ class Threshold:
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
 
     def changeDashboardThresholdState(self, state): # Sets the state of the dashboard's threshold
-        if self.getStateString == state:
-            print("state already satisfied")
+        if self.getStateString() == state:
             return
-        elif state == "ON":
+        if state == "ON":
             self.alertJson["isPaused"] = bool(False)
             self.createDashboardThreshold()
         else:
@@ -473,7 +472,6 @@ def getArguments():
     parser.add_argument("--delete", default=None, type=str, help="delete alert")
 
     parser.add_argument("--config", choices=configuration_names, default=None, type=str, help="alert configurations")
-    parser.add_argument("--json", choices=["alert", "dashboard"], default=None, type=str, help="debug only")
 
     argcomplete.autocomplete(parser)
 
@@ -504,24 +502,21 @@ if __name__ == "__main__":
             Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Critical"))
         elif arguments.create_upper_warning:
             Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
-        elif arguments.create_lower_warning:
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
         else:
-            quit()
+            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
         
     if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete, False) is not None):
         if arguments.delete == "*":
             if strictInput(f"Are you sure you want to delete all {len(Threshold.thresholds)} alerts! It is irreversible!!! (Yes/n) ", ["Yes", "n"]) == "Yes":
                 for threshold in Threshold.thresholds[::-1]:
                      Threshold.delete(threshold)
-            quit()
-        if strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"]) == "Y":
-            for threshold in Threshold.thresholds:
-                if threshold.getName() == arguments.delete:
-                    Threshold.delete(threshold)
-                    break
+
+        elif strictInput(f"Are you sure you want to delete: '{arguments.delete}'? It is irreversible! (Y/n) ", ["Y", "n"]) == "Y":
+            for index in range(len(Threshold.thresholds) - 1, -1, -1):
+                if arguments.delete in Threshold.thresholds[index].getName():
+                    Threshold.delete(Threshold.thresholds[index])
             
-    if arguments.name is not None: # Prone to error
+    if arguments.name is not None:
         if arguments.threshold is not None and arguments.state is not None:
             raise Exception("Edit one property per request")
 
@@ -532,14 +527,6 @@ if __name__ == "__main__":
             thresholds = Threshold.getThresholdFromName(arguments.name, True)
             for threshold in thresholds:
                 threshold.changeDashboardThresholdState(arguments.state)
-
-    if arguments.json and "alert" in arguments.json:
-        print(json.dumps(httpGetRequest(grafana_url+alert_rules_url+Threshold.getThresholdFromName(arguments.name, False).getAlertId(), provisioning_header)))
-        quit()
-
-    if arguments.json and "dashboard" in arguments.json:
-        print(json.dumps(httpGetRequest(grafana_url+dashboard_url+Threshold.getThresholdFromName(arguments.name, False).getAnnotatedDashboardUid(), provisioning_header)))
-        quit()        
 
     print(f"{GREEN}----------- Configurations -----------{RESET}")
     for config in ThresholdConfiguration.configurations:
