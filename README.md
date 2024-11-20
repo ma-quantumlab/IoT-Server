@@ -10,8 +10,6 @@ This IoT Server was created on a Raspberry Pi V4 in order to have a centralized 
 - Influx DB
 - Grafana 
 
-
-
 ## Basic Flow
 
 
