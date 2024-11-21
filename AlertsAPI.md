@@ -66,12 +66,11 @@ Most of what users will do is set different alert configurations. As described a
             "threshold":4,
             "state":"ON"
         }
-    ],
-    "longdescription":"..."
+    ]
 }
 ```
 
-The user can edit the threshold (any float value) or state ("ON" or "OFF") section, the names of the alerts follow a specifc pattern that allows for no repeats and for the program to recognize properties of the alert. These should generally not be edited, refer to the [Alert Naming System Section](#alert-naming-system) section if so. In order to enable the configuration file type `alerts --config "<configuration name>"`. Below is an example with the "Test" configuration file. If no error occurs you should see an output with the new alerts configured. 
+The user can edit the threshold (any float value) or state ("ON" or "OFF") section, the names of the alerts follow a specific pattern that allows for no repeats and for the program to recognize properties of the alert. These should generally not be edited, refer to the [Alert Naming System Section](#alert-naming-system) section if so. In order to enable the configuration file type `alerts --config "<configuration name>"`. Below is an example with the "Test" configuration file. If no error occurs you should see an output with the new alerts configured. 
 
 ``` bash
 malab@maserver:~ $ alerts

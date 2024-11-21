@@ -66,8 +66,6 @@ This work was supported by the collaborative efforts of the Purdue Ma Lab. Speci
 - Dr. Alex Ruichao Ma for his guidance.
 - The Ma Lab team for their support and feedback.
 
-GitHub Repository: [IoT-Server](https://github.com/dhruvupreti05/IoT-Server)
-
 Acknowledgments:
 - Dhruv Upreti
 - Alex Ruichao Ma, Department of Physics and Astronomy, Purdue University
