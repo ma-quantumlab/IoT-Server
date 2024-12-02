@@ -88,7 +88,7 @@ class ThresholdConfiguration:
                 alertType = "Critical" if "Critical" in alert["title"] else "Warning"
                 Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, alert_config)
         
-        for threshold in Threshold.thresholds:
+        for threshold in Threshold.thresholds[::-1]: # see if error 
             if not getJsonArrayIndex("title", self.thresholds_config_json["alerts"], threshold.getName(), True):
                 Threshold.delete(threshold)
 
@@ -482,7 +482,7 @@ if __name__ == "__main__":
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    for file_name in os.listdir(os.path.dirname(os.path.abspath(__file__))):
+    for file_name in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Config-Files")):
         if file_name.endswith("config.json") and file_name != "alerts_config.json":
             ThresholdConfiguration.configurations.append(ThresholdConfiguration(file_name))
 
