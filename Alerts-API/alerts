@@ -111,6 +111,12 @@ class Threshold:
 
     def __init__(self, alertJson):
         self.alertJson = alertJson
+        self.matchingDashboardPanels = []
+
+        for dashboard in Threshold.getDashboards().values():
+            for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+dashboard, provisioning_header)["dashboard"]["panels"]):
+                if self.checkPanelMatch(panel):
+                    self.matchingDashboardPanels.append((dashboard, index))
 
     def __str__(self): # Prints status of threshold to command line
         if self.getStateString() == "ON":
@@ -150,22 +156,13 @@ class Threshold:
         field_type_index = getJsonArrayIndex("type", self.alertJson["data"][a_refId_index]["model"]["select"][0], "field")[0]
         return self.alertJson["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0]
     
-    def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
-        dashboardPanels = []
-        for dashboard in Threshold.getDashboards().values():
-            for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+dashboard, provisioning_header)["dashboard"]["panels"]):
-                if self.checkPanelMatch(panel):
-                    dashboardPanels.append((dashboard, index))
-    
-        return dashboardPanels
-    
     def checkPanelMatch(self, panel): # Checks to see if datasource parameters match for a dashboard panel
         return panel["targets"][0]["datasource"]["uid"] == self.getDatasourceUid() \
             and panel["targets"][0]["measurement"] == self.getMeasurement() \
             and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getField()        
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+        for dashboardUid, panelNum in self.matchingDashboardPanels:
 
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
@@ -197,7 +194,7 @@ class Threshold:
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
     def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+        for dashboardUid, panelNum in self.matchingDashboardPanels:
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
@@ -225,7 +222,7 @@ class Threshold:
         if self.getStateString() == "OFF":
             return
 
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+        for dashboardUid, panelNum in self.matchingDashboardPanels:
             thresholdNum = None
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
 
@@ -411,7 +408,6 @@ def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
     global requestCounter
     requestCounter += 1
-    print(f"Request Num: {requestCounter}; GET")
     if request.status_code != 200:
         print(f"Error in request GET: {json.dumps(request.json())}")
         time.sleep(2)
@@ -422,7 +418,6 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
     global requestCounter
     requestCounter += 1
-    print(f"Request Num: {requestCounter}; PUT")
     if request.status_code != 200:
         print(f"Error in request PUT: {json.dumps(request.json())}")
         time.sleep(2)
@@ -431,7 +426,6 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
     global requestCounter
     requestCounter += 1
-    print(f"Request Num: {requestCounter}; POST")
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
         print(f"Error in request POST: {json.dumps(request.json())}")
@@ -441,7 +435,6 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
 def httpDeleteRequest(url, header=datasource_header):
     global requestCounter
     requestCounter += 1
-    print(f"Request Num: {requestCounter}; DELETE")
     header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
