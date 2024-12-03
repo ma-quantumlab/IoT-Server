@@ -26,7 +26,7 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
-counter = 0
+global counter
 
 # Request Headers and Parameters 
 provisioning_header = {
@@ -488,6 +488,8 @@ def getArguments():
     return parser.parse_args()
 
 if __name__ == "__main__":
+    counter = 0
+
     alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
