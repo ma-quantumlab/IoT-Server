@@ -17,8 +17,6 @@ import os
 BLUE = "\033[94m"
 LIGHT_BLUE = "\033[38;5;153m"
 GREEN = "\033[92m"
-ORANGE = "\033[38;5;172m"
-RED = "\033[31m"  
 RESET = "\033[0m"
 Q = "'"
 
