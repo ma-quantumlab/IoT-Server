@@ -26,6 +26,8 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
+counter = 0
+
 # Request Headers and Parameters 
 provisioning_header = {
     "Content-Type":"application/json",
@@ -407,6 +409,8 @@ class Threshold:
 
 def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
+    counter += 1
+    print("Request: {counter}")
     if request.status_code != 200:
         print(f"Error in request GET: {json.dumps(request.json())}")
         time.sleep(2)
@@ -415,12 +419,16 @@ def httpGetRequest(url, header, param=None):
 
 def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
+    counter += 1
+    print("Request: {counter}")
     if request.status_code != 200:
         print(f"Error in request PUT: {json.dumps(request.json())}")
         time.sleep(2)
         httpPutRequest(url, jsonMessage, provisioning_header)
 
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
+    counter += 1
+    print("Request: {counter}")
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
         print(f"Error in request POST: {json.dumps(request.json())}")
@@ -428,6 +436,8 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
         httpPostRequest(url, jsonMessage, provisioning_header)
 
 def httpDeleteRequest(url, header=datasource_header):
+    counter += 1
+    print("Request: {counter}")
     header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
