@@ -71,7 +71,7 @@
         },
         {
             "title":"Bob Tank Pressure Upper Critical Alert",
-            "threshold":0.005,
+            "threshold":15,
             "state":"OFF"
         },
         {
