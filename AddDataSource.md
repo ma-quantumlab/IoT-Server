@@ -4,11 +4,11 @@ This guide walks you through the process of fetching data from an MQTT broker in
 
 ## Introduction
 
-This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin this is 
+This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin the data must be sent from the different measurment devices to the users  
 
 <img src="https://github.com/user-attachments/assets/e60e50c4-e6c8-4d2b-a466-b174586ae207" alt="Model" width="600">
 
-Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurments that correspond to different collections of data being stored, and finally for each measurment there are a certain number of feilds within each. For example in the database "Fridges" the measurment "Alice Temperature" is shown below (this data is taked from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measruments in all the databases). Notice for the measurment "Alice Temperature" there are four corresonding fields. 
+Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurments that correspond to different collections of data being stored, and for each measurment there are a certain number of fields storing individual data points. For example in the database "Fridges" the measurment "Alice Temperature" is shown below (this data is taked from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measurments in all the databases). Notice for the measurment "Alice Temperature" there are four corresonding fields representing the four streams of data. 
 
 | Time                   | Alice Temperature 4K | Alice Temperature 50K | Alice Temperature MXC | Alice Temperature Still |
 |:-----------------------|:--------------------:|:---------------------:|:---------------------:|-------------------------:|
@@ -73,14 +73,14 @@ if __name__ == "__main__":
 
 // MQTT Configuration and WIFI Cridentials
 const char* ssid = "MaLab";
-const char* password = "******"; // MaLab Password
+const char* password = "********"; // MaLab Password
 
 const char* mqttServer = "192.168.1.104";
 const int mqttPort = 1883;
 const char* mqttUser = "maserver"; // Replace with our MQTT username
 const char* mqttPassword = "malabpurdue"; // Replace with our MQTT password
 
-const char* username = "mix_alice"; // Same as topic name 
+const char* username = "topic"; // Same as topic name 
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -139,7 +139,7 @@ void loop() {
 
 To view programs created in Python that send data via MQTT navigate to the /Bluefors-Log-Watcher folder and to see programs created in Arduino navigate to the /MQTT-Chilled-Water-Monitor and /MQTT-Temp-Hum-Sensor folders within this repository. 
 
-To assure the data is being sent to the Raspberry Pi you can log onto the server (via typing `ssh malab@192.168.1.104` into any computer in the ) and type in the command `listen`. This command is a bash alias for the command `mosquitto_sub -h localhost -t "#" -v` which returns what are the raw JSON values that are being received by the server. Note however this will list all of the incoming JSON values so it is smart to filter with a command like grep to see if the topic that was configured is coming through. This is done below for the topic "fridges":
+To assure the data is being sent to the Raspberry Pi you can log onto the server (via typing `ssh malab@192.168.1.104` into any computer in the ) and type in the command `listen`. This command is a bash alias for the command `mosquitto_sub -h localhost -t "#" -v` which returns the raw JSON values that are being received by the server. Note  this will list all of the incoming JSON values so it is smart to filter with a command like `grep` to see if the topic one is looking for is coming through. This is done below for the topic "fridges":
 
 ``` bash
 malab@maserver:~ $ listen | grep "fridges_"
@@ -148,7 +148,7 @@ lab_weather/ {"fridges_temp":22.1614399,"fridges_hum":16.38361168}
 lab_weather/ {"fridges_temp":22.1614399,"fridges_hum":16.39887047}
 ```
 
-Note to the left it shows the MQTT channel that it is being published on. 
+Note to the left it shows the MQTT channel that it is being published on. Note for 
 
 ## Step 2: 
 
@@ -156,5 +156,5 @@ Once the data is received by the Raspberry Pi it will need to be passed into Inf
 
 <img src="https://github.com/user-attachments/assets/c2e99a0e-99a3-488b-843e-19dd6c186d5a" alt="Model" width="600">
 
-The data is first queried with the MQTT In blocks then it is passed into the Assign Labels block which takes the MQTT topics and assigns them feild names and then finally depending on which Measurment 
+The data is first queried with the MQTT In blocks, then it is passed into the Assign Labels block which takes the MQTT topics and assigns them their respective feild names and then finally it breaks all of the fields down and splits them up into different Influx DB out blocks each representing a different measurment. In order to add an additional datasource the user first must bring in the 
 
