@@ -114,6 +114,7 @@ class Threshold:
         self.matchingDashboardPanels = []
 
         for dashboard in Threshold.getDashboards().values():
+            print("WENT")
             for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+dashboard, provisioning_header)["dashboard"]["panels"]):
                 if self.checkPanelMatch(panel):
                     self.matchingDashboardPanels.append((dashboard, index))
