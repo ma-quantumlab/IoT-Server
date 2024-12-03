@@ -67,7 +67,7 @@ class ThresholdConfiguration:
 
     def __init__(self, file_name):
         self.file_name = file_name
-        self.thresholds_config_json = json.load(open(file_name))
+        self.thresholds_config_json = json.load(open("./Alert-Config-Files/"+file_name))
         self.alerts_config_json = json.load(open("./Alert-Config-Files/alerts_config.json"))["alerts"]
 
     def __str__(self):
