@@ -1,4 +1,4 @@
-# Guide: Connecting Data Source to view on Grafana
+# Guide: Adding Data Source
 
 This guide walks you through the process of fetching data from an MQTT broker in Node-RED and sending it to an InfluxDB instance for storage and analysis.
 
