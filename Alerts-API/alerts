@@ -26,7 +26,7 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
-counter = 0
+requestCounter = 0
 
 # Request Headers and Parameters 
 provisioning_header = {
@@ -409,9 +409,8 @@ class Threshold:
 
 def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
-    global counter
-    counter += 1
-    print(f"Request: {counter}")
+    global requestCounter
+    requestCounter += 1
     if request.status_code != 200:
         print(f"Error in request GET: {json.dumps(request.json())}")
         time.sleep(2)
@@ -420,18 +419,16 @@ def httpGetRequest(url, header, param=None):
 
 def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
-    global counter
-    counter += 1
-    print(f"Request: {counter}")
+    global requestCounter
+    requestCounter += 1
     if request.status_code != 200:
         print(f"Error in request PUT: {json.dumps(request.json())}")
         time.sleep(2)
         httpPutRequest(url, jsonMessage, provisioning_header)
 
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
-    global counter
-    counter += 1
-    print(f"Request: {counter}")
+    global requestCounter
+    requestCounter += 1
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
         print(f"Error in request POST: {json.dumps(request.json())}")
@@ -439,9 +436,8 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
         httpPostRequest(url, jsonMessage, provisioning_header)
 
 def httpDeleteRequest(url, header=datasource_header):
-    global counter
-    counter += 1
-    print(f"Request: {counter}")
+    global requestCounter
+    requestCounter += 1
     header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
@@ -550,3 +546,5 @@ if __name__ == "__main__":
     for enum, threshold in enumerate(httpGetRequest(grafana_url+alert_rules_url, provisioning_header)):
         Threshold.thresholds[enum] = Threshold(threshold)
         print(Threshold(threshold))
+
+    print(f"Total Number of requests: {requestCounter}")
