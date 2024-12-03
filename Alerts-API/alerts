@@ -63,6 +63,61 @@ folder_url = "api/folders/"
 folder_name = os.getenv("ALERT_FOLDER_NAME")
 rule_group = os.getenv("EVALUATION_GROUP_NAME")
 
+# Panel Wrapper Class
+class Panel:
+    def __init__(self, panelJson, panelIndex=None):
+        self.panelJson = panelJson
+        self.panelIndex = panelIndex
+    
+    def measurement(self):
+        return self.panelJson["targets"][0]["measurement"]
+    
+    def type(self):
+        return self.panelJson["type"]
+    
+    def title(self):
+        return self.panelJson["title"]
+    
+    def uid(self):
+        return self.panelJson["uid"]
+    
+    def datasourceUid(self):
+        return self.panelJson["targets"][0]["datasource"]["uid"]
+    
+    def field(self):
+        return self.panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", self.panelJson["targets"][0]["select"][0], "field")[0]]["params"][0]
+    
+    def match(self, datasourceUid, measurement, field):
+        return self.uid() == datasourceUid and self.measurement() == measurement and self.field() == field
+
+# Dashboard Wrapper Class
+class Dashboard:
+    dashboards = []
+
+    def __init__(self, title, uid):
+        self.title = title
+        self.uid = uid
+        panels = []
+
+        for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+uid, provisioning_header)["dashboard"]["panels"]):
+            panels.append(Panel(panel, index))
+    
+    def getPanels(self, type=None):
+        returnPanels = []
+        for panel in self.panels:
+            if type and panel.type() != type:
+                continue
+            returnPanels.append(panel)
+
+        return returnPanels
+
+    @staticmethod
+    def setDashboards():
+        for dashboard in httpGetRequest(grafana_url+search_url, provisioning_header):
+            if dashboard["type"] != "dash-db":
+                continue
+            Dashboard.dashboards.append(Dashboard(dashboard["title"], dashboard["uid"]))
+
 # Threshold Configuration Class
 class ThresholdConfiguration:
     configurations = []
@@ -88,9 +143,9 @@ class ThresholdConfiguration:
             else:
                 boundType = "lt" if "Lower" in alert["title"] else "gt"
                 alertType = "Critical" if "Critical" in alert["title"] else "Warning"
-                Threshold.createAlert(alert["threshold"], alert["state"], boundType, alertType, alert_config)
+                Threshold.create(alert["threshold"], alert["state"], boundType, alertType, alert_config)
         
-        for threshold in Threshold.thresholds[::-1]: # see if error 
+        for threshold in Threshold.thresholds[::-1]:
             if not getJsonArrayIndex("title", self.thresholds_config_json["alerts"], threshold.getName(), True):
                 Threshold.delete(threshold)
 
@@ -151,21 +206,17 @@ class Threshold:
         return self.alertJson["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0]
     
     def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
-        dashboardPanels = []
-        for dashboard in Threshold.getDashboards().values():
-            for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+dashboard, provisioning_header)["dashboard"]["panels"]):
-                if self.checkPanelMatch(panel):
-                    dashboardPanels.append((dashboard, index))
-    
-        return dashboardPanels
-    
-    def checkPanelMatch(self, panel): # Checks to see if datasource parameters match for a dashboard panel
-        return panel["targets"][0]["datasource"]["uid"] == self.getDatasourceUid() \
-            and panel["targets"][0]["measurement"] == self.getMeasurement() \
-            and panel["targets"][0]["select"][0][getJsonArrayIndex("type", panel["targets"][0]["select"][0], "field")[0]]["params"][0] == self.getField()        
+        dashboardPanels = {}
+        for dashboard in Dashboard.dashboards:
+            for panel in dashboard.panels:
+                if panel.match(panel, self.getDatasourceUid(), self.getMeasurement(), self.getField()):
+                    dashboardPanels[dashboard.uid] = panel
+
+        return dashboardPanels  
 
     def createDashboardThreshold(self): # Create threshold in dashboard from alertJson value, shift other values if required
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+        for dashboardUid, panel in self.getAllMatchingDashboardPanels():
+            panelNum = panel.panelIndex
 
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
@@ -173,6 +224,9 @@ class Threshold:
             value = self.getThreshold()
             current_values = [item.get('value', None) for item in dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]]
             index = next((i for i, v in enumerate(current_values) if v is not None and value < v), len(current_values))
+
+            if getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], "text", True):
+                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][0]["color"] = "green"
 
             if "Upper" in self.getName():
                 if "Warning" in self.getName():
@@ -196,8 +250,10 @@ class Threshold:
             
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
-    def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+    def removeDashboardThreshold(self, setInactive=False): # Delete threshold in dashboard, shift other values if required 
+        for dashboardUid, panel in self.getAllMatchingDashboardPanels():
+            panelNum = panel.panelIndex
+
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
             color_indices = lambda color : getJsonArrayIndex("color", dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"], color)
 
@@ -215,6 +271,9 @@ class Threshold:
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].pop(color_indices("green")[0])
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("dark-red")[0]]["color"] = "green"
 
+            if not setInactive and len(dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]) == 1: # make sure works
+                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][0]["color"] = "text"
+
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
     def changeDashboardThreshold(self, value): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
@@ -225,7 +284,9 @@ class Threshold:
         if self.getStateString() == "OFF":
             return
 
-        for dashboardUid, panelNum in self.getAllMatchingDashboardPanels():
+        for dashboardUid, panel in self.getAllMatchingDashboardPanels():
+            panelNum = panel.panelIndex
+
             thresholdNum = None
             dashboardJson = httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)
 
@@ -255,12 +316,12 @@ class Threshold:
             self.createDashboardThreshold()
         else:
             self.alertJson["isPaused"] = bool(True)
-            self.removeDashboardThreshold()
+            self.removeDashboardThreshold(True)
 
         httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
 
     @staticmethod
-    def createAlert(threshold, state, bound_type, alert_type, inputJson=None):
+    def create(threshold, state, bound_type, alert_type, inputJson=None):
         if inputJson is None:
             print(f"Creating alert ... Enter in values below:")
 
@@ -315,14 +376,14 @@ class Threshold:
             else:
                 alert_template["noDataState"] = inputJson["nodata"]
 
-            dashboards = Threshold.getDashboards()
+            dashboards = Dashboard.dashboardUids
             if inputJson and "dashboardname" in inputJson:
                 alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["dashboardname"]]
                 panelId = None
 
-                for panel in httpGetRequest(grafana_url+dashboard_url+dashboards[inputJson["dashboardname"]], provisioning_header)["dashboard"]["panels"]:
-                    if Threshold.checkPanelMatchToJson(panel, databases[database], measurement, field):
-                        panelId = panel["id"]
+                for panel in list(map(Panel, httpGetRequest(grafana_url+dashboard_url+dashboards[inputJson["dashboardname"]], provisioning_header)["dashboard"]["panels"])):
+                    if panel.match(databases[database], measurement, field):
+                        panelId = panel.uid
                         break
 
                 if panelId == None:
@@ -365,32 +426,6 @@ class Threshold:
         if result == []:
             return None
         return result if multipleThresholds else result[0]
-    
-    @staticmethod
-    def getDashboards(): # Gets all dashboards on grafana 
-        dashboardUids = {}
-        for dashboard in httpGetRequest(grafana_url+search_url, provisioning_header):
-            if dashboard["type"] != "dash-db":
-                continue
-            dashboardUids[dashboard["title"]] = dashboard["uid"]
-
-        return dashboardUids
-    
-    @staticmethod
-    def getPanels(dashboardUid, type=None): # Gets all panel names and respective id's from dashboard
-        panelIds = {}   
-        for panel in httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"]:
-            if type and panel["type"] != type:
-                continue
-            panelIds[panel["title"]] = panel["id"]
-
-        return panelIds
-    
-    @staticmethod
-    def checkPanelMatchToJson(panelJson, datasourceUid, measurement, field):
-        return panelJson["targets"][0]["datasource"]["uid"] == datasourceUid \
-            and panelJson["targets"][0]["measurement"] == measurement \
-            and panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", panelJson["targets"][0]["select"][0], "field")[0]]["params"][0] == field
     
     @staticmethod
     def getCheck(parameterName, parameters):
@@ -488,14 +523,15 @@ def getArguments():
     return parser.parse_args()
 
 if __name__ == "__main__":
-    alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
-
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     for file_name in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Alert-Config-Files")):
         if file_name.endswith("config.json") and file_name != "alerts_config.json":
             ThresholdConfiguration.configurations.append(ThresholdConfiguration(file_name))
 
+    alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
+    Dashboard.setDashboards()
+    
     for alert in alerts:
         Threshold.thresholds.append(Threshold(alert))
 
@@ -507,13 +543,13 @@ if __name__ == "__main__":
 
     if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
         if arguments.create_upper_critical:                
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Critical"))
+            Threshold.thresholds.append(Threshold.create(arguments.threshold, arguments.state, "gt", "Critical"))
         elif arguments.create_lower_critical:
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Critical"))
+            Threshold.thresholds.append(Threshold.create(arguments.threshold, arguments.state, "lt", "Critical"))
         elif arguments.create_upper_warning:
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "gt", "Warning"))
+            Threshold.thresholds.append(Threshold.create(arguments.threshold, arguments.state, "gt", "Warning"))
         else:
-            Threshold.thresholds.append(Threshold.createAlert(arguments.threshold, arguments.state, "lt", "Warning"))
+            Threshold.thresholds.append(Threshold.create(arguments.threshold, arguments.state, "lt", "Warning"))
         
     if arguments.delete and (arguments.delete == "*" or Threshold.getThresholdFromName(arguments.delete, False) is not None):
         if arguments.delete == "*":
@@ -548,4 +584,3 @@ if __name__ == "__main__":
         print(Threshold(threshold))
 
     print(f"Total Number of requests: {requestCounter}")
-
