@@ -73,7 +73,7 @@ class ThresholdConfiguration:
         self.alerts_config_json = json.load(open("./Alert-Config-Files/alerts_config.json"))["alerts"]
 
     def __str__(self):
-        return f"{GREEN}Name:{RESET} {BLUE}{Q+self.getName()+Q:<{20}}{RESET} | {GREEN}File Name:{RESET} {BLUE}{Q+self.file_name+Q:<{30}}{RESET} | {GREEN}Description:{RESET} {BLUE}{self.thresholds_config_json['short-description']}"
+        return f"{GREEN}Name:{RESET} {BLUE}{Q+self.getName()+Q:<{20}}{RESET} | {GREEN}File Name:{RESET} {BLUE}{Q+self.file_name+Q:<{35}}{RESET} | {GREEN}Description:{RESET} {BLUE}{self.thresholds_config_json['short-description']}"
 
     def setAlerts(self):
         for alert in self.thresholds_config_json["alerts"]:
