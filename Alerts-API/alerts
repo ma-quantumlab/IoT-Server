@@ -411,6 +411,7 @@ def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
     global requestCounter
     requestCounter += 1
+    print(f"Request Num: {requestCounter}; GET")
     if request.status_code != 200:
         print(f"Error in request GET: {json.dumps(request.json())}")
         time.sleep(2)
@@ -421,6 +422,7 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
     global requestCounter
     requestCounter += 1
+    print(f"Request Num: {requestCounter}; PUT")
     if request.status_code != 200:
         print(f"Error in request PUT: {json.dumps(request.json())}")
         time.sleep(2)
@@ -429,6 +431,7 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
     global requestCounter
     requestCounter += 1
+    print(f"Request Num: {requestCounter}; POST")
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
         print(f"Error in request POST: {json.dumps(request.json())}")
@@ -438,6 +441,7 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
 def httpDeleteRequest(url, header=datasource_header):
     global requestCounter
     requestCounter += 1
+    print(f"Request Num: {requestCounter}; DELETE")
     header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
