@@ -26,7 +26,7 @@ grafana_token = os.getenv("GRAPHANA_TOKEN")
 grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
-global counter
+counter = 0
 
 # Request Headers and Parameters 
 provisioning_header = {
@@ -409,6 +409,7 @@ class Threshold:
 
 def httpGetRequest(url, header, param=None):
     request = requests.get(url, headers=header, params=param)
+    global counter
     counter += 1
     print("Request: {counter}")
     if request.status_code != 200:
@@ -419,6 +420,7 @@ def httpGetRequest(url, header, param=None):
 
 def httpPutRequest(url, jsonMessage, header=provisioning_header):
     request = requests.put(url, data=json.dumps(jsonMessage), headers=header)
+    global counter
     counter += 1
     print("Request: {counter}")
     if request.status_code != 200:
@@ -427,6 +429,7 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
         httpPutRequest(url, jsonMessage, provisioning_header)
 
 def httpPostRequest(url, jsonMessage, header=provisioning_header):
+    global counter
     counter += 1
     print("Request: {counter}")
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
@@ -436,6 +439,7 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
         httpPostRequest(url, jsonMessage, provisioning_header)
 
 def httpDeleteRequest(url, header=datasource_header):
+    global counter
     counter += 1
     print("Request: {counter}")
     header.pop("X-Disable-Provenance", None)
@@ -488,8 +492,6 @@ def getArguments():
     return parser.parse_args()
 
 if __name__ == "__main__":
-    counter = 0
-
     alerts = httpGetRequest(grafana_url+alert_rules_url, provisioning_header)
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
