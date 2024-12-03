@@ -1,17 +1,21 @@
-# Guide: Adding Data Source
+# Adding Data Source
 
 This guide walks you through the process of fetching data from an MQTT broker in Node-RED and sending it to an InfluxDB instance for storage and analysis.
 
-## Prerequisites
+## Introduction
 
-1. **Node-RED** installed and running.
-2. An **MQTT broker** (e.g., Mosquitto) set up and running.
-3. An **InfluxDB** instance installed and configured.
-4. Necessary Node-RED nodes installed:
-   - `node-red-contrib-mqtt-broker`
-   - `node-red-contrib-influxdb`
+This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin this is 
 
-If working with the in lab Raspberry Pi all of these are completed
+<img src="https://github.com/user-attachments/assets/e60e50c4-e6c8-4d2b-a466-b174586ae207" alt="Model" width="600">
+
+Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurments that correspond to different collections of data being stored, and finally for each measurment there are a certain number of feilds within each. For example in the database "Fridges" the measurment "Alice Temperature" is shown below (this data is taked from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measruments in all the databases). Notice for the measurment "Alice Temperature" there are four corresonding fields. 
+
+| Time                   | Alice Temperature 4K | Alice Temperature 50K | Alice Temperature MXC | Alice Temperature Still |
+|:-----------------------|:--------------------:|:---------------------:|:---------------------:|-------------------------:|
+| 2024-12-01 19:35:14.440916 | 3.11189            | 47.3277              | 0.0096873            | 0.803631                |
+| 2024-12-01 19:35:17.461198 | 3.11189            | 47.3277              | 0.0096873            | 0.803631                |
+| 2024-12-01 19:35:20.486014 | 3.11189            | 47.3277              | 0.0096873            | 0.803631                |
+
 
 ## Step 1: Send Data through MQTT to Raspberry Pi 
 
@@ -148,11 +152,9 @@ Note to the left it shows the MQTT channel that it is being published on.
 
 ## Step 2: 
 
-Once the data is received by the Raspberry Pi it will need to be passed into Influx DB, and this is done through Node-RED. This comes directly from the design flow outlined in the README.md file. 
-
-<img src="https://github.com/user-attachments/assets/e60e50c4-e6c8-4d2b-a466-b174586ae207" alt="Model" width="600">
-
-To access Node-RED the following url can be used on any device that is connected to the MaLab internet: "http://192.168.1.104:1880". Once on the Node Red the following flow will be realized, depending on how long it has been the flow may be changed partially however the overall structure should remain the same:
+Once the data is received by the Raspberry Pi it will need to be passed into Influx DB, and this is done through Node-RED. To access Node-RED the following url can be used on any device that is connected to the MaLab internet: "http://192.168.1.104:1880". Once on the Node-RED the following flow will be noticed, depending on how long it has been the flow may be changed partially however the overall structure should remain the same:
 
 <img src="https://github.com/user-attachments/assets/c2e99a0e-99a3-488b-843e-19dd6c186d5a" alt="Model" width="600">
+
+The data is first queried with the MQTT In blocks then it is passed into the Assign Labels block which takes the MQTT topics and assigns them feild names and then finally depending on which Measurment 
 
