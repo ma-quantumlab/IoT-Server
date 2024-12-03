@@ -1,0 +1,28 @@
+{
+    "name":"Test",
+    "short-description":"alert api demo",
+    "long-description":"...",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature Lower Critical Alert",
+            "threshold":47.05,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Lower Warning Alert",
+            "threshold":47.07,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Warning Alert",
+            "threshold":47.09,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Critical Alert",
+            "threshold":47.1,
+            "state":"ON"
+        }
+    ]
+}

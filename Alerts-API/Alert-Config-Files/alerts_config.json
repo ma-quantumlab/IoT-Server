@@ -1,0 +1,214 @@
+{
+    "name":"Alerts Config",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature 50K",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice 4 K Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature 4K",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Still Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature Still",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice MXC Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature MXC",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Flowmeter Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_flowmeter",
+            "field":"Alice Flowmeter",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice OVC Can Pressure",
+            "database":"fridge_database",
+            "measurement":"alice_pressure",
+            "field":"Alice Pressure OVC",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Still Side Pressure",
+            "database":"fridge_database",
+            "measurement":"alice_pressure",
+            "field":"Alice Pressure Still Side",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Differential Pressure",
+            "database":"fridge_database",
+            "measurement":"alice_pressure",
+            "field":"Alice Pressure Differential Across Trap",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Tank Pressure",
+            "database":"fridge_database",
+            "measurement":"alice_pressure",
+            "field":"Alice Pressure Tank",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Water In Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_compressor",
+            "field":"Alice Compressor Water In",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Water Out Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_compressor",
+            "field":"Alice Compressor Water Out",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Oil Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_compressor",
+            "field":"Alice Compressor Oil Temperature",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Alice Error Status",
+            "database":"fridge_database",
+            "measurement":"alice_compressor",
+            "field":"Alice Compressor Error Status",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+        {
+            "title":"Bob 50 K Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_temperature",
+            "field":"Bob Temperature 50K",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob 4 K Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_temperature",
+            "field":"Bob Temperature 4K",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Still Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_temperature",
+            "field":"Bob Temperature Still",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob MXC Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_temperature",
+            "field":"Bob Temperature MXC",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Flowmeter Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_flowmeter",
+            "field":"Bob Flowmeter",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob OVC Can Pressure",
+            "database":"fridge_database",
+            "measurement":"bob_pressure",
+            "field":"Bob Pressure OVC",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Still Side Pressure",
+            "database":"fridge_database",
+            "measurement":"bob_pressure",
+            "field":"Bob Pressure Still Side",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Differential Pressure",
+            "database":"fridge_database",
+            "measurement":"bob_pressure",
+            "field":"Bob Pressure Differential Across Trap",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Tank Pressure",
+            "database":"fridge_database",
+            "measurement":"bob_pressure",
+            "field":"Bob Pressure Tank",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Water In Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_compressor",
+            "field":"Bob Compressor Water In",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Water Out Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_compressor",
+            "field":"Bob Compressor Water Out",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Oil Temperature",
+            "database":"fridge_database",
+            "measurement":"bob_compressor",
+            "field":"Bob Compressor Oil Temperature",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        },
+        {
+            "title":"Bob Error Status",
+            "database":"fridge_database",
+            "measurement":"bob_compressor",
+            "field":"Bob Compressor Error Status",
+            "nodata":"OK",
+            "dashboardname":"Bob Fridge Dashboard"
+        }
+    ]
+}

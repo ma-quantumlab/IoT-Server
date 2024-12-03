@@ -1,0 +1,98 @@
+{
+    "name":"Alice Fridge Cold",
+    "short-description":"bob fridge cooling values",
+    "long-description":"...",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature Upper Warning Alert",
+            "threshold":50,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 4 K Temperature Upper Warning Alert",
+            "threshold":4,
+            "state":"ON"
+        },
+        {
+            "title":"Alice 4 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Still Temperature Upper Warning Alert",
+            "threshold":1.1,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Still Temperature Upper Critical Alert",
+            "threshold":1.3,
+            "state":"ON"
+        },
+        {
+            "title":"Alice MXC Temperature Upper Warning Alert",
+            "threshold":0.035,
+            "state":"ON"
+        },
+        {
+            "title":"Alice MXC Temperature Upper Critical Alert",
+            "threshold":0.085,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Flowmeter Temperature Lower Critical Alert",
+            "threshold":0.1,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Flowmeter Temperature Upper Critical Alert",
+            "threshold":0.8,
+            "state":"ON"
+        },
+        {
+            "title":"Alice OVC Can Pressure Upper Critical Alert",
+            "threshold":0.0001,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Differential Pressure Upper Warning Alert",
+            "threshold":40,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Differential Pressure Upper Critical Alert",
+            "threshold":60,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Tank Pressure Upper Critical Alert",
+            "threshold":0.005,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Water In Temperature Upper Warning Alert",
+            "threshold":25,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Water In Temperature Upper Critical Alert",
+            "threshold":30,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Oil Temperature Upper Warning Alert",
+            "threshold":45,
+            "state":"ON"
+        },
+        {
+            "title":"Alice Error Status Upper Warning Alert",
+            "threshold":0.5,
+            "state":"ON"
+        }
+    ]
+}

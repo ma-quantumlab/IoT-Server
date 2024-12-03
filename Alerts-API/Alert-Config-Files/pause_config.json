@@ -1,0 +1,188 @@
+{
+    "name":"Pause Alerts",
+    "short-description":"pausing all alerts",
+    "long-description":"This JSON contains the same alerts defined within 'fridge_warning_config.json' and 'fridge_cold.json' but instead every alert is paused. Users can invoke this alert when one does not want any of the alerts to go off but doesn't want to manually delete the alerts.",
+    "alerts":
+    [
+        {
+            "title":"Alice 50 K Temperature Upper Warning Alert",
+            "threshold":50,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice 50 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice 4 K Temperature Upper Warning Alert",
+            "threshold":4,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice 4 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Still Temperature Upper Warning Alert",
+            "threshold":1.1,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Still Temperature Upper Critical Alert",
+            "threshold":1.3,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice MXC Temperature Upper Warning Alert",
+            "threshold":0.035,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice MXC Temperature Upper Critical Alert",
+            "threshold":0.085,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Flowmeter Temperature Lower Critical Alert",
+            "threshold":0.1,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Flowmeter Temperature Upper Critical Alert",
+            "threshold":0.8,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice OVC Can Pressure Upper Critical Alert",
+            "threshold":0.0001,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Differential Pressure Upper Warning Alert",
+            "threshold":40,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Differential Pressure Upper Critical Alert",
+            "threshold":60,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Tank Pressure Upper Critical Alert",
+            "threshold":0.005,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Water In Temperature Upper Warning Alert",
+            "threshold":25,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Water In Temperature Upper Critical Alert",
+            "threshold":30,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Oil Temperature Upper Warning Alert",
+            "threshold":45,
+            "state":"OFF"
+        },
+        {
+            "title":"Alice Error Status Upper Warning Alert",
+            "threshold":0.5,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob 50 K Temperature Upper Warning Alert",
+            "threshold":50,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob 50 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob 4 K Temperature Upper Warning Alert",
+            "threshold":4,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob 4 K Temperature Upper Critical Alert",
+            "threshold":303.15,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Still Temperature Upper Warning Alert",
+            "threshold":1.1,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Still Temperature Upper Critical Alert",
+            "threshold":1.3,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob MXC Temperature Upper Warning Alert",
+            "threshold":0.035,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob MXC Temperature Upper Critical Alert",
+            "threshold":0.085,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Flowmeter Temperature Lower Critical Alert",
+            "threshold":0.1,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Flowmeter Temperature Upper Critical Alert",
+            "threshold":0.8,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob OVC Can Pressure Upper Critical Alert",
+            "threshold":0.0001,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Differential Pressure Upper Warning Alert",
+            "threshold":40,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Differential Pressure Upper Critical Alert",
+            "threshold":60,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Tank Pressure Upper Critical Alert",
+            "threshold":0.005,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Water In Temperature Upper Warning Alert",
+            "threshold":25,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Water In Temperature Upper Critical Alert",
+            "threshold":30,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Oil Temperature Upper Warning Alert",
+            "threshold":45,
+            "state":"OFF"
+        },
+        {
+            "title":"Bob Error Status Upper Warning Alert",
+            "threshold":0.5,
+            "state":"OFF"
+        }
+    ]
+}
