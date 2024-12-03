@@ -117,11 +117,7 @@ class Threshold:
             BLUE_COLOR = BLUE
         else:
             BLUE_COLOR = LIGHT_BLUE
-        
-        THRESHOLD_COLOR = BLUE_COLOR
-        if True:
-            THRESHOLD_COLOR = RED if "Critical" in self.getName() else ORANGE
-        return f"{GREEN}Name:{RESET} {BLUE_COLOR}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}Threshold:{RESET} {BLUE_COLOR}{self.getAlertType()}{RESET}{THRESHOLD_COLOR}{str(self.getThreshold()):<{25}}{RESET} | {GREEN}State:{RESET} {BLUE_COLOR}{self.getStateString()}{RESET}"
+        return f"{GREEN}Name:{RESET} {BLUE_COLOR}{Q+self.getName()+Q:<{50}}{RESET} | {GREEN}Threshold:{RESET} {BLUE_COLOR}{self.getAlertType()+str(self.getThreshold()):<{25}}{RESET} | {GREEN}State:{RESET} {BLUE_COLOR}{self.getStateString()}{RESET}"
 
     def getName(self): # Returns title of alert
         return self.alertJson["title"] 
