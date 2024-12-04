@@ -322,7 +322,7 @@ class Threshold:
             self.createDashboardThreshold()
         else:
             self.alertJson["isPaused"] = bool(True)
-            self.removeDashboardThreshold(True)
+            self.removeDashboardThreshold()
 
         httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
 
