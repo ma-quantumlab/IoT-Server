@@ -78,8 +78,8 @@ class Panel:
     def title(self):
         return self.panelJson["title"]
     
-    def uid(self):
-        return self.panelJson["uid"]
+    def id(self):
+        return self.panelJson["id"]
     
     def datasourceUid(self):
         return self.panelJson["targets"][0]["datasource"]["uid"]
@@ -88,7 +88,7 @@ class Panel:
         return self.panelJson["targets"][0]["select"][0][getJsonArrayIndex("type", self.panelJson["targets"][0]["select"][0], "field")[0]]["params"][0]
     
     def match(self, datasourceUid, measurement, field):
-        return self.uid() == datasourceUid and self.measurement() == measurement and self.field() == field
+        return self.datasourceUid() == datasourceUid and self.measurement() == measurement and self.field() == field
 
 # Dashboard Wrapper Class
 class Dashboard:
@@ -97,19 +97,27 @@ class Dashboard:
     def __init__(self, title, uid):
         self.title = title
         self.uid = uid
-        panels = []
+        self.panels = []
 
         for index, panel in enumerate(httpGetRequest(grafana_url+dashboard_url+uid, provisioning_header)["dashboard"]["panels"]):
-            panels.append(Panel(panel, index))
+            self.panels.append(Panel(panel, index))
     
-    def getPanels(self, type=None):
+    def getPanels(self, type, title=None):
         returnPanels = []
         for panel in self.panels:
             if type and panel.type() != type:
                 continue
+            if not title and title == panel.title:
+                return panel
             returnPanels.append(panel)
 
         return returnPanels
+    
+    @staticmethod # Bad Practice
+    def getDashboard(identifier):
+        for dashboard in Dashboard.dashboards:
+            if identifier == dashboard.uid or identifier == dashboard.title:
+                return dashboard
 
     @staticmethod
     def setDashboards():
@@ -208,8 +216,8 @@ class Threshold:
     def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
         dashboardPanels = {}
         for dashboard in Dashboard.dashboards:
-            for panel in dashboard.panels:
-                if panel.match(panel, self.getDatasourceUid(), self.getMeasurement(), self.getField()):
+            for panel in dashboard.getPanels(None):
+                if panel.match(self.getDatasourceUid(), self.getMeasurement(), self.getField()):
                     dashboardPanels[dashboard.uid] = panel
 
         return dashboardPanels  
@@ -376,14 +384,15 @@ class Threshold:
             else:
                 alert_template["noDataState"] = inputJson["nodata"]
 
-            dashboards = Dashboard.dashboardUids
+            
             if inputJson and "dashboardname" in inputJson:
-                alert_template["annotations"]["__dashboardUid__"] = dashboards[inputJson["dashboardname"]]
+                dashboardUid = Dashboard.getDashboard(inputJson["dashboardname"])
+                alert_template["annotations"]["__dashboardUid__"] = dashboardUid
                 panelId = None
 
-                for panel in list(map(Panel, httpGetRequest(grafana_url+dashboard_url+dashboards[inputJson["dashboardname"]], provisioning_header)["dashboard"]["panels"])):
+                for panel in list(map(Panel, httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"])):
                     if panel.match(databases[database], measurement, field):
-                        panelId = panel.uid
+                        panelId = panel.id
                         break
 
                 if panelId == None:
@@ -391,10 +400,10 @@ class Threshold:
                 alert_template["annotations"]["__panelId__"] = str(panelId)
 
             elif inputJson is None and strictInput("Configure dashboard-alert pair? ('y'/'n') ", ["y", "n"]) == "y":
-                dashboardUid = dashboards[Threshold.getCheck("dashboard names", list(dashboards.keys()))]
-                panels = Threshold.getPanels(dashboardUid, "timeseries")
-                alert_template["annotations"]["__dashboardUid__"] = dashboardUid
-                alert_template["annotations"]["__panelId__"] = str(panels[Threshold.getCheck("timeseries panel names", list(panels.keys()))])
+                dashboard = Dashboard.getDashboard(Threshold.getCheck("dashboard names", list(map(lambda obj : obj.title, Dashboard.dashboards))))
+                panels = dashboard.getPanels("timeseries")
+                alert_template["annotations"]["__dashboardUid__"] = dashboard.uid
+                alert_template["annotations"]["__panelId__"] = dashboard.getPanels(Threshold.getCheck("timeseries panel names", list(map(lambda obj : obj.title, panels)))).id
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
             alert = Threshold(alert_template)
