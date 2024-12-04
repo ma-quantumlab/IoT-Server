@@ -107,9 +107,10 @@ class Dashboard:
         for panel in self.panels:
             if type and panel.type() != type:
                 continue
-            if not title and title == panel.title:
+            if title and title == panel.title():
                 return panel
-            returnPanels.append(panel)
+            if not title:
+                returnPanels.append(panel)
 
         return returnPanels
     
@@ -214,11 +215,11 @@ class Threshold:
         return self.alertJson["data"][a_refId_index]["model"]["select"][0][field_type_index]["params"][0]
     
     def getAllMatchingDashboardPanels(self): # Returns tuple list of dashboard uid and associated panel index (NOT panel id)
-        dashboardPanels = {}
+        dashboardPanels = []
         for dashboard in Dashboard.dashboards:
             for panel in dashboard.getPanels(None):
                 if panel.match(self.getDatasourceUid(), self.getMeasurement(), self.getField()):
-                    dashboardPanels[dashboard.uid] = panel
+                    dashboardPanels.append((dashboard.uid, panel))
 
         return dashboardPanels  
 
@@ -258,7 +259,7 @@ class Threshold:
             
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
-    def removeDashboardThreshold(self, setInactive=False): # Delete threshold in dashboard, shift other values if required 
+    def removeDashboardThreshold(self): # Delete threshold in dashboard, shift other values if required 
         for dashboardUid, panel in self.getAllMatchingDashboardPanels():
             panelNum = panel.panelIndex
 
@@ -279,12 +280,9 @@ class Threshold:
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"].pop(color_indices("green")[0])
                         dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][color_indices("dark-red")[0]]["color"] = "green"
 
-            if not setInactive and len(dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"]) == 1: # make sure works
-                dashboardJson["dashboard"]["panels"][panelNum]["fieldConfig"]["defaults"]["thresholds"]["steps"][0]["color"] = "text"
-
             httpPostRequest(grafana_url+update_dashboard_url, dashboardJson)
         
-    def changeDashboardThreshold(self, value): # Change the value of the dashboard threshold, if editAlertJson == False edit only panel 
+    def changeDashboardThreshold(self, value): # Change the value of the dashboard threshold 
         c_refId_index = getJsonArrayIndex("refId", self.alertJson["data"], "C")[0]
         self.alertJson["data"][c_refId_index]["model"]["conditions"][0]["evaluator"]["params"][0] = value
         httpPutRequest(grafana_url+alert_rules_url+self.getAlertId(), self.alertJson)
@@ -386,13 +384,13 @@ class Threshold:
 
             
             if inputJson and "dashboardname" in inputJson:
-                dashboardUid = Dashboard.getDashboard(inputJson["dashboardname"])
+                dashboardUid = Dashboard.getDashboard(inputJson["dashboardname"]).uid
                 alert_template["annotations"]["__dashboardUid__"] = dashboardUid
                 panelId = None
 
                 for panel in list(map(Panel, httpGetRequest(grafana_url+dashboard_url+dashboardUid, provisioning_header)["dashboard"]["panels"])):
                     if panel.match(databases[database], measurement, field):
-                        panelId = panel.id
+                        panelId = panel.id()
                         break
 
                 if panelId == None:
@@ -403,7 +401,7 @@ class Threshold:
                 dashboard = Dashboard.getDashboard(Threshold.getCheck("dashboard names", list(map(lambda obj : obj.title, Dashboard.dashboards))))
                 panels = dashboard.getPanels("timeseries")
                 alert_template["annotations"]["__dashboardUid__"] = dashboard.uid
-                alert_template["annotations"]["__panelId__"] = dashboard.getPanels(Threshold.getCheck("timeseries panel names", list(map(lambda obj : obj.title, panels)))).id
+                alert_template["annotations"]["__panelId__"] = str(dashboard.getPanels("timeseries", Threshold.getCheck("timeseries panel names", list(map(lambda obj : obj.title(), panels)))).id())
                 
             alert_template["isPaused"] = bool(False) if state == "ON" else bool(True)
             alert = Threshold(alert_template)
