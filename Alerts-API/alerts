@@ -12,6 +12,7 @@ import requests
 import argparse
 import time
 import json
+import sys
 import os
 
 BLUE = "\033[94m"
@@ -27,6 +28,7 @@ grafana_url = os.getenv("GRAFANA_URL")
 infludb_url = os.getenv("INFLUXDB_URL")
 
 requestCounter = 0
+errorCounter = 0
 
 # Request Headers and Parameters 
 provisioning_header = {
@@ -454,6 +456,8 @@ def httpGetRequest(url, header, param=None):
     global requestCounter
     requestCounter += 1
     if request.status_code != 200:
+        global errorCounter
+        errorCounter += 1
         print(f"Error in request GET: {json.dumps(request.json())}")
         time.sleep(2)
         return httpGetRequest(url, header, param)
@@ -464,6 +468,8 @@ def httpPutRequest(url, jsonMessage, header=provisioning_header):
     global requestCounter
     requestCounter += 1
     if request.status_code != 200:
+        global errorCounter
+        errorCounter += 1
         print(f"Error in request PUT: {json.dumps(request.json())}")
         time.sleep(2)
         httpPutRequest(url, jsonMessage, provisioning_header)
@@ -473,6 +479,8 @@ def httpPostRequest(url, jsonMessage, header=provisioning_header):
     requestCounter += 1
     request = requests.post(url, data=json.dumps(jsonMessage), headers=header)
     if request.status_code != 200 and request.status_code != 201:
+        global errorCounter
+        errorCounter += 1
         print(f"Error in request POST: {json.dumps(request.json())}")
         time.sleep(2)
         httpPostRequest(url, jsonMessage, provisioning_header)
@@ -483,6 +491,8 @@ def httpDeleteRequest(url, header=datasource_header):
     header.pop("X-Disable-Provenance", None)
     request = requests.delete(url, headers=header)
     if request.status_code != 204:
+        global errorCounter
+        errorCounter += 1
         print(f"Error in request DELETE: {json.dumps(request.json())}")
         time.sleep(2)
         httpDeleteRequest(url)
@@ -580,6 +590,10 @@ if __name__ == "__main__":
             thresholds = Threshold.getThresholdFromName(arguments.name, True)
             for threshold in thresholds:
                 threshold.changeDashboardThresholdState(arguments.state)
+
+    for _ in range(errorCounter):
+        sys.stdout.write("\033[F\033[K")
+        sys.stdout.flush()
 
     print(f"{GREEN}----------- Configurations -----------{RESET}")
     for config in ThresholdConfiguration.configurations:
