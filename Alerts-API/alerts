@@ -12,7 +12,6 @@ import requests
 import argparse
 import time
 import json
-import sys
 import os
 
 BLUE = "\033[94m"
@@ -590,10 +589,6 @@ if __name__ == "__main__":
             thresholds = Threshold.getThresholdFromName(arguments.name, True)
             for threshold in thresholds:
                 threshold.changeDashboardThresholdState(arguments.state)
-
-    for _ in range(errorCounter):
-        sys.stdout.write("\033[F\033[K")
-        sys.stdout.flush()
 
     print(f"{GREEN}----------- Configurations -----------{RESET}")
     for config in ThresholdConfiguration.configurations:
