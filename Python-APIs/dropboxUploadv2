@@ -1,13 +1,15 @@
 #!/usr/bin/python
 
-import argparse
+from dropbox.exceptions import HttpError, AuthError
+from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
 import requests
+import argparse
 import dropbox
-import io
+import time
 import csv
+import io
 import os
 
 def setup():
@@ -35,18 +37,58 @@ def setup():
     )
     return dbx, client
 
+def calculate_date_range(date_range):
+    """Calculate start and end times and the folder date based on the date range."""
+    days_ago = int(date_range[1:]) if len(date_range) > 1 else 0
+    folder_date = (datetime.now() - timedelta(days=days_ago)).strftime("%Y-%m-%d")
+    end_time = f"now() - {days_ago}d"
+    start_time = f"now() - {days_ago + 1}d"
+    return start_time, end_time, folder_date
+
 def query_data(client, database, measurement, start_time, end_time):
     client.switch_database(database)
     query = f'SELECT * FROM "{measurement}" WHERE time >= {start_time} AND time < {end_time}'
     return client.query(query)
 
-def upload_to_dropbox(dbx, csv_content, measurement):
-    date = datetime.now().strftime("%Y-%m-%d")
-    dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
+def upload_to_dropbox(dbx, csv_content, measurement, folder_date, max_retries=3):
+    folder_path = f"/ServerData/{folder_date}"
+    file_path = f"{folder_path}/{measurement.replace('_', ' ').title()}.csv"
+
+    # Ensure the folder exists
+    try:
+        dbx.files_create_folder_v2(folder_path)
+    except dropbox.exceptions.ApiError as e:
+        if isinstance(e.error, dropbox.files.CreateFolderError) and e.error.is_conflict():
+            pass  # Folder already exists
+
+    retries = 0
+    while retries < max_retries:
+        try:
+            # Upload file with increased timeout
+            dbx.files_upload(
+                csv_content.encode(),
+                file_path,
+                timeout=300  # Increase timeout to 5 minutes
+            )
+            print(f"Successfully uploaded {file_path} to Dropbox.")
+            return
+        except dropbox.exceptions.HttpError as e:
+            print(f"HTTP error during upload: {e}")
+        except dropbox.exceptions.DropboxException as e:
+            print(f"Dropbox API error: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+
+        retries += 1
+        print(f"Retrying upload ({retries}/{max_retries})...")
+        time.sleep(5)  # Wait before retrying
+
+    print(f"Failed to upload {file_path} after {max_retries} retries.")
+
 
 def process_and_upload(dbx, client, date_range="d1"):
-    end_time = f"now() - {date_range[1:] if len(date_range) > 1 else 0}d"
-    start_time = f"now() - {int(date_range[1:] if len(date_range) > 1 else 0) + 1}d"
+    # Calculate date range and folder date
+    start_time, end_time, folder_date = calculate_date_range(date_range)
 
     databases = [db["name"] for db in client.get_list_database()]
 
@@ -72,7 +114,7 @@ def process_and_upload(dbx, client, date_range="d1"):
                 csv_writer.writerow(row)
             
             csv_buffer.seek(0)
-            upload_to_dropbox(dbx, csv_buffer.getvalue(), measurement)
+            upload_to_dropbox(dbx, csv_buffer.getvalue(), measurement, folder_date)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
@@ -85,3 +127,4 @@ if __name__ == "__main__":
         process_and_upload(dbx, client, args.date_range)
     finally:
         client.close()
+
