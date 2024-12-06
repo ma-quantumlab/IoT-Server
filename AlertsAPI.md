@@ -4,7 +4,7 @@
 
 The alerts API is a command line tool designed to allow users to view, edit, create and delete alerts that are associated with Grafana and Influx DB. Alerts additionally have configuration files that store large lists of pre-configured alerts so the user can simply edit a configuration JSON instead of editing individual alerts through the API. 
 
-To view the grafana dashboards go to [this link](http://192.168.1.104:3000/dashboards) on any computer connected to the server (The username is "malab" the password is "malabpurdue"). 
+To view the grafana dashboards go to [this link](http://192.168.1.104:3000/dashboards) on any computer connected to the server (The username is on the lab OneNote page). 
 
 In order to use the alerts API the user must ssh onto the MaLab server. To do this one simply has to enter a command line (on a computer connected to the internet) and type `ssh malab@192.168.1.104` and then type in the password "malabserver" into the prompt. Once the user is in the server they will have access to the alerts API. 
 
