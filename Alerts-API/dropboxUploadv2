@@ -1,0 +1,87 @@
+#!/usr/bin/python
+
+import argparse
+from influxdb import InfluxDBClient
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
+import requests
+import dropbox
+import io
+import csv
+import os
+
+def setup():
+    load_dotenv()
+
+    INFLUX_PORT = 8086
+
+    # Get Dropbox access token
+    access_token = requests.post(
+        "https://api.dropbox.com/oauth2/token",
+        data={
+            "grant_type": "refresh_token",
+            "refresh_token": os.getenv("REFRESH_TOKEN"),
+            "client_id": os.getenv("APP_KEY"),
+            "client_secret": os.getenv("APP_SECRET"),
+        }
+    ).json()["access_token"]
+
+    dbx = dropbox.Dropbox(access_token)
+    client = InfluxDBClient(
+        host=os.getenv("INFLUX_HOST"), 
+        port=INFLUX_PORT, 
+        username=os.getenv("INFLUX_USER"), 
+        password=os.getenv("INFLUX_PASSWORD")
+    )
+    return dbx, client
+
+def query_data(client, database, measurement, start_time, end_time):
+    client.switch_database(database)
+    query = f'SELECT * FROM "{measurement}" WHERE time >= {start_time} AND time < {end_time}'
+    return client.query(query)
+
+def upload_to_dropbox(dbx, csv_content, measurement):
+    date = datetime.now().strftime("%Y-%m-%d")
+    dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
+
+def process_and_upload(dbx, client, date_range="d1"):
+    end_time = f"now() - {date_range[1:] if len(date_range) > 1 else 0}d"
+    start_time = f"now() - {int(date_range[1:] if len(date_range) > 1 else 0) + 1}d"
+
+    databases = [db["name"] for db in client.get_list_database()]
+
+    for database in databases:
+        client.switch_database(database)
+        measurements = [m["name"] for m in client.get_list_measurements()]
+
+        for measurement in measurements:
+            result = query_data(client, database, measurement, start_time, end_time)
+            
+            csv_buffer = io.StringIO()
+            csv_writer = csv.writer(csv_buffer)
+
+            headers_written = False
+            for point in result.get_points(measurement=measurement):
+                if not headers_written:
+                    headers = list(point.keys())
+                    csv_writer.writerow(headers)
+                    headers_written = True
+                
+                row = [point.get("time").replace("T", " ").replace("Z", "")]
+                row += [point.get(field) for field in headers[1:]]
+                csv_writer.writerow(row)
+            
+            csv_buffer.seek(0)
+            upload_to_dropbox(dbx, csv_buffer.getvalue(), measurement)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
+    parser.add_argument("--date-range", type=str, default="d1", 
+                        help="Date range in format dN (e.g., 'd3' for data from 3 days ago to 2 days ago). Default is 'd1'.")
+    args = parser.parse_args()
+
+    dbx, client = setup()
+    try:
+        process_and_upload(dbx, client, args.date_range)
+    finally:
+        client.close()
