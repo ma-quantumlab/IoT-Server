@@ -4,11 +4,11 @@ This guide walks you through the process of fetching data from an MQTT broker in
 
 ## Introduction
 
-This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin the data must be sent from the different measurment devices to the users  
+This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin the data must be sent from the different measurement devices to the users  
 
 <img src="https://github.com/user-attachments/assets/e60e50c4-e6c8-4d2b-a466-b174586ae207" alt="Model" width="600">
 
-Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurments that correspond to different collections of data being stored, and for each measurment there are a certain number of fields storing individual data points. For example in the database "Fridges" the measurment "Alice Temperature" is shown below (this data is taked from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measurments in all the databases). Notice for the measurment "Alice Temperature" there are four corresonding fields representing the four streams of data. 
+Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurements that correspond to different collections of data being stored, and for each measurement there are a certain number of fields storing individual data points. For example in the database "Fridges" the measurement "Alice Temperature" is shown below (this data is taken from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measurements in all the databases). Notice for the measurement "Alice Temperature" there are four corresponding fields representing the four streams of data. 
 
 | Time                   | Alice Temperature 4K | Alice Temperature 50K | Alice Temperature MXC | Alice Temperature Still |
 |:-----------------------|:--------------------:|:---------------------:|:---------------------:|-------------------------:|
@@ -156,5 +156,8 @@ Once the data is received by the Raspberry Pi it will need to be passed into Inf
 
 <img src="https://github.com/user-attachments/assets/c2e99a0e-99a3-488b-843e-19dd6c186d5a" alt="Model" width="600">
 
-The data is first queried with the MQTT In blocks, then it is passed into the Assign Labels block which takes the MQTT topics and assigns them their respective feild names and then finally it breaks all of the fields down and splits them up into different Influx DB out blocks each representing a different measurment. In order to add an additional datasource the user first must bring in the 
+The data is first queried with the MQTT In blocks, then it is passed into the Assign Labels block which takes the MQTT topics and assigns them their respective felid names and then finally it breaks all of the fields down and splits them up into different Influx DB out blocks each representing a different measurement. In order to add an additional datasources the user first must bring in the 
 
+## Step 3: 
+
+Now that the data has been successfully passed into Influx DB we can display it on the 
