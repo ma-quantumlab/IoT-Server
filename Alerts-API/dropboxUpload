@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import dropbox
-import io
 import csv
+import io
 import os
 
 load_dotenv()
