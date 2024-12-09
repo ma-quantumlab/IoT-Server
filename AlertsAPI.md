@@ -113,7 +113,7 @@ If the user is interested in creating a new configuration file they must first a
 }
 ```
 
-Below is what a configuration file would look like which creates four different alerts; realize that the configuration file must end in "config.json" and be in the `~/Alerts-API/` folder to be recognized by the program. Notice how the type of alert is defined within the title section, the title must follow the specifications outlined in the [Alert Naming System Section](#alert-naming-system).
+Below is what a configuration file would look like which creates four different alerts; realize that the configuration file must end in "config.json" and be in the `~/Python-APIs/Alert-Config-Files/` folder to be recognized by the program. Notice how the type of alert is defined within the title section, the title must follow the specifications outlined in the [Alert Naming System Section](#alert-naming-system).
 
 ``` json
 {
