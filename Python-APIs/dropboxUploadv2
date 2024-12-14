@@ -78,13 +78,12 @@ def upload_to_dropbox(dbx, csv_content, measurement, folder_date, max_retries=3)
 
         retries += 1
         print(f"Retrying upload ({retries}/{max_retries})...")
-        time.sleep(5)  # Wait before retrying
+        time.sleep(5)
 
     print(f"Failed to upload {file_path} after {max_retries} retries.")
 
 
 def process_and_upload(dbx, client, date_range="d1"):
-    # Calculate date range and folder date
     start_time, end_time, folder_date = calculate_date_range(date_range)
 
     databases = [db["name"] for db in client.get_list_database()]

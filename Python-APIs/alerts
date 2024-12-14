@@ -565,7 +565,7 @@ if __name__ == "__main__":
     if arguments.edit is not None:
         path = "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.edit).file_name
         subprocess.run(["vim", path])
-        if strictInput("Do you want to push these changes to the Remote Repository?", ["Yes", "No"]) == "Yes":
+        if strictInput("Do you want to push these changes to the Remote Repository? ", ["Yes", "No"]) == "Yes":
             try:
                 subprocess.run(["git", "add", path], check=True)
 
