@@ -1,91 +1,42 @@
-#!/usr/bin/python
+#! /usr/bin/python
 
-from dropbox.exceptions import HttpError, AuthError
-from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
+from datetime import datetime
 import requests
-import argparse
 import dropbox
-import time
 import csv
 import io
 import os
 
-def setup():
-    load_dotenv()
+load_dotenv()
 
-    INFLUX_PORT = 8086
+INFLUX_PORT = 8086
 
-    access_token = requests.post(
-        "https://api.dropbox.com/oauth2/token",
-        data={
-            "grant_type": "refresh_token",
-            "refresh_token": os.getenv("REFRESH_TOKEN"),
-            "client_id": os.getenv("APP_KEY"),
-            "client_secret": os.getenv("APP_SECRET"),
-        }
-    ).json()["access_token"]
+access_token = requests.post(
+    "https://api.dropbox.com/oauth2/token",
+    data={
+        "grant_type": "refresh_token",
+        "refresh_token": os.getenv("REFRESH_TOKEN"),
+        "client_id": os.getenv("APP_KEY"),
+        "client_secret": os.getenv("APP_SECRET"),
+    }
+).json()["access_token"]
 
-    dbx = dropbox.Dropbox(access_token)
-    client = InfluxDBClient(
-        host=os.getenv("INFLUX_HOST"), 
-        port=INFLUX_PORT, 
-        username=os.getenv("INFLUX_USER"), 
-        password=os.getenv("INFLUX_PASSWORD")
-    )
-    return dbx, client
+dbx = dropbox.Dropbox(access_token)
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
+                        username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
-def calculate_date_range(date_range):
-    """Calculate start and end times and the folder date based on the date range."""
-    days_ago = int(date_range[1:]) if len(date_range) > 1 else 0
-    folder_date = (datetime.now() - timedelta(days=days_ago)).strftime("%Y-%m-%d")
-    end_time = f"now() - {days_ago}d"
-    start_time = f"now() - {days_ago + 1}d"
-    return start_time, end_time, folder_date
-
-def query_data(client, database, measurement, start_time, end_time):
+def query_data(database, measurement):
     client.switch_database(database)
-    query = f'SELECT * FROM "{measurement}" WHERE time >= {start_time} AND time < {end_time}'
+    query = f'SELECT * FROM "{measurement}" WHERE time >= now() - 1d'
     return client.query(query)
 
-def upload_to_dropbox(dbx, csv_content, measurement, folder_date, max_retries=3):
-    folder_path = f"/ServerData/{folder_date}"
-    file_path = f"{folder_path}/{measurement.replace('_', ' ').title()}.csv"
+def upload_to_dropbox(csv_content, measurement):
+    date = datetime.now().strftime("%Y-%m-%d")
+    dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
 
-    try:
-        dbx.files_create_folder_v2(folder_path)
-    except dropbox.exceptions.ApiError as e:
-        if isinstance(e.error, dropbox.files.CreateFolderError) and e.error.is_conflict():
-            pass  
-
-    retries = 0
-    while retries < max_retries:
-        try:
-            dbx.files_upload(
-                csv_content.encode(),
-                file_path,
-                timeout=300 
-            )
-            print(f"Successfully uploaded {file_path} to Dropbox.")
-            return
-        except dropbox.exceptions.HttpError as e:
-            print(f"HTTP error during upload: {e}")
-        except dropbox.exceptions.DropboxException as e:
-            print(f"Dropbox API error: {e}")
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-
-        retries += 1
-        print(f"Retrying upload ({retries}/{max_retries})...")
-        time.sleep(5)
-
-    print(f"Failed to upload {file_path} after {max_retries} retries.")
-
-
-def process_and_upload(dbx, client, date_range="d1"):
-    start_time, end_time, folder_date = calculate_date_range(date_range)
-
+if __name__ == "__main__":
     databases = [db["name"] for db in client.get_list_database()]
 
     for database in databases:
@@ -93,8 +44,8 @@ def process_and_upload(dbx, client, date_range="d1"):
         measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
-            result = query_data(client, database, measurement, start_time, end_time)
-            
+            result = query_data(database, measurement)
+
             csv_buffer = io.StringIO()
             csv_writer = csv.writer(csv_buffer)
 
@@ -104,23 +55,13 @@ def process_and_upload(dbx, client, date_range="d1"):
                     headers = list(point.keys())
                     csv_writer.writerow(headers)
                     headers_written = True
-                
+
                 row = [point.get("time").replace("T", " ").replace("Z", "")]
                 row += [point.get(field) for field in headers[1:]]
                 csv_writer.writerow(row)
-            
+
             csv_buffer.seek(0)
-            upload_to_dropbox(dbx, csv_buffer.getvalue(), measurement, folder_date)
+            upload_to_dropbox(csv_buffer.getvalue(), measurement)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
-    parser.add_argument("--date-range", type=str, default="d1", 
-                        help="Date range in format dN (e.g., 'd3' for data from 3 days ago to 2 days ago). Default is 'd1'.")
-    args = parser.parse_args()
-
-    dbx, client = setup()
-    try:
-        process_and_upload(dbx, client, args.date_range)
-    finally:
-        client.close()
+client.close()
 

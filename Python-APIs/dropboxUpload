@@ -2,9 +2,8 @@
 
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime
 import requests
-import argparse
 import dropbox
 import csv
 import io
@@ -25,48 +24,28 @@ access_token = requests.post(
 ).json()["access_token"]
 
 dbx = dropbox.Dropbox(access_token)
-client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, 
+client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
                         username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
-"""
-def query_data(database, measurement, day):
-    timeStatement = f"WHERE time >= now() - {day}"
-    if day != "1d":
-        timeStatement = f"WHERE time >= {int(day[1:])-1}d AND time < {day}"
+
+def query_data(database, measurement):
     client.switch_database(database)
-    query = f'SELECT * FROM "{measurement}" {timeStatement}'
-    return client.query(query)
-"""
-def query_data(database, measurement, day):
-    days_back = int(day[1:]) - 1
-    if days_back == 0:
-        time_statement = "WHERE time >= now() - 1d"
-    else:
-        time_statement = f"WHERE time >= now() - {days_back + 1}d AND time < now() - {days_back}d"
-    
-    client.switch_database(database)
-    query = f'SELECT * FROM "{measurement}" {time_statement}'
-    
+    query = f'SELECT * FROM "{measurement}" WHERE time >= now() - 1d'
     return client.query(query)
 
-
-def upload_to_dropbox(csv_content, measurement, days):
-    date = (datetime.now() - timedelta(days=int(days[1:]) - 1)).strftime("%Y-%m-%d")
+def upload_to_dropbox(csv_content, measurement):
+    date = datetime.now().strftime("%Y-%m-%d")
     dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
-    parser.add_argument("--dates", type=str, default="d1")
-    args = parser.parse_args()
-    
     databases = [db["name"] for db in client.get_list_database()]
-    
+
     for database in databases:
         client.switch_database(database)
         measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
-            result = query_data(database, measurement, args.dates)
-            
+            result = query_data(database, measurement)
+
             csv_buffer = io.StringIO()
             csv_writer = csv.writer(csv_buffer)
 
@@ -76,12 +55,13 @@ if __name__ == "__main__":
                     headers = list(point.keys())
                     csv_writer.writerow(headers)
                     headers_written = True
-                
+
                 row = [point.get("time").replace("T", " ").replace("Z", "")]
                 row += [point.get(field) for field in headers[1:]]
                 csv_writer.writerow(row)
-            
+
             csv_buffer.seek(0)
-            upload_to_dropbox(csv_buffer.getvalue(), measurement, args.dates)
+            upload_to_dropbox(csv_buffer.getvalue(), measurement)
 
 client.close()
+
