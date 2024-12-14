@@ -563,10 +563,10 @@ if __name__ == "__main__":
             config.setAlerts()
 
     if arguments.edit is not None:
-        subprocess.run(["vim", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.config).filename])
+        subprocess.run(["vim", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.edit).file_name])
         quit()
     if arguments.view is not None:
-        subprocess.run(["less", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.config).filename])
+        subprocess.run(["less", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.view).file_name])
         quit()
     
     if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
