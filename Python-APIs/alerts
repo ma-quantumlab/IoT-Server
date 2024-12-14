@@ -8,6 +8,7 @@ Ma Quantum Group
 
 from dotenv import load_dotenv 
 import argcomplete
+import subprocess
 import requests
 import argparse
 import time
@@ -533,6 +534,8 @@ def getArguments():
     parser.add_argument("--delete", default=None, type=str, help="delete alert")
 
     parser.add_argument("--config", choices=configuration_names, default=None, type=str, help="alert configurations")
+    parser.add_argument("--edit", choices=configuration_names, default=None, type=str, help="view configurations")
+    parser.add_argument("--view", choices=configuration_names, default=None, type=str, help="edit configurations")
 
     argcomplete.autocomplete(parser)
 
@@ -551,12 +554,21 @@ if __name__ == "__main__":
     for alert in alerts:
         Threshold.thresholds.append(Threshold(alert))
 
+    # -------- Configuration Complete
+
     arguments = getArguments()
 
     if arguments.config:
         if (config := ThresholdConfiguration.getConfigFromName(arguments.config)) is not None:
             config.setAlerts()
 
+    if arguments.edit is not None:
+        subprocess.run(["vim", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.config).filename])
+        quit()
+    if arguments.view is not None:
+        subprocess.run(["less", "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.config).filename])
+        quit()
+    
     if sum([arguments.create_upper_critical, arguments.create_upper_warning, arguments.create_lower_critical, arguments.create_lower_warning]) == 1 and arguments.threshold is not None and arguments.state is not None:
         if arguments.create_upper_critical:                
             Threshold.thresholds.append(Threshold.create(arguments.threshold, arguments.state, "gt", "Critical"))

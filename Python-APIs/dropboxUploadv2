@@ -17,7 +17,6 @@ def setup():
 
     INFLUX_PORT = 8086
 
-    # Get Dropbox access token
     access_token = requests.post(
         "https://api.dropbox.com/oauth2/token",
         data={
@@ -54,21 +53,19 @@ def upload_to_dropbox(dbx, csv_content, measurement, folder_date, max_retries=3)
     folder_path = f"/ServerData/{folder_date}"
     file_path = f"{folder_path}/{measurement.replace('_', ' ').title()}.csv"
 
-    # Ensure the folder exists
     try:
         dbx.files_create_folder_v2(folder_path)
     except dropbox.exceptions.ApiError as e:
         if isinstance(e.error, dropbox.files.CreateFolderError) and e.error.is_conflict():
-            pass  # Folder already exists
+            pass  
 
     retries = 0
     while retries < max_retries:
         try:
-            # Upload file with increased timeout
             dbx.files_upload(
                 csv_content.encode(),
                 file_path,
-                timeout=300  # Increase timeout to 5 minutes
+                timeout=300 
             )
             print(f"Successfully uploaded {file_path} to Dropbox.")
             return
