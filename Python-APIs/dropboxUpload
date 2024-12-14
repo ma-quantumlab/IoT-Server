@@ -2,7 +2,7 @@
 
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import argparse
 import dropbox
@@ -27,17 +27,30 @@ access_token = requests.post(
 dbx = dropbox.Dropbox(access_token)
 client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT, 
                         username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
-
+"""
 def query_data(database, measurement, day):
     timeStatement = f"WHERE time >= now() - {day}"
-    if day != "d1":
-        timeStatement = f"WHERE time >= d{int(day[1:])-1} AND time < {day}"
+    if day != "1d":
+        timeStatement = f"WHERE time >= {int(day[1:])-1}d AND time < {day}"
     client.switch_database(database)
     query = f'SELECT * FROM "{measurement}" {timeStatement}'
     return client.query(query)
+"""
+def query_data(database, measurement, day):
+    days_back = int(day[1:]) - 1
+    if days_back == 0:
+        time_statement = "WHERE time >= now() - 1d"
+    else:
+        time_statement = f"WHERE time >= now() - {days_back + 1}d AND time < now() - {days_back}d"
+    
+    client.switch_database(database)
+    query = f'SELECT * FROM "{measurement}" {time_statement}'
+    
+    return client.query(query)
+
 
 def upload_to_dropbox(csv_content, measurement, days):
-    date = (datetime.now() - datetime.timedelta(days=int(days[1:]) - 1)).strftime("%Y-%m-%d")
+    date = (datetime.now() - timedelta(days=int(days[1:]) - 1)).strftime("%Y-%m-%d")
     dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
 
 if __name__ == "__main__":
