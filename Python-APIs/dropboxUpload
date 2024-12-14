@@ -30,8 +30,8 @@ client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
 
 def query_data(database, measurement, day):
     timeStatement = f"WHERE time >= now() - {day}"
-    if day != "1d":
-        timeStatement = f"WHERE time >= {int(day[:-1])-1}d AND time < {day}"
+    if day != "d1":
+        timeStatement = f"WHERE time >= d{int(day[1:])-1} AND time < {day}"
     client.switch_database(database)
     query = f'SELECT * FROM "{measurement}" {timeStatement}'
     return client.query(query)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
-            result = query_data(database, measurement, parser.dates)
+            result = query_data(database, measurement, args.dates)
             
             csv_buffer = io.StringIO()
             csv_writer = csv.writer(csv_buffer)
@@ -69,6 +69,6 @@ if __name__ == "__main__":
                 csv_writer.writerow(row)
             
             csv_buffer.seek(0)
-            upload_to_dropbox(csv_buffer.getvalue(), measurement, parser.dates)
+            upload_to_dropbox(csv_buffer.getvalue(), measurement, args.dates)
 
 client.close()
