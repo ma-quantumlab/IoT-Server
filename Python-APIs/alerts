@@ -554,8 +554,6 @@ if __name__ == "__main__":
     for alert in alerts:
         Threshold.thresholds.append(Threshold(alert))
 
-    # -------- Configuration Complete
-
     arguments = getArguments()
 
     if arguments.config:
