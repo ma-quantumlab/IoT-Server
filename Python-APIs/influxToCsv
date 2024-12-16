@@ -9,7 +9,7 @@ import os
 load_dotenv()
 
 INFLUX_PORT = 8086
-LOCAL_PATH = "/path/"  # Replace this with the actual path where CSV files should be saved
+LOCAL_PATH = os.getenv("DROPBOX_PATH")
 
 client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
                         username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
