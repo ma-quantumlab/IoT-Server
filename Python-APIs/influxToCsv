@@ -4,13 +4,12 @@ from influxdb import InfluxDBClient
 from dotenv import load_dotenv
 from datetime import datetime
 import csv
-import io
 import os
 
 load_dotenv()
 
 INFLUX_PORT = 8086
-LOCAL_PATH = os.getenv("DROPBOX_PATH")
+LOCAL_PATH = "/path/"  # Replace this with the actual path where CSV files should be saved
 
 client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
                         username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
@@ -20,14 +19,20 @@ def query_data(database, measurement):
     query = f'SELECT * FROM "{measurement}" WHERE time >= now() - 1d'
     return client.query(query)
 
-def save_to_csv(csv_content, measurement):
-    date = datetime.now().strftime("%Y-%m-%d")
-    directory = os.path.join(LOCAL_PATH, date)
-    os.makedirs(directory, exist_ok=True) 
-
-    file_path = os.path.join(directory, f"{measurement.replace('_', ' ').title()}.csv")
+def save_to_csv(file_path, measurement, result):
     with open(file_path, "w", newline="", encoding="utf-8") as csv_file:
-        csv_file.write(csv_content)
+        csv_writer = csv.writer(csv_file)
+
+        headers_written = False
+        for point in result.get_points(measurement=measurement):
+            if not headers_written:
+                headers = list(point.keys())
+                csv_writer.writerow(headers)
+                headers_written = True
+
+            row = [point.get("time").replace("T", " ").replace("Z", "")]
+            row += [point.get(field) for field in headers[1:]]
+            csv_writer.writerow(row)
 
 if __name__ == "__main__":
     databases = [db["name"] for db in client.get_list_database()]
@@ -39,21 +44,11 @@ if __name__ == "__main__":
         for measurement in measurements:
             result = query_data(database, measurement)
 
-            csv_buffer = io.StringIO()
-            csv_writer = csv.writer(csv_buffer)
+            date = datetime.now().strftime("%Y-%m-%d")
+            directory = os.path.join(LOCAL_PATH, date)
+            os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
 
-            headers_written = False
-            for point in result.get_points(measurement=measurement):
-                if not headers_written:
-                    headers = list(point.keys())
-                    csv_writer.writerow(headers)
-                    headers_written = True
-
-                row = [point.get("time").replace("T", " ").replace("Z", "")]
-                row += [point.get(field) for field in headers[1:]]
-                csv_writer.writerow(row)
-
-            csv_buffer.seek(0)
-            save_to_csv(csv_buffer.getvalue(), measurement)
+            file_path = os.path.join(directory, f"{measurement.replace('_', ' ').title()}.csv")
+            save_to_csv(file_path, measurement, result)
 
 client.close()
