@@ -18,7 +18,7 @@ def query_data(database, measurement, day):
     client.switch_database(database)
     query = f'SELECT * FROM "{measurement}" WHERE time >= now() - {day}'
     if day != "1d":
-        query += f" and time <= now() - {int(day[:-1])-1}d"
+        query += f" and time <= now() - {int(day[1:])-1}d"
     return client.query(query)
 
 def save_to_csv(file_path, measurement, result):
@@ -38,7 +38,7 @@ def save_to_csv(file_path, measurement, result):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
-    parser.add_argument("--date", type=str, default="d1")
+    parser.add_argument("--date", type=str, default="1d")
     args = parser.parse_args()
 
     databases = [db["name"] for db in client.get_list_database()]
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         for measurement in measurements:
             result = query_data(database, measurement, args.date)
 
-            date = date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
+            date = date = (datetime.now() - timedelta(days=int(args.date[1:]) - 1)).strftime("%Y-%m-%d")
             directory = os.path.join(LOCAL_PATH, date)
             os.makedirs(directory, exist_ok=True) 
 
