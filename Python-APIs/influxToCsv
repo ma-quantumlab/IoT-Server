@@ -2,7 +2,7 @@
 
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 import argparse
 import csv
 import os
@@ -48,9 +48,9 @@ if __name__ == "__main__":
         measurements = [m["name"] for m in client.get_list_measurements()]
 
         for measurement in measurements:
-            result = query_data(database, measurement, args.day)
+            result = query_data(database, measurement, args.date)
 
-            date = date = (datetime.now() - datetime.timedelta(days=int(args.date[1:]) - 1)).strftime("%Y-%m-%d")
+            date = date = (datetime.now() - timedelta(days=int(args.date[1:]) - 1)).strftime("%Y-%m-%d")
             directory = os.path.join(LOCAL_PATH, date)
             os.makedirs(directory, exist_ok=True) 
 
