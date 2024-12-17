@@ -1,9 +1,8 @@
 #!/bin/bash
 
-export $(grep -v '^#' .env | xargs)
+source .env
 
 CURRENT_DATE=$(date +'%Y-%m-%d')
 
 "$INFLUXTOCSV_PATH"
-
 "$DROPBOXUPLOAD_PATH" 2>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
