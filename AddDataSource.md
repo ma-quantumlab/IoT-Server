@@ -4,11 +4,11 @@ This guide walks you through the process of fetching data from an MQTT broker in
 
 ## Introduction
 
-This tutorial will walk through step by step on how to take data from any device and pass it through the Raspberry Pi and have it visible on Grafana. To start the user must be familiar with the overall flow of the server shown below, this is explained in the README.md file. To begin the data must be sent from the different measurement devices to the users  
+This tutorial provides a step-by-step guide on how to collect data from various devices, process it through a Raspberry Pi, and visualize it using Grafana. Before diving in, it's important to understand the overall flow of the server architecture, as illustrated in the diagram below and explained in the `README.md` file. To get started, ensure the data is being sent from the measurement devices to the Raspberry Pi.
 
 <img src="https://github.com/user-attachments/assets/e60e50c4-e6c8-4d2b-a466-b174586ae207" alt="Model" width="600">
 
-Additionally the user should also understand the basic structure of Influx DB. Influx DB stores data in different databases, for these databases certain retention policies can be set to mark how much data should be stored locally, it is set for 2 weeks. In each database there are different measurements that correspond to different collections of data being stored, and for each measurement there are a certain number of fields storing individual data points. For example in the database "Fridges" the measurement "Alice Temperature" is shown below (this data is taken from the /ServerData folder in Dropbox where for each day there is a list of CSV files which represent all of the measurements in all the databases). Notice for the measurement "Alice Temperature" there are four corresponding fields representing the four streams of data. 
+Additionally, users should have a basic understanding of the structure of InfluxDB. InfluxDB organizes data into databases, where retention policies determine how long the data is stored locally. By default, this is set to two weeks. Within each database, data is categorized into measurements, which represent collections of related data points, and each measurement contains multiple fields that store individual data streams. For example, in the database "Fridges", the measurement "Alice Temperature" is shown below. In the "Alice Temperature" measurement, there are four corresponding fields, each representing a distinct stream of data.
 
 | Time                   | Alice Temperature 4K | Alice Temperature 50K | Alice Temperature MXC | Alice Temperature Still |
 |:-----------------------|:--------------------:|:---------------------:|:---------------------:|-------------------------:|
@@ -160,4 +160,10 @@ The data is first queried with the MQTT In blocks, then it is passed into the As
 
 ## Step 3: 
 
-Now that the data has been successfully passed into Influx DB we can display it on the 
+Now that the data has been successfully passed into Influx DB we can display it on the Grafana front end. Note that from here the system automatically will upload the data to dropbox daily. To add a visual in any of the Grafana dashboards enter into one and press the Blue "Add" button that is on the top, and in the dropdown press visualization. The image below is an example of how to set up a Grafana Visualization. 
+
+<img src="https://github.com/user-attachments/assets/9a53c61b-fc08-4d04-95a5-8489195b6cf3" alt="Model" width="600">
+
+## Step 4: 
+
+Finally the user must add this new datasource into the Alert API Configuration file so that we can pair alerts with it. 
