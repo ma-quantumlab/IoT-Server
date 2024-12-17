@@ -44,7 +44,7 @@ def find_and_upload_folder(base_path):
     print("No folder matching the current date was found.")
 
 if __name__ == "__main__":
-    base_path = input("Enter the base folder path to search: ").strip()
+    base_path = os.getenv("DROPBOX_PATH")
     if os.path.exists(base_path):
         find_and_upload_folder(base_path)
     else:
