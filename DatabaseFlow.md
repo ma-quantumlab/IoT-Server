@@ -2,7 +2,7 @@
 
 InfluxDB organizes time-series data using a hierarchical structure consisting of databases, measurements, and fields. A database serves as a container for related time-series data, while a measurement represents a specific collection of time-stamped data points (similar to a table in relational databases). Within each measurement, fields store the actual values being recorded, such as temperature, pressure, or humidity. Fields are key-value pairs where the key is the field name and the value is the associated data. This structure allows InfluxDB to efficiently store, query, and analyze large amounts of time-series data.
 
-Below gives the structure of the Databases on the Raspberry Pi, me sure to update this when new Databases, Measurements or Felids are added or changed. 
+Below gives the structure of the Databases on the Raspberry Pi, me sure to update this when new Databases, Measurements or Felids are added or changed. The bolded phrases are the case sensitive values of interest.  
 
 Fridges Database (**fridge_database**):
 
