@@ -179,8 +179,8 @@ let devices = [
 ...
 { 
   index: 16, 
-  fields: ['new_measurement'], 
-  labels: ['New Measurement']
+  fields: ['new_field', ...], 
+  labels: ['New Field', ...]
 }
 ...
 ]
