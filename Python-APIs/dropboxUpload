@@ -1,17 +1,12 @@
 #! /usr/bin/python
 
-from influxdb import InfluxDBClient
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import dropbox
-import csv
-import io
 import os
 
 load_dotenv()
-
-INFLUX_PORT = 8086
 
 access_token = requests.post(
     "https://api.dropbox.com/oauth2/token",
@@ -24,44 +19,33 @@ access_token = requests.post(
 ).json()["access_token"]
 
 dbx = dropbox.Dropbox(access_token)
-client = InfluxDBClient(host=os.getenv("INFLUX_HOST"), port=INFLUX_PORT,
-                        username=os.getenv("INFLUX_USER"), password=os.getenv("INFLUX_PASSWORD"))
 
-def query_data(database, measurement):
-    client.switch_database(database)
-    query = f'SELECT * FROM "{measurement}" WHERE time >= now() - 1d'
-    return client.query(query)
+def upload_folder_to_dropbox(local_folder, dropbox_path):
+    for root, dirs, files in os.walk(local_folder):
+        for file in files:
+            local_file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(local_file_path, local_folder)
+            dropbox_file_path = os.path.join(dropbox_path, relative_path).replace("\\", "/")
+            
+            with open(local_file_path, "rb") as f:
+                print(f"Uploading {local_file_path} to {dropbox_file_path}...")
+                dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode.overwrite)
 
-def upload_to_dropbox(csv_content, measurement):
-    date = datetime.now().strftime("%Y-%m-%d")
-    dbx.files_upload(csv_content.encode(), f"/ServerData/{date}/{measurement.replace('_', ' ').title()}.csv")
+def find_and_upload_folder(base_path):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    for folder in os.listdir(base_path):
+        folder_path = os.path.join(base_path, folder)
+        if os.path.isdir(folder_path) and folder == current_date:
+            print(f"Found folder matching current date: {folder_path}")
+            dropbox_folder_path = f"/ServerData/{current_date}"
+            upload_folder_to_dropbox(folder_path, dropbox_folder_path)
+            print("Upload complete.")
+            return
+    print("No folder matching the current date was found.")
 
 if __name__ == "__main__":
-    databases = [db["name"] for db in client.get_list_database()]
-
-    for database in databases:
-        client.switch_database(database)
-        measurements = [m["name"] for m in client.get_list_measurements()]
-
-        for measurement in measurements:
-            result = query_data(database, measurement)
-
-            csv_buffer = io.StringIO()
-            csv_writer = csv.writer(csv_buffer)
-
-            headers_written = False
-            for point in result.get_points(measurement=measurement):
-                if not headers_written:
-                    headers = list(point.keys())
-                    csv_writer.writerow(headers)
-                    headers_written = True
-
-                row = [point.get("time").replace("T", " ").replace("Z", "")]
-                row += [point.get(field) for field in headers[1:]]
-                csv_writer.writerow(row)
-
-            csv_buffer.seek(0)
-            upload_to_dropbox(csv_buffer.getvalue(), measurement)
-
-client.close()
-
+    base_path = input("Enter the base folder path to search: ").strip()
+    if os.path.exists(base_path):
+        find_and_upload_folder(base_path)
+    else:
+        print("Error: Base folder path not found.")
