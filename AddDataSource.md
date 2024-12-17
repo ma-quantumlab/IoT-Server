@@ -159,7 +159,7 @@ Note to the left it shows the MQTT channel that it is being published on.
 Once the data is received by the Raspberry Pi, it needs to be sent to InfluxDB, which is accomplished using Node-RED. To access Node-RED, navigate to port 1882 on the Raspberry Pi (e.g., `http://<raspberry-pi-ip>:1880`). On the Node-RED interface, you will see a predefined flow. While minor changes may occur over time, the overall structure of the flow should remain consistent.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c2e99a0e-99a3-488b-843e-19dd6c186d5a" alt="Model" width="800">
+  <img src="https://github.com/user-attachments/assets/c2e99a0e-99a3-488b-843e-19dd6c186d5a" alt="Model" width="600">
 </p>
 
 The data is first received using MQTT In blocks. It is then passed into the Assign Labels block, which maps the MQTT topics to their respective field names. Finally, the fields are split into separate InfluxDB Out blocks, with each block representing a specific measurement.
@@ -167,7 +167,7 @@ The data is first received using MQTT In blocks. It is then passed into the Assi
 To add an additional data source, the user must connect it to the flow. This can be done by duplicating an existing MQTT In node and editing its topic to match the name of the new data being published. The MQTT In node, as shown in the image on the left, allows the user to specify the topic where the new data is being sent.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/31063c94-6724-464e-b9f6-9c4b462ec5d1" alt="Model" width="800">
+  <img src="https://github.com/user-attachments/assets/31063c94-6724-464e-b9f6-9c4b462ec5d1" alt="Model" width="600">
 </p>
 
 Once the MQTT In node is configured, it must be connected to the Assign Labels block. In this block, the user needs to add a new section to the devices list within the JavaScript code to map the appropriate measurement names to their corresponding values. An example snippet is provided below, and the full implementation can be found in the `NodeREDAssignMeasurements.js` file located in the Subprocesses directory. Be sure to update this file whenever changes are made before deploying.
