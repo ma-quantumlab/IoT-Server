@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 import dropbox
 import os
+import time
 
 load_dotenv()
 
@@ -20,6 +21,24 @@ access_token = requests.post(
 
 dbx = dropbox.Dropbox(access_token)
 
+def upload_file_with_retries(local_file_path, dropbox_file_path, retries=3):
+    attempt = 0
+    while attempt < retries:
+        try:
+            with open(local_file_path, "rb") as f:
+                print(f"Uploading {local_file_path} to {dropbox_file_path}... (Attempt {attempt + 1})")
+                dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode.overwrite)
+            print(f"Successfully uploaded {local_file_path}")
+            return
+        except requests.exceptions.ReadTimeout as e:
+            attempt += 1
+            print(f"ReadTimeout occurred for {local_file_path}. Retrying... ({attempt}/{retries})")
+            time.sleep(2)  # Optional: wait before retrying
+        except Exception as e:
+            print(f"Error uploading {local_file_path}: {e}")
+            raise
+    raise Exception(f"Failed to upload {local_file_path} after {retries} attempts.")
+
 def upload_folder_to_dropbox(local_folder, dropbox_path):
     for root, dirs, files in os.walk(local_folder):
         for file in files:
@@ -27,9 +46,11 @@ def upload_folder_to_dropbox(local_folder, dropbox_path):
             relative_path = os.path.relpath(local_file_path, local_folder)
             dropbox_file_path = os.path.join(dropbox_path, relative_path).replace("\\", "/")
             
-            with open(local_file_path, "rb") as f:
-                print(f"Uploading {local_file_path} to {dropbox_file_path}...")
-                dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode.overwrite)
+            try:
+                upload_file_with_retries(local_file_path, dropbox_file_path)
+            except Exception as e:
+                print(e)
+                continue
 
 def find_and_upload_folder(base_path):
     current_date = datetime.now().strftime("%Y-%m-%d")
