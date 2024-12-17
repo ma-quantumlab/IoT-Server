@@ -7,51 +7,86 @@ Below gives the structure of the Databases on the Raspberry Pi, me sure to updat
 Fridges Database (**fridge_database**):
 
 - Alice Temperature Measurements (**alice_temperature**)
-    - **Alice Temperature 50K**
-    - **Alice Temperature 4K**
-    - **Alice Temperature Still**
-    - **Alice Temperature MXC**
+    - 50 K Temperature (**Alice Temperature 50K**)
+    - 4 K Temperature: (**Alice Temperature 4K**)
+    - Still Temperature: (**Alice Temperature Still**)
+    - MXC Temperature: (**Alice Temperature MXC**)
 
 - Alice Pressure Measurements (**alice_pressure**)
-    - **Alice Pressure OVC**
-    - **Alice Pressure Still Side**
-    - **Alice Pressure CH4**
-    - **Alice Pressure CH3**
-    - Note **Alice Pressure CH4** is subtracted from **Alice Pressure CH3** to return **Pressure Differential Across Trap**
-    - **Alice Pressure Tank**
+    - Pressure OVC (**Alice Pressure OVC**)
+    - Still Side Pressure (**Alice Pressure Still Side**)
+    - CH4 Pressure (**Alice Pressure CH4**)
+    - CH3 Pressure (**Alice Pressure CH3**)
+    - Note CH4 Pressure (**Alice Pressure CH4**) is subtracted from the CH3 Pressure (**Alice Pressure CH3**) to return the Pressure differential across the trap (**Alice Pressure Differential Across Trap**)
+    - Tank Pressure (**Alice Pressure Tank**)
 
 - Alice Compressor Measurements (**alice_compressor**)
-    - **Alice Compressor Water In**
-    - **Alice Compressor Water Out**
-    - **Alice Compressor Oil Temperature**
-    - **Alice Compressor Error Status**
+    - Water In (**Alice Compressor Water In**)
+    - Water Out (**Alice Compressor Water Out**)
+    - Oil Temperature (**Alice Compressor Oil Temperature**)
+    - Error Status (**Alice Compressor Error Status**)
+
+- Alice Flowmeter Measurement (**alice_flowmeter**)
+    - Flowmeter (**Alice Flowmeter**)
 
 - Bob Temperature Measurements (**bob_temperature**)
-   - **Bob Temperature 50K**
-   - **Bob Temperature 4K**
-   - **Bob Temperature Still**
-   - **Bob Temperature MXC**
+    - 50 K Temperature (**Bob Temperature 50K**)
+    - 4 K Temperature (**Bob Temperature 4K**)
+    - Still Temperature: (**Bob Temperature Still**)
+    - MXC Temperature: (**Bob Temperature MXC**)
 
 - Bob Pressure Measurements (**bob_pressure**)
-   - **Bob Pressure OVC**
-   - **Bob Pressure Still Side**
-   - **Bob Pressure CH4**
-   - **Bob Pressure CH3**
-   - Note **Bob Pressure CH4** is subtracted from **Bob Pressure CH3** to return **Pressure Differential Across Trap**
-   - **Bob Pressure Tank**
+    - Pressure OVC (**Bob Pressure OVC**)
+    - Still Side Pressure (**Bob Pressure Still Side**)
+    - CH4 Pressure (**Bob Pressure CH4**)
+    - CH3 Pressure (**Bob Pressure CH3**)
+    - Note CH4 Pressure (**Bob Pressure CH4**) is subtracted from the CH3 Pressure (**Bob Pressure CH3**) to return the Pressure differential across the trap (**Bob Pressure Differential Across Trap**)
+    - Tank Pressure: **Bob Pressure Tank**
 
 - Bob Compressor Measurements (**bob_compressor**)
-   - **Bob Compressor Water In**
-   - **Bob Compressor Water Out**
-   - **Bob Compressor Oil Temperature**
-   - **Bob Compressor Error Status**
+    - Water In (**Bob Compressor Water In**)
+    - Water Out (**Bob Compressor Water Out**)
+    - Oil Temperature (**Bob Compressor Oil Temperature**)
+    - Error Status (**Bob Compressor Error Status**)
 
-Lab Weather Database (****):
+- Bob Flowmeter Measurement (**bob_flowmeter**)
+    - Flowmeter (**Bob Flowmeter**)
 
-- 
+Lab Weather Database (**weather_database**):
 
-Water Chiller Database (****):
+- G41A Measurements (**room_measurement**):
+    - Temperature (**G41A Temperature**)
+    - Humidity (**G41A Humidity**)
+    - Temperature (**Lab Temperature**)
+    - Humidity (**Lab Humidity**)
 
--
+- Fridge Surrounding Measurements (**near_fridges**):
+    - Temperature (**Fridges Surrounding Temperature**)
+    - Humidity (**Fridges Surrounding Humidity**)
 
+- Makeup Air Supply Measurement (**makeup_air_supply**):
+    - Temperature (**Makeup Air Supply Temperature**)
+    - Humidity (**Makeup Air Supply Humidity**)
 
+- Lab Fan Coil Unit Measurement (**g41_fan_coil_unit**):
+    - Temperature (**Lab Fan Coil Unit Temperature**)
+    - Humidity (**Lab Fan Coil Unit Humidity**)
+
+- G41A Fan Coil Unit Measurement (**g41a_fan_coil_unit**):
+    - Temperature (**G41A Fan Coil Unit Temperature**)
+    - Humidity (**G41A Fan Coil Unit Humidity**)
+
+- Alice Mixture Tank Measurement (**alice_mixture_tank**): 
+    - Temperature (**Alice Mixture Tank Temperature**)
+    - Humidity (**Alice Mixture Tank Humidity**)
+
+- Bob Mixture Tank Measurement (**bob_mixture_tank**):
+    - Temperature (**Bob Mixture Tank Temperature**)
+    - Humidity (**Bob Mixture Tank Humidity**)
+
+Water Chiller Database (**water_chiller_database**):
+- Water Chiller Measurement (**water_chiller**)
+    - Temperature In (**Water Chiller Temperature In**)
+    - Pressure In (**Pressure In**)
+    - Pressure Out (**Pressure Out**)
+    - Pressure Differential (**Pressure Differential**)
