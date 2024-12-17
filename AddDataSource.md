@@ -191,9 +191,8 @@ Finally, the user must connect the new output of the Assign Labels block to an I
 Once these steps are completed, the new data source will be successfully added and can now be visualized in Grafana.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9a53c61b-fc08-4d04-95a5-8489195b6cf3" alt="Model" width="600">
+  <img src="https://github.com/user-attachments/assets/4783fcbc-d8ea-464a-8b32-02f258d616f0" alt="Model" width="600">
 </p>
-
 
 ## Step 3: 
 
