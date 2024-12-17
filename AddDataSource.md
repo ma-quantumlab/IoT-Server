@@ -197,7 +197,22 @@ Once these steps are completed, the new data source will be successfully added a
 
 ## Step 3: 
 
-Now that the data has been successfully passed into Influx DB we can display it on the Grafana front end. Note that from here the system automatically will upload the data to dropbox daily. To add a visual in any of the Grafana dashboards enter into one and press the Blue "Add" button that is on the top, and in the dropdown press visualization. The image below is an example of how to set up a Grafana Visualization. 
+Now that the data has been successfully passed into InfluxDB, it can be displayed on the Grafana front end. From this point, the system will automatically upload the data to Dropbox daily.
+
+To add a visualization to any of the Grafana dashboards, navigate to the desired dashboard and click the blue "Add" button at the top. From the dropdown menu, select "Visualization". The image below provides an example of how to configure a Grafana visualization, with the following key steps to note:
+
+Select the correct InfluxDB data source: Each database is paired with a specific data source.
+
+Configure the query:
+
+- Under MEASUREMENT, choose the measurement of interest.
+- Below that, select the desired FIELD.
+  - For example in the image, the field "Alice 50K Temperature" was selected from the measurement "alice_temperature" within the fridges database.
+- The "fill(previous)" option in the GROUP BY section is optional but helps ensure the graph appears continuous.
+- Choose the visualization type: Grafana offers a variety of visualization options located at the top-right. In this example, the "Stat" visualization was selected.
+- Finalize the visualization: Give the visualization a name and, optionally, add a description for clarity.
+
+Once these steps are completed, the visualization is ready and can be viewed within the Grafana dashboard.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/9a53c61b-fc08-4d04-95a5-8489195b6cf3" alt="Model" width="1000">
@@ -205,4 +220,33 @@ Now that the data has been successfully passed into Influx DB we can display it 
 
 ## Step 4: 
 
-Finally the user must add this new datasources into the Alert API Configuration file so that we can pair alerts with it. 
+Finally, the user must add the new data source to the Alert API Configuration file so that alerts can be paired with it. The `alerts_config.json` file is located in the `/Python-APIs/Alert-Config-Files/` folder, and the new section must be added to the alerts array within the file.
+
+To edit this file, secure shell (SSH) into the server and run the following command:
+
+``` bash
+malab@maserver:~ $ alerts --edit "Alerts Config"
+```
+
+This will open the file in an editor for modification. The example below demonstrates how the "Alice 50K Temperature" section is added to the configuration file. Any new field must follow the same format. Be sure to include the database name, measurement name, and field name in the configuration file, ensuring they match exactly with the names set up previously. 
+
+If there is any confusion regarding the database structure or naming, refer to the `DatabaseFlow.md` document, which contains all current names. When adding new names, update this document so new users can remain informed. Once the changes are completed, the API will prompt the user to push the updates to Git. It is highly recommended to push these changes so all users have access to the latest alert configuration file.
+
+``` json
+{
+    "name":"Alerts Config",
+    "alerts":
+    [
+      ...
+        {
+            "title":"Alice 50 K Temperature",
+            "database":"fridge_database",
+            "measurement":"alice_temperature",
+            "field":"Alice Temperature 50K",
+            "nodata":"OK",
+            "dashboardname":"Alice Fridge Dashboard"
+        },
+      ...
+    ]
+}
+```

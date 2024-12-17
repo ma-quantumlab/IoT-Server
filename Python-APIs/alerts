@@ -534,7 +534,7 @@ def getArguments():
     parser.add_argument("--delete", default=None, type=str, help="delete alert")
 
     parser.add_argument("--config", choices=configuration_names, default=None, type=str, help="alert configurations")
-    parser.add_argument("--edit", choices=configuration_names, default=None, type=str, help="view configurations")
+    parser.add_argument("--edit", choices=configuration_names+["Alerts Config"], default=None, type=str, help="view configurations")
     parser.add_argument("--view", choices=configuration_names, default=None, type=str, help="edit configurations")
 
     argcomplete.autocomplete(parser)
@@ -561,7 +561,10 @@ if __name__ == "__main__":
             config.setAlerts()
 
     if arguments.edit is not None:
-        path = "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.edit).file_name
+        if arguments.edit == "Alerts Config":
+            path = "./Alert-Config-Files/alerts_config.json"
+        else:
+            path = "./Alert-Config-Files/"+ThresholdConfiguration.getConfigFromName(arguments.edit).file_name
         subprocess.run(["vim", path])
         if strictInput("Do you want to push these changes to the Remote Repository? ", ["Yes", "No"]) == "Yes":
             try:
