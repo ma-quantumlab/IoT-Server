@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+source "$ENV_PAT"
 
 CURRENT_DATE=$(date +'%Y-%m-%d')
 
