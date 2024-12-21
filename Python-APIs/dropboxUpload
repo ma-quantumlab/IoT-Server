@@ -1,11 +1,12 @@
 #! /usr/bin/python
 
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
+import argparse
 import dropbox
-import os
 import time
+import os
 
 load_dotenv()
 
@@ -33,7 +34,7 @@ def upload_file_with_retries(local_file_path, dropbox_file_path, retries=3):
         except requests.exceptions.ReadTimeout as e:
             attempt += 1
             print(f"ReadTimeout occurred for {local_file_path}. Retrying... ({attempt}/{retries})")
-            time.sleep(2)  # Optional: wait before retrying
+            time.sleep(2) 
         except Exception as e:
             print(f"Error uploading {local_file_path}: {e}")
             raise
@@ -52,7 +53,7 @@ def upload_folder_to_dropbox(local_folder, dropbox_path):
                 print(e)
                 continue
 
-def find_and_upload_folder(base_path):
+def find_and_upload_folder(base_path, current_date):
     current_date = datetime.now().strftime("%Y-%m-%d")
     for folder in os.listdir(base_path):
         folder_path = os.path.join(base_path, folder)
@@ -66,7 +67,13 @@ def find_and_upload_folder(base_path):
 
 if __name__ == "__main__":
     base_path = os.getenv("DROPBOX_PATH")
+    
+    parser = argparse.ArgumentParser(description="Upload CSV Data to Dropbox.")
+    parser.add_argument("--date", type=str, default="1d")
+    args = parser.parse_args()  
+
+    date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
     if os.path.exists(base_path):
-        find_and_upload_folder(base_path)
+        find_and_upload_folder(base_path, date)
     else:
         print("Error: Base folder path not found.")

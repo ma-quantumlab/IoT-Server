@@ -4,5 +4,7 @@ source "$ENV_PATH"
 
 CURRENT_DATE=$(date +'%Y-%m-%d')
 
-"$INFLUXTOCSV_PATH"
-"$DROPBOXUPLOAD_PATH" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
+VAR_DATE=${1:-1d}
+
+"$INFLUXTOCSV_PATH" --date "${VAR_DATE}" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
+"$DROPBOXUPLOAD_PATH" --date "${VAR_DATE}" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"

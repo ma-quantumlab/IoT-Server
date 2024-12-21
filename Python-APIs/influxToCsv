@@ -1,8 +1,8 @@
 #! /usr/bin/python
 
+from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
 import argparse
 import csv
 import os
@@ -37,7 +37,7 @@ def save_to_csv(file_path, measurement, result):
             csv_writer.writerow(row)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Upload InfluxDB data to Dropbox.")
+    parser = argparse.ArgumentParser(description="Convert Influx Data to CSV Data")
     parser.add_argument("--date", type=str, default="1d")
     args = parser.parse_args()
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         for measurement in measurements:
             result = query_data(database, measurement, args.date)
 
-            date = date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
+            date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
             directory = os.path.join(LOCAL_PATH, date)
             os.makedirs(directory, exist_ok=True) 
 
