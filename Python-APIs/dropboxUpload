@@ -54,7 +54,6 @@ def upload_folder_to_dropbox(local_folder, dropbox_path):
                 continue
 
 def find_and_upload_folder(base_path, current_date):
-    current_date = datetime.now().strftime("%Y-%m-%d")
     for folder in os.listdir(base_path):
         folder_path = os.path.join(base_path, folder)
         if os.path.isdir(folder_path) and folder == current_date:
