@@ -69,9 +69,11 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Upload CSV Data to Dropbox.")
     parser.add_argument("--date", type=str, default="1d")
+    parser.add_argument("--day", type=str)
     args = parser.parse_args()  
 
-    date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
+    current_date = datetime.strptime(args.day, "%Y-%m-%d")
+    date = (current_date - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
     if os.path.exists(base_path):
         find_and_upload_folder(base_path, date)
     else:

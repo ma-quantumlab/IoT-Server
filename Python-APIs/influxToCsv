@@ -39,9 +39,11 @@ def save_to_csv(file_path, measurement, result):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert Influx Data to CSV Data")
     parser.add_argument("--date", type=str, default="1d")
+    parser.add_argument("--day", type=str)
     args = parser.parse_args()
 
     databases = [db["name"] for db in client.get_list_database()]
+    current_date = datetime.strptime(args.day, "%Y-%m-%d")
 
     for database in databases:
         client.switch_database(database)
@@ -49,8 +51,9 @@ if __name__ == "__main__":
 
         for measurement in measurements:
             result = query_data(database, measurement, args.date)
+            
+            date = (current_date - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
 
-            date = (datetime.now() - timedelta(days=int(args.date[:-1]) - 1)).strftime("%Y-%m-%d")
             directory = os.path.join(LOCAL_PATH, date)
             os.makedirs(directory, exist_ok=True) 
 
