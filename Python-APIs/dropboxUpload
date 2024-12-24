@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 import requests
 import argparse
 import dropbox
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     base_path = os.getenv("DROPBOX_PATH")
     
     parser = argparse.ArgumentParser(description="Upload CSV Data to Dropbox.")
-    parser.add_argument("--date", type=str, default="1d")
+    parser.add_argument("--period", type=str, default="1d")
     parser.add_argument("--day", type=str)
     args = parser.parse_args()  
 
