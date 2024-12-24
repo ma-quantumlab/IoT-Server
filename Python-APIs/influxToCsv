@@ -32,9 +32,9 @@ def save_to_csv(file_path, measurement, result):
                 csv_writer.writerow(headers)
                 headers_written = True
 
-            time_GMT = datetime.strptime(point.get("time").replace("T", " ").replace("Z", ""), "%Y-%m-%d %H:%M:%S.%f")
+            time_GMT = datetime.strptime(point.get("time").replace("T", " ").replace("Z", "").split(".", 1)[0], "%Y-%m-%d %H:%M:%S")
             time_GMT = time_GMT.replace(tzinfo=timezone.utc)
-            time_LOCAL = time_GMT.astimezone().replace(microsecond=0)
+            time_LOCAL = time_GMT.astimezone()
 
             row = [time_LOCAL.strftime("%Y-%m-%d %H:%M:%S")]
             #row = [point.get("time").replace("T", " ").replace("Z", "")]
