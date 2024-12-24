@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from influxdb import InfluxDBClient
 from dotenv import load_dotenv
 import argparse
@@ -32,7 +32,12 @@ def save_to_csv(file_path, measurement, result):
                 csv_writer.writerow(headers)
                 headers_written = True
 
-            row = [point.get("time").replace("T", " ").replace("Z", "")]
+            time_GMT = datetime.strptime(point.get("time").replace("T", " ").replace("Z", ""), "%Y-%m-%d %H:%M:%S.%f")
+            time_GMT = time_GMT.replace(tzinfo=timezone.utc)
+            time_EST = time_GMT.astimezone().replace(microsecond=0)
+
+            row = [time_EST.strftime("%Y-%m-%d %H:%M:%S")]
+            #row = [point.get("time").replace("T", " ").replace("Z", "")]
             row += [point.get(field) for field in headers[1:]]
             csv_writer.writerow(row)
 
