@@ -570,7 +570,7 @@ if __name__ == "__main__":
             try:
                 subprocess.run(["git", "add", path], check=True)
 
-                commit_message = f"Automated commit for {path}"
+                commit_message = f"Automated commit for {ThresholdConfiguration.getConfigFromName(arguments.edit).file_name}"
                 subprocess.run(["git", "commit", "-m", commit_message], check=True)
 
                 subprocess.run(["git", "push", "origin", path], check=True)

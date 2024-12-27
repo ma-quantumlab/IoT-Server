@@ -1,0 +1,28 @@
+#! /usr/bin/python
+
+from datetime import datetime, timedelta
+import shutil
+import os
+
+cutoff_days = 1 # Five weeks 
+
+LOCAL_PATH = os.getenv("DROPBOX_PATH")
+    
+if __name__ == "__main__":
+    
+    today = datetime.now().date()
+    
+    for item in os.listdir(LOCAL_PATH):
+        folder_path = os.path.join(LOCAL_PATH, item)
+        
+        if os.path.isdir(folder_path):
+            try:
+                folder_date = datetime.strptime(item, "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            
+            days_difference = (today - folder_date).days
+            
+            if days_difference > cutoff_days:
+                print(f"Deleting folder: {folder_path} (dated {folder_date}, {days_difference} days old)")
+                #shutil.rmtree(folder_path)
