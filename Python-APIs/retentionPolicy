@@ -1,15 +1,17 @@
 #! /usr/bin/python
 
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 import shutil
 import os
 
 cutoff_days = 1 # Five weeks 
 
+load_dotenv()
+
 LOCAL_PATH = os.getenv("DROPBOX_PATH")
     
 if __name__ == "__main__":
-    
     today = datetime.now().date()
     
     for item in os.listdir(LOCAL_PATH):
