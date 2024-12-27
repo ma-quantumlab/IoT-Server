@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import shutil
 import os
 
-cutoff_days = 1 # Five weeks 
+cutoff_days = 35 # Five weeks 
 
 load_dotenv()
 
