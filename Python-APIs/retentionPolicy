@@ -27,4 +27,4 @@ if __name__ == "__main__":
             
             if days_difference > cutoff_days:
                 print(f"Deleting folder: {folder_path} (dated {folder_date}, {days_difference} days old)")
-                #shutil.rmtree(folder_path)
+                shutil.rmtree(folder_path)
