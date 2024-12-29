@@ -1,9 +1,0 @@
-{
-    "name": "",
-    "type": "email",
-    "settings": {
-      "addresses": "",
-      "singleEmail": false
-    },
-    "disableResolveMessage": false
-}
