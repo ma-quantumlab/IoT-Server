@@ -78,6 +78,15 @@ while True:
     client.connect(mqtt_broker_host, mqtt_broker_port)
     
     while datetime.now().strftime("%y-%m-%d") == today:
+        if not client.is_connected():
+            try:
+                client.connect(mqtt_broker_host, mqtt_broker_port)
+                print("Reconnected to MQTT broker.")
+            except Exception as e:
+                print("Failed to reconnect:", e)
+                time.sleep(5)
+                continue
+        
         for enum, dataSource in enumerate(map(DataSource, config["datasources"])):
             payload = {}
 
