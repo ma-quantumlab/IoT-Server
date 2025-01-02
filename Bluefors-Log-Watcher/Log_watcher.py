@@ -74,8 +74,6 @@ while True:
     if not os.path.exists(log_root):
         time.sleep(3)
         continue
-
-    client.connect(mqtt_broker_host, mqtt_broker_port)
     
     while datetime.now().strftime("%y-%m-%d") == today:
         if not client.is_connected():
