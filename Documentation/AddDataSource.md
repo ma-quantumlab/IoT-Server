@@ -154,7 +154,7 @@ lab_weather/ {"fridges_temp":22.1614399,"fridges_hum":16.39887047}
 
 Note to the left it shows the MQTT channel that it is being published on. 
 
-## Step 2: 
+## Step 2: Query Data from Raspberry Pi to Influx DB
 
 Once the data is received by the Raspberry Pi, it needs to be sent to InfluxDB, which is accomplished using Node-RED. To access Node-RED, navigate to port 1882 on the Raspberry Pi (e.g., `http://<raspberry-pi-ip>:1880`). On the Node-RED interface, you will see a predefined flow. While minor changes may occur over time, the overall structure of the flow should remain consistent.
 
@@ -194,7 +194,7 @@ Once these steps are completed, the new data source will be successfully added a
   <img src="https://github.com/user-attachments/assets/4783fcbc-d8ea-464a-8b32-02f258d616f0" alt="Model" width="600">
 </p>
 
-## Step 3: 
+## Step 3: Display Data on Grafana
 
 Now that the data has been successfully passed into InfluxDB, it can be displayed on the Grafana front end. From this point, the system will automatically upload the data to Dropbox daily.
 
@@ -217,7 +217,7 @@ Once these steps are completed, the visualization is ready and can be viewed wit
   <img src="https://github.com/user-attachments/assets/9a53c61b-fc08-4d04-95a5-8489195b6cf3" alt="Model" width="1000">
 </p>
 
-## Step 4: 
+## Step 4: Add New Data Source to Alert API Configuration File 
 
 Finally, the user must add the new data source to the Alert API Configuration file so that alerts can be paired with it. The `alerts_config.json` file is located in the `/Python-APIs/Alert-Config-Files/` folder, and the new section must be added to the alerts array within the file.
 
