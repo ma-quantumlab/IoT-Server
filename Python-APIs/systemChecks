@@ -15,7 +15,7 @@ def send_slack_message(message):
 
 def check_disk_usage():
     result = subprocess.run(["df", "-h"], capture_output=True, text=True)
-    line = result.stdout.split("\n")[1:]
+    line = result.stdout.split("\n")[1]
     parts = line.split()
     if len(parts) > 5:
         usage = parts[4]  # The percentage column
