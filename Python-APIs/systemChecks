@@ -15,16 +15,15 @@ def send_slack_message(message):
 
 def check_disk_usage():
     result = subprocess.run(["df", "-h"], capture_output=True, text=True)
-    lines = result.stdout.split("\n")
-    for line in lines[1:]:  # Skip header
-        parts = line.split()
-        if len(parts) > 5:
-            usage = parts[4]  # The percentage column
-            if usage.endswith('%'):
-                percent = int(usage[:-1])
-                print(f"Disk space currently at: {percent}")
-                if percent > disk_threshold:
-                    send_slack_message(f"Disk space WARNING: {parts[0]} is at {percent}% capacity.")
+    line = result.stdout.split("\n")[1:]
+    parts = line.split()
+    if len(parts) > 5:
+        usage = parts[4]  # The percentage column
+        if usage.endswith('%'):
+            percent = int(usage[:-1])
+            print(f"Disk space currently at: {percent}")
+            if percent > disk_threshold:
+                send_slack_message(f"Disk space WARNING: {parts[0]} is at {percent}% capacity.")
 
 def check_docker_containers():
     result = subprocess.run(["docker", "ps", "-a", "--format", "{{.Names}} {{.State}} {{.Status}}"], capture_output=True, text=True)
