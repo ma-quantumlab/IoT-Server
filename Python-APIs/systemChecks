@@ -5,6 +5,7 @@ import requests
 import os
 
 slack_webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+disk_threshold = 95
 
 def send_slack_message(message):
     payload = {"text": message}
@@ -21,8 +22,9 @@ def check_disk_usage():
             usage = parts[4]  # The percentage column
             if usage.endswith('%'):
                 percent = int(usage[:-1])
-                if percent > 95:
-                    send_slack_message(f"Disk space ERROR: {parts[0]} is at {percent}% capacity.")
+                print(f"Disk space currently at: {percent}")
+                if percent > disk_threshold:
+                    send_slack_message(f"Disk space WARNING: {parts[0]} is at {percent}% capacity.")
 
 def check_docker_containers():
     result = subprocess.run(["docker", "ps", "-a", "--format", "{{.Names}} {{.State}} {{.Status}}"], capture_output=True, text=True)
@@ -31,6 +33,7 @@ def check_docker_containers():
         if line.strip():
             parts = line.split()
             name, state, status = parts[0], parts[1], " ".join(parts[2:])
+            print(f"Container: '{name}' is in state '{state}' with status '{status}'.")
             if state.lower() != "running" or "unhealthy" in status.lower():
                 send_slack_message(f"Docker ERROR: Container '{name}' is in state '{state}' with status '{status}'.")
 
