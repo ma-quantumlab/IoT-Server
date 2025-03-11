@@ -71,7 +71,7 @@ def find_and_upload_folder(base_path, current_date):
             print("Upload complete.")
             return
     print("No folder matching the current date was found.")
-    send_slack_message(f"ERROR: Data absent for {current_date}")
+    send_slack_message(f"Data ERROR: Data absent for {current_date}")
 
 if __name__ == "__main__":
     base_path = os.getenv("DROPBOX_PATH")
