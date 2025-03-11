@@ -7,7 +7,7 @@ CURRENT_DATE=$(date +'%Y-%m-%d')
 VAR_DATE=${1:-1d}
 
 "$RETENTIONPOLICY_PATH"
-"$SYSTEM_CHECKS_PATH"
+"$SYSTEM_CHECKS_PATH" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
 
 "$INFLUXTOCSV_PATH" --day "${CURRENT_DATE}" --period "${VAR_DATE}" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
 "$DROPBOXUPLOAD_PATH" --day "${CURRENT_DATE}" --period "${VAR_DATE}" &>> "${DROPBOXUPLOADLOG_PATH}/dropbox_upload_${CURRENT_DATE}.log"
