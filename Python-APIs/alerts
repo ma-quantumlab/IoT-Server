@@ -116,7 +116,7 @@ class Dashboard:
 
         return returnPanels
     
-    @staticmethod # Bad Practice
+    @staticmethod # Bad Practice ... why?? ¯\_(ツ)_/¯
     def getDashboard(identifier):
         for dashboard in Dashboard.dashboards:
             if identifier == dashboard.uid or identifier == dashboard.title:

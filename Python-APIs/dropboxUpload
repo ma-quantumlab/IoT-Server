@@ -20,6 +20,14 @@ access_token = requests.post(
     }
 ).json()["access_token"]
 
+SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
+
+def send_slack_message(message):
+    payload = {"text": message}
+    response = requests.post(SLACK_WEBHOOK_URL, json=payload)
+    if response.status_code != 200:
+        print(f"Failed to send Slack message: {response.text}")
+
 dbx = dropbox.Dropbox(access_token)
 
 def upload_file_with_retries(local_file_path, dropbox_file_path, retries=3):
@@ -31,7 +39,7 @@ def upload_file_with_retries(local_file_path, dropbox_file_path, retries=3):
                 dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode.overwrite)
             print(f"Successfully uploaded {local_file_path}")
             return
-        except requests.exceptions.ReadTimeout as e:
+        except requests.exceptions.ReadTimeout:
             attempt += 1
             print(f"ReadTimeout occurred for {local_file_path}. Retrying... ({attempt}/{retries})")
             time.sleep(2) 
@@ -63,6 +71,7 @@ def find_and_upload_folder(base_path, current_date):
             print("Upload complete.")
             return
     print("No folder matching the current date was found.")
+    send_slack_message(f"ERROR: Data absent for {current_date}")
 
 if __name__ == "__main__":
     base_path = os.getenv("DROPBOX_PATH")
