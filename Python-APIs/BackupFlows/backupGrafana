@@ -1,0 +1,69 @@
+import os
+import requests
+import json
+import subprocess
+
+GRAFANA_URL = "http://localhost:3000"
+API_KEY = "your_api_key" 
+GIT_REPO_PATH = "/path/to/your/git/repo" 
+HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
+
+def get_dashboard_uids():
+    url = f"{GRAFANA_URL}/api/search?query=&type=dash-db"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        return [dashboard["uid"] for dashboard in response.json()]
+    else:
+        print("Failed to fetch dashboards:", response.text)
+        return []
+
+def export_dashboard(uid):
+    url = f"{GRAFANA_URL}/api/dashboards/uid/{uid}"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        dashboard_json = response.json()["dashboard"]
+        dashboard_json = removeAlerts(dashboard_json)
+        filename = os.path.join(GIT_REPO_PATH, f"{dashboard_json['title'].replace(' ', '_')}.json")
+        with open(filename, "w") as f:
+            json.dump(dashboard_json, f, indent=4)
+        print(f"Exported: {filename}")
+    else:
+        print(f"Failed to fetch dashboard {uid}: {response.text}")
+
+def removeAlerts(dashboard_json):
+    return dashboard_json
+
+def export_contact_points():
+    url = f"{GRAFANA_URL}/api/alertmanager/grafana/config/api/v1/contact-points"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        contact_points = response.json()
+        filename = os.path.join(GIT_REPO_PATH, "contact_points.json")
+        with open(filename, "w") as f:
+            json.dump(contact_points, f, indent=4)
+        print(f"Exported: {filename}")
+    else:
+        print("Failed to fetch contact points:", response.text)
+
+def backup_dashboards():
+    if not os.path.exists(GIT_REPO_PATH):
+        print("Error: Git repository path does not exist.")
+        return
+
+    os.chdir(GIT_REPO_PATH)
+    dashboard_uids = get_dashboard_uids()
+    
+    for uid in dashboard_uids:
+        export_dashboard(uid)
+    
+    export_contact_points()
+
+    subprocess.run(["git", "add", "-A"], check=True)
+    subprocess.run(["git", "commit", "-m", "Backup Grafana dashboards and contact points"], check=True)
+    subprocess.run(["git", "push"], check=True)
+
+    print("Backup completed and pushed to Git.")
+
+
+if __name__ == "__main__":
+    backup_dashboards()
