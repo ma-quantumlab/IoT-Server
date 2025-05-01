@@ -25,6 +25,9 @@ def check_disk_usage():
             if percent > disk_threshold:
                 send_slack_message(f"Disk space WARNING: {parts[0]} is at {percent}% capacity.")
 
+def clear_log_files():
+    cd 
+
 def check_docker_containers():
     result = subprocess.run(["docker", "ps", "-a", "--format", "{{.Names}} {{.State}} {{.Status}}"], capture_output=True, text=True)
     lines = result.stdout.split("\n")

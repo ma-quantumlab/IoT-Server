@@ -5,11 +5,10 @@ from dotenv import load_dotenv
 import shutil
 import os
 
-cutoff_days = 35 # Five weeks 
-
 load_dotenv()
 
 LOCAL_PATH = os.getenv("DROPBOX_PATH")
+CUTOFF_DAYS = int(os.getenv("CUTOFF_DAYS"))
     
 if __name__ == "__main__":
     today = datetime.now().date()
@@ -25,6 +24,6 @@ if __name__ == "__main__":
             
             days_difference = (today - folder_date).days
             
-            if days_difference > cutoff_days:
+            if days_difference > CUTOFF_DAYS:
                 print(f"Deleting folder: {folder_path} (dated {folder_date}, {days_difference} days old)")
                 shutil.rmtree(folder_path)
