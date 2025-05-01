@@ -141,7 +141,7 @@ void loop() {
 
 To view actively running programs written in Python that send data via MQTT, navigate to the `/Bluefors-Log-Watcher` folder. For programs created in Arduino, refer to the `/MQTT-Chilled-Water-Monitor` and `/MQTT-Temp-Hum-Sensor` folders within this repository.
 
-To ensure that data is being sent to the Raspberry Pi, log onto the server by typing ssh malab@192.168.1.104 from any computer. Once connected, use the command listen. This is a bash alias for `mosquitto_sub -h localhost -t "#" -v`, which outputs all incoming raw JSON values received by the server.
+To ensure that data is being sent to the Raspberry Pi, log onto the server by typing `ssh malab@192.168.1.104` from any computer. Once connected, use the command `listen`. This is a bash alias for `mosquitto_sub -h localhost -t "#" -v`, which outputs all incoming raw JSON values received by the server.
 
 Since this command displays all incoming topics, it’s helpful to filter the output using a tool like `grep` to isolate the specific topic you’re monitoring. For example, to check for data under the topic "fridges", you can use the following command:
 
