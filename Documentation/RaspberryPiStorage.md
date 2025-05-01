@@ -14,4 +14,15 @@ malab@maserver:~/IoT-Server/Python-APIs $
 malab@maserver:~/IoT-Server/Python-APIs $ vim .env 
 ```
 
-Once in the vim editor locate the `CUTOFF_DAYS` envoironmental varible and edit to the desired number of days to store the data on the Pi for, to exit the vim editor use the command `:wq`. Once the file has successfully been saved the system will ensure that it doesn't delete any log files locally from `~/IoTServer/.DropboxData` for the `CUTOFF_DAYS` number of days. 
+Once in the vim editor locate the `CUTOFF_DAYS` envoironmental varible and edit to the desired number of days to store the data on the Pi for, to exit the vim editor use the command `:wq`. Once the file has successfully been saved the system will ensure that it doesn't delete any log files locally from `~/IoTServer/.DropboxData` for the `CUTOFF_DAYS` number of days as shown below:
+
+``` bash
+# Vim Editor
+...
+export SLACK_WEBHOOK_URL="..."
+export SYSTEM_CHECKS_PATH="..."
+
+export CUTOFF_DAYS="35"
+```
+
+
