@@ -3,8 +3,8 @@ def get_value(mqtt_subsection, today, required):
 
     path = log_root + today + "\\" + "maxigauge " + today + ".log"
 
-    #if os.not os.path.exists(path):
-        #return None
+    if not os.path.exists(path) and not required:
+            return None
 
     lastline = DataSource.get_last_line(path).rsplit(",")
     timestamp = lastline[0] + "," + lastline[1]
