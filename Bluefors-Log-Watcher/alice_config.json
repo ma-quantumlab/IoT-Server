@@ -35,8 +35,8 @@
             },
         {
             "function":"flowmeter",
-            "req_values":["alice_flowmeter"],
-            "opt_values":[]
+            "req_values":[],
+            "opt_values":["alice_flowmeter"]
         }
     ]
 }
