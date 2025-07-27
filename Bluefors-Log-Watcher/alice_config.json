@@ -14,14 +14,14 @@
         },
         {
             "function":"maxigauge",
-            "req_values":[
-                "alice_pressure_ovc",
-                "alice_pressure_still",
-                "alice_pressure_diff_ch4", 
-                "alice_pressure_diff_ch3",
-                "alice_pressure_tank"
-            ],
-            "opt_values":[]    
+            "req_values":[],
+            "opt_values":[
+            "alice_pressure_ovc",
+            "alice_pressure_still",
+            "alice_pressure_diff_ch4", 
+            "alice_pressure_diff_ch3",
+            "alice_pressure_tank"
+        ]    
         },
         {
             "function":"status",
