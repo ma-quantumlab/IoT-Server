@@ -57,8 +57,8 @@ Lab Weather Database (**weather_database**):
 - G41A Measurements (**room_measurement**):
     - Temperature (**G41A Temperature**)
     - Humidity (**G41A Humidity**)
-    - Temperature (**Lab Temperature**)
-    - Humidity (**Lab Humidity**)
+    - Temperature (**Lab Temperature**) <-- NO LONGER ACTIVE Check DHT Sensor 1
+    - Humidity (**Lab Humidity**) <-- NO LONGER ACTIVE: Check DHT Sensor 1
 
 - Fridge Surrounding Measurements (**near_fridges**):
     - Temperature (**Fridges Surrounding Temperature**)
