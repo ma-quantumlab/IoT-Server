@@ -55,10 +55,10 @@ Fridges Database (**fridge_database**):
 Lab Weather Database (**weather_database**):
 
 - G41A Measurements (room_measurement): <-- **NO LONGER ACTIVE: Check DHT Sensors** 
-    - Temperature (G41A Temperature) <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
-    - Humidity (G41A Humidity) <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
-    - Temperature (Lab Temperature) <-- **NO LONGER ACTIVE Check DHT Sensor 1** 
-    - Humidity (Lab Humidity) <-- **NO LONGER ACTIVE: Check DHT Sensor 1** 
+- ~~Temperature (G41A Temperature)~~ <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
+    - ~~Humidity (G41A Humidity)~~ <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
+    - ~~Temperature (Lab Temperature)~~ <-- **NO LONGER ACTIVE Check DHT Sensor 1** 
+    - ~~Humidity (Lab Humidity)~~ <-- **NO LONGER ACTIVE: Check DHT Sensor 1** 
 
 - Room Lab Measurements (**dht_sensor_1**)
     - Temperature (**DHT Sensor 1 Temperature**)
