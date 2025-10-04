@@ -54,11 +54,19 @@ Fridges Database (**fridge_database**):
 
 Lab Weather Database (**weather_database**):
 
-- G41A Measurements (**room_measurement**):
-    - Temperature (**G41A Temperature**)
-    - Humidity (**G41A Humidity**)
-    - Temperature (**Lab Temperature**) <-- NO LONGER ACTIVE Check DHT Sensor 1
-    - Humidity (**Lab Humidity**) <-- NO LONGER ACTIVE: Check DHT Sensor 1
+- G41A Measurements (room_measurement): <-- **NO LONGER ACTIVE: Check DHT Sensors** 
+    - Temperature (G41A Temperature) <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
+    - Humidity (G41A Humidity) <-- **NO LONGER ACTIVE: Check DHT Sensor 2** 
+    - Temperature (Lab Temperature) <-- **NO LONGER ACTIVE Check DHT Sensor 1** 
+    - Humidity (Lab Humidity) <-- **NO LONGER ACTIVE: Check DHT Sensor 1** 
+
+- Room Lab Measurements (**dht_sensor_1**)
+    - Temperature (**DHT Sensor 1 Temperature**)
+    - Humidity (**DHT Sensor 1 Humidity**)
+    
+- Room G41A Measurements (**dht_sensor_2**)
+    - Temperature (**DHT Sensor 2 Temperature**)
+    - Humidity (**DHT Sensor 2 Humidity**)
 
 - Fridge Surrounding Measurements (**near_fridges**):
     - Temperature (**Fridges Surrounding Temperature**)
@@ -83,6 +91,8 @@ Lab Weather Database (**weather_database**):
 - Bob Mixture Tank Measurement (**bob_mixture_tank**):
     - Temperature (**Bob Mixture Tank Temperature**)
     - Humidity (**Bob Mixture Tank Humidity**)
+ 
+- 
 
 Water Chiller Database (**water_chiller_database**):
 - Water Chiller Measurement (**water_chiller**)
