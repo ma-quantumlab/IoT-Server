@@ -66,8 +66,4 @@ This work was supported by the collaborative efforts of the Purdue Ma Lab. Speci
 - Dr. Alex Ruichao Ma for his guidance.
 - The Ma Lab team for their support and feedback.
 
-Acknowledgments:
-- Dhruv Upreti
-- Alex Ruichao Ma, Department of Physics and Astronomy, Purdue University
-
 For further information about server contact Dhruv Upreti
